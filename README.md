@@ -36,6 +36,13 @@ To add a new hotkey, click the "+" button and do as above.
 To remove a hotkey, select an existing hotkey by clicking on the hotkey text once, and click the "-" button.
 To change a hotkey's settings:
   - Double click the settings cog to the right of the hotkey
+  
+To add pre-recorded audio clips (.WAV, dual-channel only):
+  - Navigate to %appdata%/Virtual Soundboard and Sampler/samples
+  - Add your file to the folder
+  - Rename it to match a hotkey, e.g. "96.wav"
+    - Refer to https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
+    - Keycodes given above are in hexadecimal, so convert them to decimal (https://www.rapidtables.com/convert/number/hex-to-decimal.html)
 
 One setting that is not as straightforward is the "Pad Loopback" setting. This setting ensures that the loopback recording records even empty sound, i.e. when no system audio is playing. This is useful for synchronizing input and loopback audio recordings.
 
