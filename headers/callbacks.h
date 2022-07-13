@@ -9,6 +9,7 @@
 #include <map>
 #include "portaudio.h"
 #include "sndfile.h"
+#include "revmodel.h"
 
 typedef struct{
     SNDFILE* file;
@@ -17,6 +18,8 @@ typedef struct{
     bool pad;
     float timeStamp;
     float maxFileLength;
+    bool useReverb;
+    revmodel* reverb;
 } callbackData;
 
 

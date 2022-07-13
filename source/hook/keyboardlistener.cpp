@@ -31,15 +31,58 @@ LRESULT CALLBACK KeyboardListener::KeyboardEvent(int nCode, WPARAM wParam, LPARA
 
                 switch (wParam) {
                 case WM_KEYDOWN:
-                    if (!audioManager->recording) {
-                        // check if button has a recorded file, otherwise, start recording
-                        if (audioManager->player->CanPlay(p->vkCode))
-                        {
-                            audioManager->player->Play(p->vkCode);
-                            audioManager->monitor->Play(p->vkCode);
+                    if (bindSettings.type == 0)
+                    {
+                        if (!audioManager->recording) {
+                            // check if button has a recorded file, otherwise, start recording
+                            if (audioManager->player->CanPlay(p->vkCode))
+                            {
+                                audioManager->player->Play(p->vkCode);
+                                audioManager->monitor->Play(p->vkCode);
+                            }
+                            // if not, start recording
+                            else
+                            {
+                                if (bindSettings.recordInput) audioManager->inputDeviceRecorder->Record(p->vkCode);
+                                if (bindSettings.recordLoopback) audioManager->loopbackRecorder->Record(p->vkCode, bindSettings.padAudio, !bindSettings.recordInput);
+                                audioManager->recording = true;
+                            }
                         }
-                        // if not, start recording
-                        else
+                    }
+                    else if (bindSettings.type == 1)
+                    {
+                        switch (bindSettings.fxType)
+                        {
+                        case 0:
+                            audioManager->passthrough->data.useReverb = !audioManager->passthrough->data.useReverb;
+                            break;
+                        default:
+                            break;
+                        }
+                    }
+
+                    break;
+                case WM_KEYUP:
+                    if (bindSettings.type == 0)
+                    {
+                        // stop recording when button is released
+                        if (audioManager->recording)
+                        {
+                            if (bindSettings.recordInput) audioManager->inputDeviceRecorder->Stop(p->vkCode);
+                            if (bindSettings.recordLoopback)
+                            {
+                                audioManager->loopbackRecorder->Stop(p->vkCode);
+                                audioManager->loopbackRecorder->Merge(p->vkCode);
+                            }
+                            audioManager->recording = false;
+                        }
+                    }
+                    break;
+                case WM_SYSKEYDOWN:
+                    if (bindSettings.type == 0)
+                    {
+                        // secondary record button - used to record over already existing clips
+                        if (!audioManager->recording)
                         {
                             if (bindSettings.recordInput) audioManager->inputDeviceRecorder->Record(p->vkCode);
                             if (bindSettings.recordLoopback) audioManager->loopbackRecorder->Record(p->vkCode, bindSettings.padAudio, !bindSettings.recordInput);
@@ -47,39 +90,20 @@ LRESULT CALLBACK KeyboardListener::KeyboardEvent(int nCode, WPARAM wParam, LPARA
                         }
                     }
                     break;
-                case WM_KEYUP:
-                    // stop recording when button is released
-                    if (audioManager->recording)
-                    {
-                        if (bindSettings.recordInput) audioManager->inputDeviceRecorder->Stop(p->vkCode);
-                        if (bindSettings.recordLoopback)
-                        {
-                            audioManager->loopbackRecorder->Stop(p->vkCode);
-                            audioManager->loopbackRecorder->Merge(p->vkCode);
-                        }
-                        audioManager->recording = false;
-                    }
-                    break;
-                case WM_SYSKEYDOWN:
-                    // secondary record button - used to record over already existing clips
-                    if (!audioManager->recording)
-                    {
-                        if (bindSettings.recordInput) audioManager->inputDeviceRecorder->Record(p->vkCode);
-                        if (bindSettings.recordLoopback) audioManager->loopbackRecorder->Record(p->vkCode, bindSettings.padAudio, !bindSettings.recordInput);
-                        audioManager->recording = true;
-                    }
-                    break;
                 case WM_SYSKEYUP:
-                    // stop recording when button is released
-                    if (audioManager->recording)
+                    if (bindSettings.type == 0)
                     {
-                        if (bindSettings.recordInput) audioManager->inputDeviceRecorder->Stop(p->vkCode);
-                        if (bindSettings.recordLoopback)
+                        // stop recording when button is released
+                        if (audioManager->recording)
                         {
-                            audioManager->loopbackRecorder->Stop(p->vkCode);
-                            audioManager->loopbackRecorder->Merge(p->vkCode);
+                            if (bindSettings.recordInput) audioManager->inputDeviceRecorder->Stop(p->vkCode);
+                            if (bindSettings.recordLoopback)
+                            {
+                                audioManager->loopbackRecorder->Stop(p->vkCode);
+                                audioManager->loopbackRecorder->Merge(p->vkCode);
+                            }
+                            audioManager->recording = false;
                         }
-                        audioManager->recording = false;
                     }
                     break;
                 default:

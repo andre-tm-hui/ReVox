@@ -95,8 +95,13 @@ int passthroughCallback(const void* inputBuffer, void* outputBuffer,
     float* in = (float*)inputBuffer;
     float* out = (float*)outputBuffer;
 
-    // copy the input buffer directly to the output buffer
-    memcpy(out, in, sizeof(float) * framesPerBuffer * 2);
+    callbackData* p_data = (callbackData*) data;
+    if (p_data->useReverb) p_data->reverb->processreplace(&in[0], &in[1], &out[0], &out[1], 1, 0);
+    else
+    {
+        // copy the input buffer directly to the output buffer
+        memcpy(out, in, sizeof(float) * framesPerBuffer * 2);
+    }
 
     return paContinue;
 }

@@ -7,9 +7,18 @@
 
 // struct containing all settings related to a keybind
 typedef struct{
+    int type;
     bool recordInput;
     bool recordLoopback;
     bool padAudio;
+
+    int fxType;
+
+    float roomsize;
+    float damp;
+    float width;
+    float wet;
+    float dry;
 } keybind;
 
 class AudioManager
@@ -45,7 +54,8 @@ public:
     bool recording = false;
 
 private:
-    int sampleRate, framesPerBuffer, rebindAt;
+    int sampleRate, framesPerBuffer;
+    int rebindAt = -1;
 
     std::string appdata;
     std::string dirName = "/Virtual Soundboard and Sampler/";

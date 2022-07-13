@@ -140,7 +140,19 @@ AudioManager::AudioManager()
             std::filesystem::create_directory(appdata + dirName + "samples/");
 
             this->sampleRate = 48000;
-            this->framesPerBuffer = 2;
+            this->framesPerBuffer = 128;
+
+            // start the portaudio objects
+            inputDeviceRecorder = new Recorder(GetDeviceByIndex(inputDevice), this->sampleRate, this->framesPerBuffer, std::string(appdata_c) + dirName);
+            loopbackRecorder = new Recorder(GetDeviceByIndex(loopbackDevice), this->sampleRate, this->framesPerBuffer, std::string(appdata_c) + dirName, "l");
+            player = new Player(GetDeviceByIndex(virtualInputDevice), this->sampleRate, this->framesPerBuffer, std::string(appdata_c) + dirName);
+            monitor = new Player(GetDeviceByIndex(outputDevice), this->sampleRate, this->framesPerBuffer, std::string(appdata_c) + dirName);
+            passthrough = new Passthrough(GetDeviceByIndex(inputDevice), GetDeviceByIndex(virtualInputDevice), this->sampleRate, this->framesPerBuffer);
+
+            for (int i = 96; i < 106; i++)
+            {
+                SetNewBind(i);
+            }
 
             SaveSettings();
             SaveBinds();
@@ -164,13 +176,14 @@ AudioManager::AudioManager()
                     else if (settingText.compare("loopbackDevice") == 0) { this->loopbackDevice = std::stoi(settingValue); }
                     else if (settingText.compare("virtualInputDevice") == 0) { this->virtualInputDevice = std::stoi(settingValue); }
                     else if (settingText.compare("sampleRate") == 0) { this->sampleRate = std::stoi(settingValue); }
-                    else if (settingText.compare("framesPerBuffer") == 0) { this->framesPerBuffer = std::stoi(settingValue); }
+                    else if (settingText.compare("framesPerBuffer") == 0) { this->framesPerBuffer = std::stoi(settingValue); fprintf(stdout, "%d\n", this->framesPerBuffer); fflush(stdout);}
                 }
                 settingsFile.close();
             }
 
             std::ifstream bindsFile (appdata + dirName + "binds.cfg");
             int currentBind;
+            int reverbBind = -1;
 
             if (bindsFile.is_open())
             {
@@ -180,22 +193,49 @@ AudioManager::AudioManager()
                     settingText = line.substr(0, equal);
                     settingValue = line.substr(equal + 1);
 
-                    if (settingText.compare("bind") == 0) { currentBind = std::stoi(settingValue); this->keybinds[currentBind] = {}; }
+                    if (settingText.compare("bind") == 0) {
+                        if (this->keybinds[currentBind].type == 1)
+                        {
+                            if (this->keybinds[currentBind].fxType == 0)
+                            {
+                                reverbBind = currentBind;
+                            }
+                        }
+                        currentBind = std::stoi(settingValue); this->keybinds[currentBind] = {};
+                    }
+                    else if (settingText.compare("type") == 0) { this->keybinds[currentBind].type = std::stoi(settingValue); }
                     else if (settingText.compare("recordInput") == 0) { this->keybinds[currentBind].recordInput = settingValue.compare("true") == 0 ? true : false; }
                     else if (settingText.compare("recordLoopback") == 0) { this->keybinds[currentBind].recordLoopback = settingValue.compare("true") == 0 ? true : false; }
                     else if (settingText.compare("padAudio") == 0) { this->keybinds[currentBind].padAudio = settingValue.compare("true") == 0 ? true : false; }
+                    else if (settingText.compare("fxType") == 0) { this->keybinds[currentBind].fxType = std::stoi(settingValue); }
+                    else if (settingText.compare("roomsize") == 0) { this->keybinds[currentBind].roomsize = std::stof(settingValue); }
+                    else if (settingText.compare("damp") == 0) { this->keybinds[currentBind].damp = std::stof(settingValue); }
+                    else if (settingText.compare("width") == 0) { this->keybinds[currentBind].width = std::stof(settingValue); }
+                    else if (settingText.compare("wet") == 0) { this->keybinds[currentBind].wet = std::stof(settingValue); }
+                    else if (settingText.compare("dry") == 0) { this->keybinds[currentBind].dry = std::stof(settingValue); }
                 }
                 bindsFile.close();
+            }
+
+            // start the portaudio objects
+            inputDeviceRecorder = new Recorder(GetDeviceByIndex(inputDevice), this->sampleRate, this->framesPerBuffer, std::string(appdata_c) + dirName);
+            loopbackRecorder = new Recorder(GetDeviceByIndex(loopbackDevice), this->sampleRate, this->framesPerBuffer, std::string(appdata_c) + dirName, "l");
+            player = new Player(GetDeviceByIndex(virtualInputDevice), this->sampleRate, this->framesPerBuffer, std::string(appdata_c) + dirName);
+            monitor = new Player(GetDeviceByIndex(outputDevice), this->sampleRate, this->framesPerBuffer, std::string(appdata_c) + dirName);
+            passthrough = new Passthrough(GetDeviceByIndex(inputDevice), GetDeviceByIndex(virtualInputDevice), this->sampleRate, this->framesPerBuffer);
+
+            if (reverbBind != -1)
+            {
+                passthrough->data.reverb->setroomsize(this->keybinds[reverbBind].roomsize);
+                passthrough->data.reverb->setdamp(this->keybinds[reverbBind].damp);
+                passthrough->data.reverb->setwidth(this->keybinds[reverbBind].width);
+                passthrough->data.reverb->setwet(this->keybinds[reverbBind].wet);
+                passthrough->data.reverb->setdry(this->keybinds[reverbBind].dry);
             }
         }
     }
 
-    // start the portaudio objects
-    inputDeviceRecorder = new Recorder(GetDeviceByIndex(inputDevice), this->sampleRate, this->framesPerBuffer, std::string(appdata_c) + dirName);
-    loopbackRecorder = new Recorder(GetDeviceByIndex(loopbackDevice), this->sampleRate, this->framesPerBuffer, std::string(appdata_c) + dirName, "l");
-    player = new Player(GetDeviceByIndex(virtualInputDevice), this->sampleRate, this->framesPerBuffer, std::string(appdata_c) + dirName);
-    monitor = new Player(GetDeviceByIndex(outputDevice), this->sampleRate, this->framesPerBuffer, std::string(appdata_c) + dirName);
-    passthrough = new Passthrough(GetDeviceByIndex(inputDevice), GetDeviceByIndex(virtualInputDevice), this->sampleRate, this->framesPerBuffer);
+
 }
 
 AudioManager::~AudioManager()
@@ -262,14 +302,6 @@ void AudioManager::SaveSettings()
     settingsFile << "sampleRate=" + std::to_string(this->sampleRate) + "\n";
     settingsFile << "framesPerBuffer=" + std::to_string(this->framesPerBuffer) + "\n";
     settingsFile.close();
-
-    for (int i = 0x60; i < 0x6A; i++)
-    {
-        this->keybinds[i] = {};
-        this->keybinds[i].recordInput = true;
-        this->keybinds[i].recordLoopback = true;
-        this->keybinds[i].padAudio = true;
-    }
 }
 
 void AudioManager::SaveBinds()
@@ -279,9 +311,22 @@ void AudioManager::SaveBinds()
     for (auto const& [bind, options] : this->keybinds)
     {
         bindsFile << "bind=" + std::to_string(bind) + "\n";
+        bindsFile << "type=" + std::to_string(options.type) + "\n";
         bindsFile << "recordInput=" + std::string(options.recordInput ? "true" : "false") + "\n";
         bindsFile << "recordLoopback=" + std::string(options.recordLoopback ? "true" : "false") + "\n";
         bindsFile << "padAudio=" + std::string(options.padAudio ? "true" : "false") + "\n";
+        bindsFile << "fxType=" + std::to_string(options.fxType) + "\n";
+        bindsFile << "roomsize=" + std::to_string(options.roomsize) + "\n";
+        bindsFile << "damp=" + std::to_string(options.damp) + "\n";
+        bindsFile << "width=" + std::to_string(options.width) + "\n";
+        bindsFile << "wet=" + std::to_string(options.wet) + "\n";
+        bindsFile << "dry=" + std::to_string(options.dry) + "\n";
+
+        fprintf(stdout, "%f\n", options.roomsize); fflush(stdout);
+        fprintf(stdout, "%f\n", options.damp); fflush(stdout);
+        fprintf(stdout, "%f\n", options.width); fflush(stdout);
+        fprintf(stdout, "%f\n", options.wet); fflush(stdout);
+        fprintf(stdout, "%f\n", options.dry); fflush(stdout);
     }
     bindsFile.close();
 }
@@ -308,7 +353,20 @@ void AudioManager::SetNewBind(int keycode)
     }
     else
     {
-        keybinds[keycode] = {true, true, true};
+        keybinds[keycode] = {
+            0,
+            true,
+            true,
+            true,
+            0,
+            passthrough->data.reverb->getroomsize(),
+            passthrough->data.reverb->getdamp(),
+            passthrough->data.reverb->getwidth(),
+            passthrough->data.reverb->getwet(),
+            passthrough->data.reverb->getdry()
+        };
+
+
     }
     SaveBinds();
 }

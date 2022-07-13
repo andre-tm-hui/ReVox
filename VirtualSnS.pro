@@ -9,7 +9,11 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    source/audio/dsp/comb.cpp \
     source/audio/audiomanager.cpp \
+    source/audio/dsp/allpass.cpp \
+    source/audio/dsp/fifobuffer.cpp \
+    source/audio/dsp/revmodel.cpp \
     source/audio/streams/audiostream.cpp \
     source/audio/callbacks.cpp \
     source/qt/keybindsettings.cpp \
@@ -21,15 +25,21 @@ SOURCES += \
     source/audio/streams/recorder.cpp
 
 HEADERS += \
+    headers/allpass.h \
     headers/audiomanager.h \
     headers/audiostream.h \
     headers/callbacks.h \
+    headers/comb.h \
+    headers/denormals.h \
+    headers/fifobuffer.h \
     headers/keybindsettings.h \
     headers/keyboardlistener.h \
     headers/mainwindow.h \
     headers/passthrough.h \
     headers/player.h \
-    headers/recorder.h
+    headers/recorder.h \
+    headers/revmodel.h \
+    headers/revtuning.h
 
 INCLUDEPATH += headers
 

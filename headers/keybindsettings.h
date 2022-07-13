@@ -2,6 +2,7 @@
 #define KEYBINDSETTINGS_H
 
 #include <QDialog>
+#include <QDoubleValidator>
 #include "audiomanager.h"
 
 namespace Ui {
@@ -18,6 +19,10 @@ public:
 
 private slots:
     void on_buttonBox_accepted();
+
+    void on_recordLoopback_stateChanged(int arg1);
+
+    void on_hotkeyType_currentIndexChanged(int index);
 
 private:
     Ui::KeybindSettings *ui;
