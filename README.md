@@ -16,6 +16,8 @@ The project is made in Qt, using qmake.
     - Record only input device
     - Record only loopback device
     - Record both simultaneously
+    - Use hotkey to toggle an effect on the input device:
+      - Only reverb is available at the moment
   - Compatible with 1+ channel input devices
     - Samples are recorded as dual-channel audio
 
