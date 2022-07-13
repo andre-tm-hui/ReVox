@@ -52,7 +52,7 @@ private:
     Ui::MainWindow *ui;
 
     std::map<QString, int> keycodeMap = {};
-    QComboBox *inputDevices, *outputDevices, *loopbackDevices, *virtualInputDevices;
+    QComboBox *inputDevices, *outputDevices, *loopbackDevices, *virtualInputDevices, *virtualOutputDevices;
     QTableWidget *keybinds;
     bool setup = false;
 

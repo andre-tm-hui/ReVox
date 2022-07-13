@@ -33,7 +33,7 @@ public:
     std::map<std::string, device> outputDevices;
     std::map<std::string, device> loopbackDevices;
 
-    int inputDevice, outputDevice, loopbackDevice, virtualInputDevice;
+    int inputDevice, outputDevice, loopbackDevice, virtualInputDevice, virtualOutputDevice;
 
     void ResetInputRecorder();
     void ResetLoopbackRecorder();

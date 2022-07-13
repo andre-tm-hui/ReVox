@@ -31,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent)
     outputDevices = ui->outputDevices;
     loopbackDevices = ui->loopbackDevices;
     virtualInputDevices = ui->virtualInputDevices;
+    virtualOutputDevices = ui->virtualOutputDevices;
 
     keybinds = ui->tableWidget;
 
@@ -39,13 +40,26 @@ MainWindow::MainWindow(QWidget *parent)
     {
         if (dName.find("VB-Audio") != std::string::npos)
         {
-            virtualInputDevices->addItem(QString::fromStdString(dName));
-            if (dName.find(Pa_GetDeviceInfo(audioManager->virtualInputDevice)->name) != std::string::npos)
+            if (dName.find("Input") != std::string::npos)
             {
-                virtualInputDevices->setCurrentIndex(currentDevice);
-            }
+                virtualInputDevices->addItem(QString::fromStdString(dName));
+                if (dName.find(Pa_GetDeviceInfo(audioManager->virtualInputDevice)->name) != std::string::npos)
+                {
+                    virtualInputDevices->setCurrentIndex(currentDevice);
+                }
 
-            currentDevice++;
+                currentDevice++;
+            }
+            else if (dName.find("Output") != std::string::npos)
+            {
+                virtualOutputDevices->addItem(QString::fromStdString(dName));
+                if (dName.find(Pa_GetDeviceInfo(audioManager->virtualOutputDevice)->name) != std::string::npos)
+                {
+                    virtualOutputDevices->setCurrentIndex(currentDevice);
+                }
+
+                currentDevice++;
+            }
         }
     }
 
@@ -123,7 +137,7 @@ void MainWindow::on_inputDevices_currentIndexChanged(int index)
     if (setup)
     {
         audioManager->inputDevice = audioManager->deviceList[inputDevices->currentText().toStdString()];
-        audioManager->ResetInputRecorder();
+        //audioManager->ResetInputRecorder();
         audioManager->ResetPassthrough();
     }
 }
@@ -156,6 +170,15 @@ void MainWindow::on_virtualInputDevices_currentIndexChanged(int index)
         audioManager->virtualInputDevice = audioManager->deviceList[virtualInputDevices->currentText().toStdString()];
         audioManager->ResetPlayer();
         audioManager->ResetPassthrough();
+    }
+}
+
+void MainWindow::on_virtualOutputDevices_currentIndexChanged(int index)
+{
+    if (setup)
+    {
+        audioManager->virtualOutputDevice = audioManager->deviceList[virtualOutputDevices->currentText().toStdString()];
+        audioManager->ResetInputRecorder();
     }
 }
 
@@ -276,3 +299,6 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
         ;
     }
 }
+
+
+

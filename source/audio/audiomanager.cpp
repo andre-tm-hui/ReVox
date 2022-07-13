@@ -61,6 +61,10 @@ AudioManager::AudioManager()
             {
                 virtualInputDevice = deviceList[deviceName];
             }
+            else if (deviceName.find("CABLE Output") != std::string::npos)
+            {
+                virtualOutputDevice = deviceList[deviceName];
+            }
         }
     }
 
@@ -175,6 +179,7 @@ AudioManager::AudioManager()
                     else if (settingText.compare("outputDevice") == 0) { this->outputDevice = std::stoi(settingValue); }
                     else if (settingText.compare("loopbackDevice") == 0) { this->loopbackDevice = std::stoi(settingValue); }
                     else if (settingText.compare("virtualInputDevice") == 0) { this->virtualInputDevice = std::stoi(settingValue); }
+                    else if (settingText.compare("virtualOutputDevice") == 0) { this->virtualOutputDevice = std::stoi(settingValue); }
                     else if (settingText.compare("sampleRate") == 0) { this->sampleRate = std::stoi(settingValue); }
                     else if (settingText.compare("framesPerBuffer") == 0) { this->framesPerBuffer = std::stoi(settingValue); fprintf(stdout, "%d\n", this->framesPerBuffer); fflush(stdout);}
                 }
@@ -218,7 +223,7 @@ AudioManager::AudioManager()
             }
 
             // start the portaudio objects
-            inputDeviceRecorder = new Recorder(GetDeviceByIndex(inputDevice), this->sampleRate, this->framesPerBuffer, std::string(appdata_c) + dirName);
+            inputDeviceRecorder = new Recorder(GetDeviceByIndex(virtualInputDevice), this->sampleRate, this->framesPerBuffer, std::string(appdata_c) + dirName);
             loopbackRecorder = new Recorder(GetDeviceByIndex(loopbackDevice), this->sampleRate, this->framesPerBuffer, std::string(appdata_c) + dirName, "l");
             player = new Player(GetDeviceByIndex(virtualInputDevice), this->sampleRate, this->framesPerBuffer, std::string(appdata_c) + dirName);
             monitor = new Player(GetDeviceByIndex(outputDevice), this->sampleRate, this->framesPerBuffer, std::string(appdata_c) + dirName);
@@ -299,6 +304,7 @@ void AudioManager::SaveSettings()
     settingsFile << "outputDevice=" + std::to_string(outputDevice) + "\n";
     settingsFile << "loopbackDevice=" + std::to_string(loopbackDevice) + "\n";
     settingsFile << "virtualInputDevice=" + std::to_string(virtualInputDevice) + "\n";
+    settingsFile << "virtualOutputDevice=" + std::to_string(virtualOutputDevice) + "\n";
     settingsFile << "sampleRate=" + std::to_string(this->sampleRate) + "\n";
     settingsFile << "framesPerBuffer=" + std::to_string(this->framesPerBuffer) + "\n";
     settingsFile.close();
