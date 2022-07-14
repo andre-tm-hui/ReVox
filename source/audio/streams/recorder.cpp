@@ -92,7 +92,7 @@ void Recorder::Merge(int keycode)
             for (int i = 0; i < (countA > countB ? countA : countB); i++) {
                 short a = i < countA ? bufferA[i] : 0;
                 short b = i < countB ? bufferB[i] : 0;
-                bufferOut[i] = 1 * (a + b);
+                bufferOut[i] = 0.5 * (a + b);
             }
             fileOut.write(bufferOut, 1024);
 
@@ -168,7 +168,7 @@ void Recorder::Stop(int keycode)
                     }
                 }
             }
-            // some input devices, namely audio interfaces, record each connected device to separate channels, so we combine the channels and output to a dual-channel audio file
+            // some input devices, namely audio interfaces, record each connected device (e.g. mic and instrument) to separate channels, so we combine the channels and output to a dual-channel audio file
             else if (inputParameters.channelCount >= 2)
             {
                 SndfileHandle fileIn, fileOut;
@@ -196,8 +196,8 @@ void Recorder::Stop(int keycode)
                             toMono += bufferIn[(inputParameters.channelCount * i) + j];
                         }
                         // write to a 2 channel buffer
-                        bufferOut[2 * i] = toMono;
-                        bufferOut[(2 * i) + 1] = toMono;
+                        bufferOut[2 * i] = toMono / inputParameters.channelCount;
+                        bufferOut[(2 * i) + 1] = toMono / inputParameters.channelCount;
                     }
                     fileOut.write(bufferOut, 1024);
 

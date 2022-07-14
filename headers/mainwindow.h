@@ -48,10 +48,12 @@ private slots:
 
     void iconActivated(QSystemTrayIcon::ActivationReason reason);
 
+    void on_virtualOutputDevices_currentIndexChanged(int index);
+
 private:
     Ui::MainWindow *ui;
 
-    std::map<QString, int> keycodeMap = {};
+    static std::map<QString, int> keycodeMap;
     QComboBox *inputDevices, *outputDevices, *loopbackDevices, *virtualInputDevices, *virtualOutputDevices;
     QTableWidget *keybinds;
     bool setup = false;

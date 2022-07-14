@@ -138,7 +138,7 @@ AudioManager::AudioManager()
     {
         appdata = appdata_c;
         // if a folder for the app does not exist, create the folder and it's subdirectories, and initialize some default configuration files
-        if (!std::filesystem::exists(appdata + dirName))
+        if (!std::filesystem::exists(appdata + dirName) || true)
         {
             std::filesystem::create_directory(appdata + dirName);
             std::filesystem::create_directory(appdata + dirName + "samples/");
@@ -147,7 +147,7 @@ AudioManager::AudioManager()
             this->framesPerBuffer = 128;
 
             // start the portaudio objects
-            inputDeviceRecorder = new Recorder(GetDeviceByIndex(inputDevice), this->sampleRate, this->framesPerBuffer, std::string(appdata_c) + dirName);
+            inputDeviceRecorder = new Recorder(GetDeviceByIndex(virtualOutputDevice), this->sampleRate, this->framesPerBuffer, std::string(appdata_c) + dirName);
             loopbackRecorder = new Recorder(GetDeviceByIndex(loopbackDevice), this->sampleRate, this->framesPerBuffer, std::string(appdata_c) + dirName, "l");
             player = new Player(GetDeviceByIndex(virtualInputDevice), this->sampleRate, this->framesPerBuffer, std::string(appdata_c) + dirName);
             monitor = new Player(GetDeviceByIndex(outputDevice), this->sampleRate, this->framesPerBuffer, std::string(appdata_c) + dirName);
@@ -223,7 +223,7 @@ AudioManager::AudioManager()
             }
 
             // start the portaudio objects
-            inputDeviceRecorder = new Recorder(GetDeviceByIndex(virtualInputDevice), this->sampleRate, this->framesPerBuffer, std::string(appdata_c) + dirName);
+            inputDeviceRecorder = new Recorder(GetDeviceByIndex(virtualOutputDevice), this->sampleRate, this->framesPerBuffer, std::string(appdata_c) + dirName);
             loopbackRecorder = new Recorder(GetDeviceByIndex(loopbackDevice), this->sampleRate, this->framesPerBuffer, std::string(appdata_c) + dirName, "l");
             player = new Player(GetDeviceByIndex(virtualInputDevice), this->sampleRate, this->framesPerBuffer, std::string(appdata_c) + dirName);
             monitor = new Player(GetDeviceByIndex(outputDevice), this->sampleRate, this->framesPerBuffer, std::string(appdata_c) + dirName);
@@ -253,7 +253,7 @@ AudioManager::~AudioManager()
 void AudioManager::ResetInputRecorder()
 {
     delete inputDeviceRecorder;
-    inputDeviceRecorder = new Recorder(GetDeviceByIndex(inputDevice), sampleRate, framesPerBuffer, appdata + dirName);
+    inputDeviceRecorder = new Recorder(GetDeviceByIndex(virtualOutputDevice), sampleRate, framesPerBuffer, appdata + dirName);
     SaveSettings();
 }
 
@@ -327,12 +327,6 @@ void AudioManager::SaveBinds()
         bindsFile << "width=" + std::to_string(options.width) + "\n";
         bindsFile << "wet=" + std::to_string(options.wet) + "\n";
         bindsFile << "dry=" + std::to_string(options.dry) + "\n";
-
-        fprintf(stdout, "%f\n", options.roomsize); fflush(stdout);
-        fprintf(stdout, "%f\n", options.damp); fflush(stdout);
-        fprintf(stdout, "%f\n", options.width); fflush(stdout);
-        fprintf(stdout, "%f\n", options.wet); fflush(stdout);
-        fprintf(stdout, "%f\n", options.dry); fflush(stdout);
     }
     bindsFile.close();
 }
@@ -345,6 +339,7 @@ void AudioManager::Rebind(int keycode)
 
 void AudioManager::SetNewBind(int keycode)
 {
+    fprintf(stdout, "%d %d\n", rebindAt, keycode); fflush(stdout);
     if (rebindAt != -1)
     {
         keybinds[keycode] = keybinds[rebindAt];

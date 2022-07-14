@@ -8,12 +8,18 @@ KeybindSettings::KeybindSettings(keybind *settings, AudioManager *audioManager, 
     ui(new Ui::KeybindSettings)
 {
     ui->setupUi(this);
+    this->samplerGroup = new QWidget(this);
+    this->samplerGroup->move(0, 45);
+    this->samplerGroup->setFixedSize(260, 125);
+    ui->recordInput->setParent(this->samplerGroup);
+    ui->recordLoopback->setParent(this->samplerGroup);
+    ui->padAudio->setParent(this->samplerGroup);
+    this->samplerGroup->hide();
+
     this->settings = settings;
     this->audioManager = audioManager;
     ui->recordInput->setCheckState(settings->recordInput ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
-    ui->recordInput->hide();
     ui->recordLoopback->setCheckState(settings->recordLoopback ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
-    ui->recordLoopback->hide();
     ui->padAudio->setCheckState(settings->padAudio ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
     if (ui->padAudio->checkState() == Qt::CheckState::Checked)
     {
@@ -23,55 +29,56 @@ KeybindSettings::KeybindSettings(keybind *settings, AudioManager *audioManager, 
     {
         ui->padAudio->setEnabled(false);
     }
-    ui->padAudio->hide();
+
+    this->fxGroup = new QWidget(this);
+    this->fxGroup->move(0, 45);
+    this->fxGroup->setFixedSize(260, 125);
+    ui->fxType->setParent(this->fxGroup);
+    ui->fxTypeLabel->setParent(this->fxGroup);
+    this->fxGroup->hide();
 
     ui->fxType->setCurrentIndex(this->settings->fxType);
-    ui->fxType->hide();
-    ui->fxTypeLabel->hide();
-    ui->roomsize->setValidator(new QDoubleValidator(0.0f, 1.0f, 2));
+
+    this->reverbGroup = new QWidget(this->fxGroup);
+    this->reverbGroup->move(0, 35);
+    this->reverbGroup->setFixedSize(260, 90);
+    fprintf(stdout, "%d, %d\n", this->reverbGroup->pos().x(), this->reverbGroup->pos().y()); fflush(stdout);
+    ui->roomsize->setParent(this->reverbGroup);
+    ui->roomsizeLabel->setParent(this->reverbGroup);
+    ui->damp->setParent(this->reverbGroup);
+    ui->dampLabel->setParent(this->reverbGroup);
+    ui->width->setParent(this->reverbGroup);
+    ui->widthLabel->setParent(this->reverbGroup);
+    ui->wet->setParent(this->reverbGroup);
+    ui->wetLabel->setParent(this->reverbGroup);
+    ui->dry->setParent(this->reverbGroup);
+    ui->dryLabel->setParent(this->reverbGroup);
+    this->reverbGroup->hide();
+
+    ui->roomsize->setValidator(new QDoubleValidator(0.0f, 1.0f, 1));
     ui->roomsize->setText(QString::number(this->settings->roomsize));
-    ui->roomsize->hide();
-    ui->roomsizeLabel->hide();
     ui->damp->setValidator(new QIntValidator(0, 100));
     ui->damp->setText(QString::number(this->settings->damp * 100));
-    ui->damp->hide();
-    ui->dampLabel->hide();
     ui->width->setValidator(new QIntValidator(0, 100));
     ui->width->setText(QString::number(this->settings->width * 100));
-    ui->width->hide();
-    ui->widthLabel->hide();
-    ui->wet->setValidator(new QIntValidator(0, 200));
+    ui->wet->setValidator(new QIntValidator(0, 50));
     ui->wet->setText(QString::number(this->settings->wet * 100));
-    ui->wet->hide();
-    ui->wetLabel->hide();
-    ui->dry->setValidator(new QIntValidator(0, 200));
+    ui->dry->setValidator(new QIntValidator(0, 50));
     ui->dry->setText(QString::number(this->settings->dry * 100));
-    ui->dry->hide();
-    ui->dryLabel->hide();
 
     ui->hotkeyType->setCurrentIndex(this->settings->type);
     if (this->settings->type == 0)
     {
-        ui->recordInput->show();
-        ui->recordLoopback->show();
-        ui->padAudio->show();
+        this->samplerGroup->show();
+        this->fxGroup->hide();
     }
     else if (this->settings->type == 1)
     {
-        ui->fxType->show();
-        ui->fxTypeLabel->show();
+        this->samplerGroup->hide();
+        this->fxGroup->show();
         if (this->settings->fxType == 0)
         {
-            ui->roomsize->show();
-            ui->roomsizeLabel->show();
-            ui->damp->show();
-            ui->dampLabel->show();
-            ui->width->show();
-            ui->widthLabel->show();
-            ui->wet->show();
-            ui->wetLabel->show();
-            ui->dry->show();
-            ui->dryLabel->show();
+            this->reverbGroup->show();
         }
     }
 }
@@ -120,46 +127,16 @@ void KeybindSettings::on_hotkeyType_currentIndexChanged(int index)
 {
     if (index == 0)
     {
-        ui->recordInput->show();
-        ui->recordLoopback->show();
-        ui->padAudio->show();
-
-        ui->fxType->hide();
-        ui->fxTypeLabel->hide();
-        if (this->settings->fxType == 0)
-        {
-            ui->roomsize->hide();
-            ui->roomsizeLabel->hide();
-            ui->damp->hide();
-            ui->dampLabel->hide();
-            ui->width->hide();
-            ui->widthLabel->hide();
-            ui->wet->hide();
-            ui->wetLabel->hide();
-            ui->dry->hide();
-            ui->dryLabel->hide();
-        }
+        this->samplerGroup->show();
+        this->fxGroup->hide();
     }
-    else
+    else if (index == 1)
     {
-        ui->recordInput->hide();
-        ui->recordLoopback->hide();
-        ui->padAudio->hide();
-
-        ui->fxType->show();
-        ui->fxTypeLabel->show();
+        this->samplerGroup->hide();
+        this->fxGroup->show();
         if (this->settings->fxType == 0)
         {
-            ui->roomsize->show();
-            ui->roomsizeLabel->show();
-            ui->damp->show();
-            ui->dampLabel->show();
-            ui->width->show();
-            ui->widthLabel->show();
-            ui->wet->show();
-            ui->wetLabel->show();
-            ui->dry->show();
-            ui->dryLabel->show();
+            this->reverbGroup->show();
         }
     }
 }

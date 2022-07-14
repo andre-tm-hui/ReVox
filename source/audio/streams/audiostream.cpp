@@ -34,7 +34,7 @@ AudioStream::~AudioStream()
 void AudioStream::setupDevice(PaStreamParameters* parameters, device device, bool isInput)
 {
     parameters->device = device.id;
-    parameters->channelCount = device.nChannels;
+    parameters->channelCount = device.nChannels > 2 ? 2 : device.nChannels;
     parameters->sampleFormat = PA_SAMPLE_TYPE;
     parameters->suggestedLatency = isInput ? Pa_GetDeviceInfo(device.id)->defaultLowInputLatency : Pa_GetDeviceInfo(device.id)->defaultLowOutputLatency;
     parameters->hostApiSpecificStreamInfo = NULL;

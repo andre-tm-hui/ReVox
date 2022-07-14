@@ -28,6 +28,10 @@ private:
     Ui::KeybindSettings *ui;
     keybind *settings;
     AudioManager *audioManager;
+
+    QWidget *samplerGroup;
+    QWidget *fxGroup;
+    QWidget *reverbGroup;
 };
 
 #endif // KEYBINDSETTINGS_H

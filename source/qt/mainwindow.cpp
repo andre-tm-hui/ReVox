@@ -47,18 +47,15 @@ MainWindow::MainWindow(QWidget *parent)
                 {
                     virtualInputDevices->setCurrentIndex(currentDevice);
                 }
-
-                currentDevice++;
             }
             else if (dName.find("Output") != std::string::npos)
             {
                 virtualOutputDevices->addItem(QString::fromStdString(dName));
                 if (dName.find(Pa_GetDeviceInfo(audioManager->virtualOutputDevice)->name) != std::string::npos)
                 {
+                    fprintf(stdout, "%s %s\n", dName.c_str(), Pa_GetDeviceInfo(audioManager->virtualOutputDevice)->name); fflush(stdout);
                     virtualOutputDevices->setCurrentIndex(currentDevice);
                 }
-
-                currentDevice++;
             }
         }
     }
@@ -97,7 +94,7 @@ MainWindow::MainWindow(QWidget *parent)
         currentDevice++;
     }
 
-    keybinds->setColumnWidth(0, 246);
+    keybinds->setColumnWidth(0, 256);
     keybinds->setColumnWidth(1, 5);
 
     for (auto const& [keybind, settings] : audioManager->keybinds)
@@ -116,8 +113,7 @@ MainWindow::MainWindow(QWidget *parent)
 
         QTableWidgetItem* settingItem = new QTableWidgetItem();
         settingItem->setIcon(QIcon(":/icons/settings.png"));
-        settingItem->setFlags(item->flags() ^ Qt::ItemIsEditable);
-        settingItem->setTextAlignment(2);
+        settingItem->setFlags(settingItem->flags() ^ Qt::ItemIsEditable);
 
         keybinds->setItem(i, 0, item);
         keybinds->setItem(i, 1, settingItem);
@@ -186,6 +182,7 @@ KeyboardListener* MainWindow::keyboardListener = new KeyboardListener();
 
 AudioManager* KeyboardListener::audioManager = new AudioManager();
 AudioManager* MainWindow::audioManager = KeyboardListener::audioManager;
+std::map<QString, int> MainWindow::keycodeMap = {};
 
 
 
@@ -223,6 +220,8 @@ void MainWindow::WaitForKeyboardInput(QTableWidgetItem* item)
 
     item->setText(QString::fromWCharArray(keybindAsStr));
     audioManager->SetNewBind(keyboardListener->rebindTo);
+
+    keycodeMap[item->text()] = keyboardListener->rebindTo;
 }
 
 
