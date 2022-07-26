@@ -138,7 +138,7 @@ AudioManager::AudioManager()
     {
         appdata = appdata_c;
         // if a folder for the app does not exist, create the folder and it's subdirectories, and initialize some default configuration files
-        if (!std::filesystem::exists(appdata + dirName) || true)
+        if (!std::filesystem::exists(appdata + dirName))
         {
             std::filesystem::create_directory(appdata + dirName);
             std::filesystem::create_directory(appdata + dirName + "samples/");

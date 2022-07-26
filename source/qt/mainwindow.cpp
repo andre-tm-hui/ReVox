@@ -101,14 +101,10 @@ MainWindow::MainWindow(QWidget *parent)
     {
         int i = keybinds->rowCount();
         keybinds->insertRow(i);
-        WCHAR keybindAsStr[1024];
-        UINT scanCode = MapVirtualKeyW(keybind, MAPVK_VK_TO_VSC);
-        LONG lParamValue = (scanCode << 16);
-        GetKeyNameTextW(lParamValue, keybindAsStr, 1024);
-        printf("%ls\n", std::wstring(keybindAsStr).c_str());
+        QString qKeybind = GetKeyName(keybind);
 
         QTableWidgetItem* item = new QTableWidgetItem();
-        item->setText(QString::fromWCharArray(keybindAsStr));
+        item->setText(qKeybind);
         item->setFlags(item->flags() ^ Qt::ItemIsEditable);
 
         QTableWidgetItem* settingItem = new QTableWidgetItem();
@@ -117,7 +113,7 @@ MainWindow::MainWindow(QWidget *parent)
 
         keybinds->setItem(i, 0, item);
         keybinds->setItem(i, 1, settingItem);
-        keycodeMap[QString::fromWCharArray(keybindAsStr)] = keybind;
+        keycodeMap[qKeybind] = keybind;
     }
 
     setup = true;
@@ -213,12 +209,8 @@ void MainWindow::WaitForKeyboardInput(QTableWidgetItem* item)
     std::unique_lock<std::mutex> lck(*keyboardListener->mtx);
     keyboardListener->cv->wait(lck, keyboardListener->ready);
 
-    WCHAR keybindAsStr[1024];
-    UINT scanCode = MapVirtualKeyW(keyboardListener->rebindTo, MAPVK_VK_TO_VSC);
-    LONG lParamValue = (scanCode << 16);
-    GetKeyNameTextW(lParamValue, keybindAsStr, 1024);
-
-    item->setText(QString::fromWCharArray(keybindAsStr));
+    QString qKeybind = GetKeyName(keyboardListener->rebindTo);
+    item->setText(qKeybind);
     audioManager->SetNewBind(keyboardListener->rebindTo);
 
     keycodeMap[item->text()] = keyboardListener->rebindTo;
@@ -299,5 +291,23 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
     }
 }
 
+QString MainWindow::GetKeyName(int keybind)
+{
+    QString qKeybind;
+    if (vkCodenames.find(keybind) != vkCodenames.end())
+    {
+        qKeybind = QString::fromStdString(vkCodenames[keybind]);
+    }
+    else
+    {
+        WCHAR keybindAsStr[1024];
+        UINT scanCode = MapVirtualKeyW(keybind, MAPVK_VK_TO_VSC);
+        LONG lParamValue = (scanCode << 16);
+        GetKeyNameTextW(lParamValue, keybindAsStr, 1024);
+        qKeybind = QString::fromWCharArray(keybindAsStr);
+    }
+
+    return qKeybind;
+}
 
 

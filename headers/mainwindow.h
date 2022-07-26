@@ -9,6 +9,7 @@
 #include "keyboardlistener.h"
 #include "windows.h"
 #include "keybindsettings.h"
+#include "vkcodenames.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -67,5 +68,7 @@ private:
 
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
+
+    static QString GetKeyName(int keybind);
 };
 #endif // MAINWINDOW_H

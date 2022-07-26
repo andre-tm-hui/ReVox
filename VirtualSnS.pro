@@ -12,7 +12,7 @@ SOURCES += \
     source/audio/dsp/comb.cpp \
     source/audio/audiomanager.cpp \
     source/audio/dsp/allpass.cpp \
-    source/audio/dsp/fifobuffer.cpp \
+    source/audio/dsp/phasevocoder.cpp \
     source/audio/dsp/revmodel.cpp \
     source/audio/streams/audiostream.cpp \
     source/audio/callbacks.cpp \
@@ -31,15 +31,18 @@ HEADERS += \
     headers/callbacks.h \
     headers/comb.h \
     headers/denormals.h \
-    headers/fifobuffer.h \
     headers/keybindsettings.h \
     headers/keyboardlistener.h \
     headers/mainwindow.h \
     headers/passthrough.h \
+    headers/phasevocoder.h \
     headers/player.h \
+    headers/pvdat.h \
     headers/recorder.h \
     headers/revmodel.h \
-    headers/revtuning.h
+    headers/revtuning.h \
+    headers/vkcodenames.h \
+    headers/windowfunctions.h
 
 INCLUDEPATH += headers
 
@@ -75,3 +78,8 @@ RESOURCES += \
 
 include(singleapplication/singleapplication.pri)
 DEFINES += QAPPLICATION_CLASS=QApplication
+
+win32: LIBS += -L$$PWD/'../../C++ Libraries/fftw/' -llibfftw3f-3
+
+INCLUDEPATH += $$PWD/'../../C++ Libraries/fftw'
+DEPENDPATH += $$PWD/'../../C++ Libraries/fftw'

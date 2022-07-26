@@ -11,7 +11,7 @@ Passthrough::Passthrough(device inputDevice, device outputDevice, int sampleRate
                 &inputParameters,
                 &outputParameters,
                 this->sampleRate,
-                1,              // this has to be as low as possible, and non-zero, because copying a large buffer introduces audio distortion
+                this->framesPerBuffer,              // this has to be as low as possible, and non-zero, because copying a large buffer introduces audio distortion
                 paClipOff,
                 passthroughCallback,
                 &this->data
@@ -31,5 +31,9 @@ Passthrough::Passthrough(device inputDevice, device outputDevice, int sampleRate
     data.reverb = new revmodel();
     fprintf(stdout, "reverberator made\n"); fflush(stdout);
     data.useReverb = false;
+
+    data.pv = new PhaseVocoder();
+    data.useAutotune = true;
+    //delete pv;
     //data.reverb->SetDelay(300);
 }

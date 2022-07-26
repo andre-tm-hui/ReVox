@@ -10,6 +10,7 @@
 #include "portaudio.h"
 #include "sndfile.h"
 #include "revmodel.h"
+#include "phasevocoder.h"
 
 typedef struct{
     SNDFILE* file;
@@ -20,6 +21,8 @@ typedef struct{
     float maxFileLength;
     bool useReverb;
     revmodel* reverb;
+    bool useAutotune;
+    PhaseVocoder* pv;
 } callbackData;
 
 

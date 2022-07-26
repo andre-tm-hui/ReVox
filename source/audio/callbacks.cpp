@@ -94,14 +94,56 @@ int passthroughCallback(const void* inputBuffer, void* outputBuffer,
     // declare and assign some variables
     float* in = (float*)inputBuffer;
     float* out = (float*)outputBuffer;
-
     callbackData* p_data = (callbackData*) data;
-    if (p_data->useReverb) p_data->reverb->processreplace(&in[0], &in[1], &out[0], &out[1], 1, 0);
-    else
+
+    float* lIn = new float[framesPerBuffer];
+    float* rIn = new float[framesPerBuffer];
+    float* lOut = new float[framesPerBuffer];
+    float* rOut = new float[framesPerBuffer];
+    float* mono = new float[framesPerBuffer];
+    float* stereo = new float[framesPerBuffer * 2];
+    for (int i = 0; i < framesPerBuffer; i++)
     {
-        // copy the input buffer directly to the output buffer
-        memcpy(out, in, sizeof(float) * framesPerBuffer * 2);
+        lIn[i] = in[2 * i];
+        rIn[i] = in[(2 * i) + 1];
+        mono[i] = (lIn[i] + lIn[i]) / 2;
+        if (p_data->useAutotune)
+        {
+            //fprintf(stdout, "%f,", mono[i]); fflush(stdout);
+        }
     }
+
+    if (p_data->useAutotune)
+    {
+        fprintf(stdout, "\nautotuning\n"); fflush(stdout);
+        if (true){
+            for (int i = 0; i < framesPerBuffer; i++)
+            {
+                mono[i] = 0.5f * sin(4.f * 2.f * M_PI * i / framesPerBuffer);
+            }
+        }
+        p_data->pv->Apply(mono);
+        //p_data->useAutotune = false;
+    }
+
+    /*if (p_data->useReverb)
+    {
+        p_data->reverb->processreplace(lIn, rIn, lOut, rOut, framesPerBuffer, 1);
+    }*/
+
+    for (int i = 0; i < framesPerBuffer; i++)
+    {
+        out[2 * i] = mono[i];
+        out[(2 * i) + 1] = mono[i];
+        //fprintf(stdout, "%d\n", i); fflush(stdout);
+    }
+
+    delete[] lIn;
+    delete[] rIn;
+    delete[] lOut;
+    delete[] rOut;
+    delete[] mono;
+    delete[] stereo;
 
     return paContinue;
 }
