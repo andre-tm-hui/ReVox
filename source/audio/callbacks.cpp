@@ -96,54 +96,50 @@ int passthroughCallback(const void* inputBuffer, void* outputBuffer,
     float* out = (float*)outputBuffer;
     callbackData* p_data = (callbackData*) data;
 
-    float* lIn = new float[framesPerBuffer];
-    float* rIn = new float[framesPerBuffer];
-    float* lOut = new float[framesPerBuffer];
-    float* rOut = new float[framesPerBuffer];
     float* mono = new float[framesPerBuffer];
-    float* stereo = new float[framesPerBuffer * 2];
     for (int i = 0; i < framesPerBuffer; i++)
     {
-        lIn[i] = in[2 * i];
-        rIn[i] = in[(2 * i) + 1];
-        mono[i] = (lIn[i] + lIn[i]) / 2;
-        if (p_data->useAutotune)
-        {
-            //fprintf(stdout, "%f,", mono[i]); fflush(stdout);
-        }
+        mono[i] = (in[2*i] + in[2*i+1]);
     }
 
     if (p_data->useAutotune)
     {
-        fprintf(stdout, "\nautotuning\n"); fflush(stdout);
-        if (true){
-            for (int i = 0; i < framesPerBuffer; i++)
-            {
-                mono[i] = 0.5f * sin(4.f * 2.f * M_PI * i / framesPerBuffer);
-            }
-        }
-        p_data->pv->Apply(mono);
+        p_data->ps->repitch(mono, 1.f, true);
         //p_data->useAutotune = false;
     }
 
-    /*if (p_data->useReverb)
+    if (p_data->useReverb)
     {
-        p_data->reverb->processreplace(lIn, rIn, lOut, rOut, framesPerBuffer, 1);
-    }*/
-
-    for (int i = 0; i < framesPerBuffer; i++)
-    {
-        out[2 * i] = mono[i];
-        out[(2 * i) + 1] = mono[i];
-        //fprintf(stdout, "%d\n", i); fflush(stdout);
+        float *inL = new float[framesPerBuffer],
+              *inR = new float[framesPerBuffer],
+              *outL = new float[framesPerBuffer],
+              *outR = new float[framesPerBuffer];
+        memcpy(inL, mono, sizeof(float) * framesPerBuffer);
+        memcpy(inR, mono, sizeof(float) * framesPerBuffer);
+        p_data->reverb->processreplace(inL, inR, outL, outR, framesPerBuffer, 1);
+        memcpy(mono, outL, sizeof(float) * framesPerBuffer);
+        delete[] inL;
+        delete[] inR;
+        delete[] outL;
+        delete[] outR;
     }
 
-    delete[] lIn;
-    delete[] rIn;
-    delete[] lOut;
-    delete[] rOut;
+    for (int i = 0; i < (int)framesPerBuffer; i++)
+    {
+        /*if (isnan(mono[i]))
+        {
+            fprintf(stdout, "nan found\n"); fflush(stdout);
+        }
+        if (!(mono[i] > -1.f && mono[i] < 1.f))
+        {
+            fprintf(stdout, "out of range found\n"); fflush(stdout);
+        }
+        fprintf(stdout, "%d,", i); fflush(stdout);*/
+        out[2*i] = mono[i];
+        out[2*i+1] = mono[i];
+    }
+    //fprintf(stdout, "\n"); fflush(stdout);
     delete[] mono;
-    delete[] stereo;
 
     return paContinue;
 }

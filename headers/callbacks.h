@@ -10,7 +10,8 @@
 #include "portaudio.h"
 #include "sndfile.h"
 #include "revmodel.h"
-#include "phasevocoder.h"
+#include "pitchshift.h"
+#include "frequency.h"
 
 typedef struct{
     SNDFILE* file;
@@ -19,10 +20,11 @@ typedef struct{
     bool pad;
     float timeStamp;
     float maxFileLength;
+    Frequency* freq;
     bool useReverb;
     revmodel* reverb;
     bool useAutotune;
-    PhaseVocoder* pv;
+    PitchShift* ps;
 } callbackData;
 
 
@@ -43,3 +45,5 @@ int passthroughCallback(const void* inputBuffer, void* outputBuffer,
                         const PaStreamCallbackTimeInfo* timeInfo,
                         PaStreamCallbackFlags statusFlags,
                         void* data);
+
+

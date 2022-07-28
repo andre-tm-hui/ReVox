@@ -11,12 +11,15 @@
 #include "comb.h"
 #include "allpass.h"
 #include "revtuning.h"
+#include <stdio.h>
+#include <math.h>
 
 class revmodel
 {
 public:
                     revmodel();
             void	mute();
+            void    processmono(float *input, float *output, long numsamples, int skip);
             void	processmix(float *inputL, float *inputR, float *outputL, float *outputR, long numsamples, int skip);
             void	processreplace(float *inputL, float *inputR, float *outputL, float *outputR, long numsamples, int skip);
             void	setroomsize(float value);
@@ -41,6 +44,8 @@ private:
     float	dry;
     float	width;
     float	mode;
+
+    bool err = false;
 
     // The following are all declared inline
     // to remove the need for dynamic allocation

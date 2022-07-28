@@ -1,0 +1,213 @@
+#include "pitchshift.h"
+
+PitchShift::PitchShift(int bufSize, int sampleRate)
+{
+    this->bufSize = bufSize;
+    freq = new Frequency(bufSize);
+    inputs = new float[bufSize * 3];
+    outputs = new float[bufSize * 3];
+    memset(inputs, 0, sizeof(float) * bufSize * 3);
+    memset(outputs, 0, sizeof(float) * bufSize * 3);
+
+    lastMarker = (float)bufSize+1.f;
+}
+
+void PitchShift::repitch(float *buf, float scale, bool tune)
+{
+    // Add the buffer to the process loop
+    //fprintf(stdout, "start\n"); fflush(stdout);
+    add(buf);
+    //fprintf(stdout, "updated buffers\n"); fflush(stdout);
+    // Get the period of the buffer to be processed
+    period = freq->GetPeriod(inputs + bufSize);
+
+    if (period > 800 || period < 24)
+    {
+        setupFlag = false;
+        lastMarker = (float)bufSize+1.f;
+        //fprintf(stdout, "period out of range\n"); fflush(stdout);
+        if (prevPeriod != 0.f)
+        {
+            period = prevPeriod;
+        }
+        else
+        {
+            prevPeriod = period;
+            prevFactor = scale;
+            //factor = scale;
+
+            memcpy(buf, outputs, sizeof(float) * bufSize);
+            return;
+        }
+    }
+
+    if (tune)
+    {
+        float ffreq = 48000.f / period;
+        float semitoneOffset = log(ffreq / 440.f) / log(TWELTH_ROOT_TWO);
+        float targetFreq = 440.f * pow(TWELTH_ROOT_TWO, roundf(semitoneOffset));
+        scale *= targetFreq / ffreq;
+    }
+    scale = 1.f / scale;
+
+    float max = -INFINITY;
+    for (int i = bufSize; i < bufSize + (int)period; i++)
+    {
+        if (inputs[i] > max)
+        {
+            max = inputs[i];
+            marker = (float)i;
+        }
+    }
+    marker -= bufSize;
+    //fprintf(stdout, "%f first marker found\n", marker); fflush(stdout);
+
+    // Get all the "markers", i.e. peaks of the input signal
+    std::vector<float> markers{};
+    markers.push_back(marker);
+    int pos = bufSize + marker + period;
+    //fprintf(stdout, "%f %f", marker, period);
+    while (pos < 2 * bufSize)
+    {
+        marker = pos - period/4 + argmax(inputs + pos - (int)period/4, (int)period/2);
+        markers.push_back(marker - bufSize);
+        pos = marker + period;
+        //fprintf(stdout, "%f,", marker - bufSize); fflush(stdout);
+    }
+    //fprintf(stdout, "\n%d markers found\n", markers.size()); fflush(stdout);
+
+    // Get windows
+    std::vector<std::vector<float>> windows = getWindows(inputs + bufSize, period, markers);
+    //fprintf(stdout, "windows generated\n"); fflush(stdout);
+
+    // Get synthesized markers
+    int idx = 0;
+    float marker_s = markers[0];
+
+    //fprintf(stdout, "%f\n", marker_s); fflush(stdout);
+    if (setupFlag && lastMarker < bufSize)
+    {
+        //fprintf(stdout, "test %f\n", marker_s); fflush(stdout);
+        marker_s = (1.f - ((bufSize - lastMarker) / (prevPeriod * prevFactor))) * period * scale;
+    }
+    //fprintf(stdout, "%f\n", factor); fflush(stdout);
+    std::vector<float> markers_s{};
+    while (marker_s < bufSize)
+    {
+        markers_s.push_back(marker_s);
+        //fprintf(stdout, "%f,", marker_s); fflush(stdout);
+        float offset = (markers[(int)fmod((idx + 1), markers.size())] - markers[idx]) * scale;
+        marker_s += offset > 0 ? offset : period * scale;
+        idx++;
+    }
+    //fprintf(stdout, "new markers synthesized\n"); fflush(stdout);
+
+    if (markers_s.empty())
+    {
+        prevPeriod = period;
+        prevFactor = scale;
+
+        memcpy(buf, outputs, sizeof(float) * bufSize);
+        return;
+    }
+
+    // Overlap add the windows to the output buffer at the synthesized markers
+    for (auto marker_s : markers_s)
+    {
+        //fprintf(stdout, "%f,", marker_s); fflush(stdout);
+        // Get closest marker
+        int closestIdx = -1;
+        float distance = INFINITY;
+        for (int i = 0; i < (int)markers.size(); i++)
+        {
+            if (abs(marker_s - markers[i]) < distance)
+            {
+                distance = abs(marker_s - markers[i]);
+                closestIdx = i;
+            }
+        }
+
+        addToBuffer(windows[closestIdx], marker_s);
+    }
+    //fprintf(stdout, "overlap added\n"); fflush(stdout);
+
+    prevPeriod = period;
+    prevFactor = scale;
+    lastMarker = markers_s[markers_s.size()-1];
+
+
+    memcpy(buf, outputs, sizeof(float) * bufSize);
+    //fprintf(stdout, "copied\n"); fflush(stdout);
+    setupFlag = true;
+}
+
+void PitchShift::addToBuffer(std::vector<float> window, float marker)
+{
+    window = Window::Hann(window);
+    float pos;
+
+    if (marker == ceil(marker))
+    {
+        for (int i = -window.size()/2, j = 0; i < (int)window.size()/2; i++, j++)
+        {
+            pos = bufSize + marker + i;
+            outputs[(int)pos] += window[j];
+        }
+    }
+    else
+    {
+        for (int i = -window.size()/2, j = 0; i < -1+(int)window.size()/2; i++, j++)
+        {
+            pos = bufSize + marker + i;
+            //fprintf(stdout, "%f,", pos); fflush(stdout);
+
+            outputs[(int)ceil(pos)] += lerp(window[j], window[j+1], fmod(ceil(pos), pos));
+        }
+    }
+}
+
+std::vector<std::vector<float>> PitchShift::getWindows(float *buf, float period, std::vector<float> markers)
+{
+    std::vector<std::vector<float>> output = {};
+    for (auto marker : markers)
+    {
+        std::vector<float> window = {};
+        for (int i = -period; i < period; i++)
+        {
+            window.push_back(lerp(buf[(int)floor(marker+i)], buf[(int)ceil(marker+i)], fmod(marker+i, floor(marker+i))));
+        }
+        output.push_back(window);
+    }
+    return output;
+}
+
+void PitchShift::add(float *buf)
+{
+    // Shift buffers by bufSize
+    memcpy(inputs, inputs + bufSize, sizeof(float) * bufSize * 2);
+    memcpy(outputs, outputs + bufSize, sizeof(float) * bufSize * 2);
+    // Add buffer to inputs
+    memcpy(inputs + bufSize * 2, buf, sizeof(float) * bufSize);
+    // Set end of output buffer to 0s
+    memset(outputs + bufSize * 2, 0, sizeof(float) * bufSize);
+}
+
+
+std::vector<float> resample(std::vector<float> input, float scale)
+{
+    std::vector<float> out = {};
+
+    int outputSize = ceil((float)input.size() * scale);
+
+    // basic linear resampling -> the human voice should not reach close to the nyquist frequency of common sample rates
+    // hence there's no reason to use more costly but accurate resampling methods
+
+    for (int i = 0; i < outputSize; i++)
+    {
+        float idx = (float)input.size() * (float)i / (float)(outputSize-1); // -1 to make sure the last of both arrays match
+
+        out.push_back(lerp(input[floor(idx)], input[ceil(idx)], idx - floor(idx)));
+    }
+
+    return out;
+}

@@ -8,6 +8,8 @@
 #define COMB_H
 
 #include "denormals.h"
+#include <math.h>
+#include <stdio.h>
 
 class comb
 {
@@ -42,9 +44,14 @@ inline float comb::process(float input)
 
     filterstore = (output*damp2) + (filterstore*damp1);
     undenormalise(filterstore);
+    if (isnan(filterstore)){
+        filterstore = 0.f;
+    }
 
     buffer[bufidx] = input + (filterstore*feedback);
-
+    if (isnan(buffer[bufidx])){
+        buffer[bufidx] = 0.f;
+    }
     if(++bufidx>=bufsize) bufidx = 0;
 
     return output;

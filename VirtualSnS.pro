@@ -2,7 +2,7 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++17
+CONFIG += c++20
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -12,8 +12,10 @@ SOURCES += \
     source/audio/dsp/comb.cpp \
     source/audio/audiomanager.cpp \
     source/audio/dsp/allpass.cpp \
-    source/audio/dsp/phasevocoder.cpp \
+    source/audio/dsp/frequency.cpp \
+    source/audio/dsp/pitchshift.cpp \
     source/audio/dsp/revmodel.cpp \
+    source/audio/dsp/stft.cpp \
     source/audio/streams/audiostream.cpp \
     source/audio/callbacks.cpp \
     source/qt/keybindsettings.cpp \
@@ -31,16 +33,18 @@ HEADERS += \
     headers/callbacks.h \
     headers/comb.h \
     headers/denormals.h \
+    headers/frequency.h \
     headers/keybindsettings.h \
     headers/keyboardlistener.h \
     headers/mainwindow.h \
     headers/passthrough.h \
-    headers/phasevocoder.h \
+    headers/pitchshift.h \
     headers/player.h \
     headers/pvdat.h \
     headers/recorder.h \
     headers/revmodel.h \
     headers/revtuning.h \
+    headers/stft.h \
     headers/vkcodenames.h \
     headers/windowfunctions.h
 

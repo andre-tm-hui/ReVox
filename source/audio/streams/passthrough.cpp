@@ -32,7 +32,8 @@ Passthrough::Passthrough(device inputDevice, device outputDevice, int sampleRate
     fprintf(stdout, "reverberator made\n"); fflush(stdout);
     data.useReverb = false;
 
-    data.pv = new PhaseVocoder();
+    data.freq = new Frequency(framesPerBuffer);
+    data.ps = new PitchShift(framesPerBuffer, sampleRate);
     data.useAutotune = true;
     //delete pv;
     //data.reverb->SetDelay(300);

@@ -71,6 +71,31 @@ void revmodel::mute()
     }
 }
 
+void revmodel::processmono(float *input, float *output, long numsamples, int skip)
+{
+    float out, in;
+
+    while (numsamples-- > 0)
+    {
+        out = 0;
+        in = (*input) * gain;
+
+        for (int i = 0; i < numcombs; i++)
+        {
+            out += combL[i].process(in);
+        }
+
+        for (int i = 0; i < numcombs; i++)
+        {
+            out = allpassL[i].process(out);
+        }
+
+        *output = out*(wet1+wet2) + *input*dry;
+        input += skip;
+        output += skip;
+    }
+}
+
 void revmodel::processreplace(float *inputL, float *inputR, float *outputL, float *outputR, long numsamples, int skip)
 {
     float outL,outR,input;
