@@ -1,7 +1,9 @@
 # Virtual Soundboard and Sampler
 A Virtual Soundboard built in C++ for Windows, capable of recording input and system audio, and outputting to a virtual cable (see https://vb-audio.com/Cable/).
 
-It uses a keyboard hook to register key events, and assigns audio events to a set of given keys. Audio events are handled using the portaudio (https://github.com/PortAudio/portaudio/) and libsndfile (https://github.com/libsndfile/libsndfile/) libraries.
+It uses a keyboard hook to register key events, and assigns audio events to a set of given keys. Audio events are handled using the portaudio (https://github.com/PortAudio/portaudio/) and libsndfile (https://github.com/libsndfile/libsndfile/) libraries. Some DSP, specifically Fast Fourier Transforms, are handled by the FFTW library (https://www.fftw.org/). Settings I/O is handled using nlohmann's json library (https://github.com/nlohmann/json).
+
+The reverb algorithm is Freeverb, written by Jezar, with minor fixes (NaN correction when floats become too small).
 
 The project is made in Qt, using qmake.
 
@@ -54,4 +56,4 @@ One setting that is not as straightforward is the "Pad Loopback" setting. This s
 *Hotkeys are invalid if they are already in use
 
 # Build Instructions
-Clone this repo, and add directions to your local portaudio and libsndfile libraries in the .pro file. And then, build.
+Clone this repo, and add directions to your local portaudio, libsndfile and fftw libraries in the .pro file. And then, build.
