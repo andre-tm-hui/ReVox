@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <cstdint>
 #include <fstream>
+#include <windows.h>
 
 #define PA_SAMPLE_TYPE  paFloat32
 typedef float SAMPLE;
@@ -33,6 +34,8 @@ public:
     std::string dir;
 
     callbackData data = {};
+
+    bool initialSetup = false;
 };
 
 #endif // AUDIOSTREAM_H

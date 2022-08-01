@@ -96,6 +96,8 @@ int passthroughCallback(const void* inputBuffer, void* outputBuffer,
     float* out = (float*)outputBuffer;
     callbackData* p_data = (callbackData*) data;
 
+    p_data->working = true;
+
     float* mono = new float[framesPerBuffer];
     for (int i = 0; i < framesPerBuffer; i++)
     {
@@ -126,20 +128,13 @@ int passthroughCallback(const void* inputBuffer, void* outputBuffer,
 
     for (int i = 0; i < (int)framesPerBuffer; i++)
     {
-        /*if (isnan(mono[i]))
-        {
-            fprintf(stdout, "nan found\n"); fflush(stdout);
-        }
-        if (!(mono[i] > -1.f && mono[i] < 1.f))
-        {
-            fprintf(stdout, "out of range found\n"); fflush(stdout);
-        }
-        fprintf(stdout, "%d,", i); fflush(stdout);*/
         out[2*i] = mono[i];
         out[2*i+1] = mono[i];
     }
     //fprintf(stdout, "\n"); fflush(stdout);
     delete[] mono;
+
+    p_data->working = false;
 
     return paContinue;
 }

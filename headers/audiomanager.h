@@ -4,6 +4,9 @@
 #include "passthrough.h"
 #include "player.h"
 #include "recorder.h"
+#include <QCheckBox>
+#include <nlohmann/json.hpp>
+using namespace nlohmann;
 
 // struct containing all settings related to a keybind
 typedef struct{
@@ -40,31 +43,57 @@ public:
     void ResetPassthrough();
     void ResetPlayer();
     void ResetMonitor();
-    void Reset();
+    void Reset(int input, int output, int loopback, int vInput, int vOutput);
 
     void Rebind(int keycode);
-    void SetNewBind(int keycode);
+    void SetNewBind(int keycode, bool isSoundboard);
     void RemoveBind(int keycode);
     void SaveBinds();
+    void SetCheckboxes(std::map<std::string, QCheckBox*> *checkboxes);
+
+    void WaitForReady();
 
     Recorder *inputDeviceRecorder, *loopbackRecorder;
     Passthrough *passthrough;
     Player *player, *monitor;
     std::map<int, keybind> keybinds;
+    json soundboardHotkeys;
+    json voiceFXHotkeys;
+
     bool recording = false;
 
 private:
+    std::map<std::string, QCheckBox*> *checkboxes;
     int sampleRate, framesPerBuffer;
     int rebindAt = -1;
 
     std::string appdata;
-    std::string dirName = "/Virtual Soundboard and Sampler/";
+    std::string dirName = "/Virtual SoundTool/";
 
     std::map<std::string, int> settings;
 
     void SaveSettings();
 
     device GetDeviceByIndex(int i);
+    void GetDeviceSettings();
+
+    json baseSoundboardHotkey = R"(
+        {
+            "label": "",
+            "recordInput": true,
+            "recordLoopback": true,
+            "syncStreams": true
+        }
+        )"_json;
+
+    json baseFXHotkey = R"(
+        {
+            "label": "",
+            "reverb": { "enabled": false, "roomsize": 0.5, "mix": 0.5, "width": 0.5, "damp": 0.5 },
+            "autotune": { "enabled": false, "speed": 0.5 },
+            "pitch": { "enabled": false, "pitch": 1.0 }
+        }
+        )"_json;
 };
 
 #endif // AUDIOMANAGER_H

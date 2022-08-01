@@ -1,6 +1,9 @@
-<!DOCTYPE RCC>
-<RCC version="1.0">
-<qresource>
-    <file>icons/icon.png</file>
-</qresource>
+<RCC>
+    <qresource prefix="/">
+        <file>icons/icon.png</file>
+        <file>icons/FXOff.png</file>
+        <file>icons/FXOn.png</file>
+        <file>icons/settings.png</file>
+        <file>icons/save.png</file>
+    </qresource>
 </RCC>

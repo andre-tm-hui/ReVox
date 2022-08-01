@@ -1,8 +1,11 @@
 #include "pitchshift.h"
+#include <iostream>
 
 PitchShift::PitchShift(int bufSize, int sampleRate)
 {
     this->bufSize = bufSize;
+    this->sampleRate = sampleRate;
+    std::cout << "hello " << bufSize << std::endl;
     freq = new Frequency(bufSize);
     inputs = new float[bufSize * 3];
     outputs = new float[bufSize * 3];
@@ -15,9 +18,7 @@ PitchShift::PitchShift(int bufSize, int sampleRate)
 void PitchShift::repitch(float *buf, float scale, bool tune)
 {
     // Add the buffer to the process loop
-    //fprintf(stdout, "start\n"); fflush(stdout);
     add(buf);
-    //fprintf(stdout, "updated buffers\n"); fflush(stdout);
     // Get the period of the buffer to be processed
     period = freq->GetPeriod(inputs + bufSize);
 
@@ -25,7 +26,7 @@ void PitchShift::repitch(float *buf, float scale, bool tune)
     {
         setupFlag = false;
         lastMarker = (float)bufSize+1.f;
-        //fprintf(stdout, "period out of range\n"); fflush(stdout);
+
         if (prevPeriod != 0.f)
         {
             period = prevPeriod;
@@ -34,7 +35,6 @@ void PitchShift::repitch(float *buf, float scale, bool tune)
         {
             prevPeriod = period;
             prevFactor = scale;
-            //factor = scale;
 
             memcpy(buf, outputs, sizeof(float) * bufSize);
             return;
@@ -43,7 +43,7 @@ void PitchShift::repitch(float *buf, float scale, bool tune)
 
     if (tune)
     {
-        float ffreq = 48000.f / period;
+        float ffreq = (float)sampleRate / period;
         float semitoneOffset = log(ffreq / 440.f) / log(TWELTH_ROOT_TWO);
         float targetFreq = 440.f * pow(TWELTH_ROOT_TWO, roundf(semitoneOffset));
         scale *= targetFreq / ffreq;
@@ -60,13 +60,11 @@ void PitchShift::repitch(float *buf, float scale, bool tune)
         }
     }
     marker -= bufSize;
-    //fprintf(stdout, "%f first marker found\n", marker); fflush(stdout);
 
     // Get all the "markers", i.e. peaks of the input signal
     std::vector<float> markers{};
     markers.push_back(marker);
     int pos = bufSize + marker + period;
-    //fprintf(stdout, "%f %f", marker, period);
     while (pos < 2 * bufSize)
     {
         marker = pos - period/4 + argmax(inputs + pos - (int)period/4, (int)period/2);
@@ -129,7 +127,6 @@ void PitchShift::repitch(float *buf, float scale, bool tune)
 
         addToBuffer(windows[closestIdx], marker_s);
     }
-    //fprintf(stdout, "overlap added\n"); fflush(stdout);
 
     prevPeriod = period;
     prevFactor = scale;
@@ -137,7 +134,6 @@ void PitchShift::repitch(float *buf, float scale, bool tune)
 
 
     memcpy(buf, outputs, sizeof(float) * bufSize);
-    //fprintf(stdout, "copied\n"); fflush(stdout);
     setupFlag = true;
 }
 
@@ -151,7 +147,7 @@ void PitchShift::addToBuffer(std::vector<float> window, float marker)
         for (int i = -window.size()/2, j = 0; i < (int)window.size()/2; i++, j++)
         {
             pos = bufSize + marker + i;
-            outputs[(int)pos] += window[j];
+            if (pos >= 0 && pos < 3 * bufSize) outputs[(int)pos] += window[j];
         }
     }
     else
@@ -159,9 +155,7 @@ void PitchShift::addToBuffer(std::vector<float> window, float marker)
         for (int i = -window.size()/2, j = 0; i < -1+(int)window.size()/2; i++, j++)
         {
             pos = bufSize + marker + i;
-            //fprintf(stdout, "%f,", pos); fflush(stdout);
-
-            outputs[(int)ceil(pos)] += lerp(window[j], window[j+1], fmod(ceil(pos), pos));
+            if (pos >= 0 && pos < 3 * bufSize) outputs[(int)ceil(pos)] += lerp(window[j], window[j+1], fmod(ceil(pos), pos));
         }
     }
 }

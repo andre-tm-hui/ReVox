@@ -5,8 +5,11 @@
 Recorder::Recorder(device inputDevice, int sampleRate, int framesPerBuffer, std::string dir, std::string appendToFname)
     : AudioStream(inputDevice, {-1, -1}, sampleRate, framesPerBuffer, dir)
 {
+    initialSetup = false;
     // append a suffix to the filename - used to makes sure the loopback recorder does not overwrite the input device recorder
     this->appendToFname = appendToFname;
+
+    initialSetup = true;
 }
 
 void Recorder::Record(int keycode, bool padAudio, bool deleteFiles)

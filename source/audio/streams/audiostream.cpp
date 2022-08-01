@@ -23,10 +23,14 @@ AudioStream::AudioStream(
     if (outputDevice.id >= 0){
         setupDevice(&outputParameters, outputDevice, false);
     }
+
+    initialSetup = true;
 }
 
 AudioStream::~AudioStream()
 {
+    while(!initialSetup){};
+    fprintf(stdout, "audio stream shut down\n"); fflush(stdout);
     done();
 }
 

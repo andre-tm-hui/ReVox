@@ -17,7 +17,8 @@ LRESULT CALLBACK KeyboardListener::KeyboardEvent(int nCode, WPARAM wParam, LPARA
         PKBDLLHOOKSTRUCT p = (PKBDLLHOOKSTRUCT)lParam;
         if (rebinding)
         {
-            if (audioManager->keybinds.find(p->vkCode) == audioManager->keybinds.end())
+            if (audioManager->soundboardHotkeys.find(std::to_string(p->vkCode)) == audioManager->soundboardHotkeys.end() &&
+                    audioManager->voiceFXHotkeys.find(std::to_string(p->vkCode)) == audioManager->voiceFXHotkeys.end())
             {
                 rebindTo = p->vkCode;
                 rebinding = false;
@@ -26,12 +27,21 @@ LRESULT CALLBACK KeyboardListener::KeyboardEvent(int nCode, WPARAM wParam, LPARA
         }
         else
         {
-            if (audioManager->keybinds.find(p->vkCode) != audioManager->keybinds.end()) {
-                keybind bindSettings = audioManager->keybinds[p->vkCode];
-
+            json bindSettings;
+            bool isSoundboard = true;
+            if (audioManager->soundboardHotkeys.find(std::to_string(p->vkCode)) != audioManager->soundboardHotkeys.end())
+            {
+                bindSettings = audioManager->soundboardHotkeys[std::to_string(p->vkCode)];
+            }
+            else if (audioManager->voiceFXHotkeys.find(std::to_string(p->vkCode)) != audioManager->voiceFXHotkeys.end())
+            {
+                bindSettings = audioManager->voiceFXHotkeys[std::to_string(p->vkCode)];
+                isSoundboard = false;
+            }
+            if (!bindSettings.empty()) {
                 switch (wParam) {
                 case WM_KEYDOWN:
-                    if (bindSettings.type == 0)
+                    if (isSoundboard)
                     {
                         if (!audioManager->recording) {
                             // check if button has a recorded file, otherwise, start recording
@@ -43,33 +53,34 @@ LRESULT CALLBACK KeyboardListener::KeyboardEvent(int nCode, WPARAM wParam, LPARA
                             // if not, start recording
                             else
                             {
-                                if (bindSettings.recordInput) audioManager->inputDeviceRecorder->Record(p->vkCode);
-                                if (bindSettings.recordLoopback) audioManager->loopbackRecorder->Record(p->vkCode, bindSettings.padAudio, !bindSettings.recordInput);
+                                if (bindSettings["recordInput"]) audioManager->inputDeviceRecorder->Record(p->vkCode);
+                                if (bindSettings["recordLoopback"]) audioManager->loopbackRecorder->Record(p->vkCode, bindSettings["syncStreams"], !bindSettings["recordInput"]);
                                 audioManager->recording = true;
                             }
                         }
                     }
-                    else if (bindSettings.type == 1)
+                    else
                     {
-                        switch (bindSettings.fxType)
+                        /*switch (bindSettings.fxType)
                         {
                         case 0:
                             audioManager->passthrough->data.useReverb = !audioManager->passthrough->data.useReverb;
                             break;
                         default:
                             break;
-                        }
+                        }*/
+                        audioManager->passthrough->SetFX(audioManager->voiceFXHotkeys[std::to_string(p->vkCode)]);
                     }
 
                     break;
                 case WM_KEYUP:
-                    if (bindSettings.type == 0)
+                    if (isSoundboard)
                     {
                         // stop recording when button is released
                         if (audioManager->recording)
                         {
-                            if (bindSettings.recordInput) audioManager->inputDeviceRecorder->Stop(p->vkCode);
-                            if (bindSettings.recordLoopback)
+                            if (bindSettings["recordInput"]) audioManager->inputDeviceRecorder->Stop(p->vkCode);
+                            if (bindSettings["recordLoopback"])
                             {
                                 audioManager->loopbackRecorder->Stop(p->vkCode);
                                 audioManager->loopbackRecorder->Merge(p->vkCode);
@@ -79,25 +90,25 @@ LRESULT CALLBACK KeyboardListener::KeyboardEvent(int nCode, WPARAM wParam, LPARA
                     }
                     break;
                 case WM_SYSKEYDOWN:
-                    if (bindSettings.type == 0)
+                    if (isSoundboard)
                     {
                         // secondary record button - used to record over already existing clips
                         if (!audioManager->recording)
                         {
-                            if (bindSettings.recordInput) audioManager->inputDeviceRecorder->Record(p->vkCode);
-                            if (bindSettings.recordLoopback) audioManager->loopbackRecorder->Record(p->vkCode, bindSettings.padAudio, !bindSettings.recordInput);
+                            if (bindSettings["recordInput"]) audioManager->inputDeviceRecorder->Record(p->vkCode);
+                            if (bindSettings["recordLoopback"]) audioManager->loopbackRecorder->Record(p->vkCode, bindSettings["syncStreams"], !bindSettings["recordInput"]);
                             audioManager->recording = true;
                         }
                     }
                     break;
                 case WM_SYSKEYUP:
-                    if (bindSettings.type == 0)
+                    if (isSoundboard)
                     {
                         // stop recording when button is released
                         if (audioManager->recording)
                         {
-                            if (bindSettings.recordInput) audioManager->inputDeviceRecorder->Stop(p->vkCode);
-                            if (bindSettings.recordLoopback)
+                            if (bindSettings["recordInput"]) audioManager->inputDeviceRecorder->Stop(p->vkCode);
+                            if (bindSettings["recordLoopback"])
                             {
                                 audioManager->loopbackRecorder->Stop(p->vkCode);
                                 audioManager->loopbackRecorder->Merge(p->vkCode);

@@ -15,6 +15,8 @@ public:
              std::string dir,
              std::string appendToFname = "");
 
+    //~Recorder() { done(); }
+
     void Record(int keycode, bool padAudio = false, bool deleteFiles = false);
     void Stop(int keycode);
     void Merge(int keycode);

@@ -17,10 +17,10 @@ typedef struct{
     SNDFILE* file;
     std::map<SNDFILE*, int>* files;
     SF_INFO info;
+    bool working;
     bool pad;
     float timeStamp;
     float maxFileLength;
-    Frequency* freq;
     bool useReverb;
     revmodel* reverb;
     bool useAutotune;

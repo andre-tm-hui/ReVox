@@ -14,7 +14,7 @@ class KeybindSettings : public QDialog
     Q_OBJECT
 
 public:
-    explicit KeybindSettings(keybind *settings, AudioManager *audioManager, QWidget *parent = nullptr);
+    explicit KeybindSettings(json *settings, AudioManager *audioManager, QWidget *parent = nullptr);
     ~KeybindSettings();
 
 private slots:
@@ -22,16 +22,10 @@ private slots:
 
     void on_recordLoopback_stateChanged(int arg1);
 
-    void on_hotkeyType_currentIndexChanged(int index);
-
 private:
     Ui::KeybindSettings *ui;
-    keybind *settings;
+    json *settings;
     AudioManager *audioManager;
-
-    QWidget *samplerGroup;
-    QWidget *fxGroup;
-    QWidget *reverbGroup;
 };
 
 #endif // KEYBINDSETTINGS_H

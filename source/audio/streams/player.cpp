@@ -5,6 +5,7 @@
 Player::Player(device outputDevice, int sampleRate, int framesPerBuffer, std::string dir, int maxLiveSamples)
     : AudioStream({-1, -1}, outputDevice, sampleRate, framesPerBuffer, dir)
 {
+    initialSetup = false;
     this->maxLiveSamples = maxLiveSamples;
     data.maxFileLength = 10;
     data.files = new std::map<SNDFILE*, int>();
@@ -37,6 +38,7 @@ Player::Player(device outputDevice, int sampleRate, int framesPerBuffer, std::st
     {
         done();
     }
+    initialSetup = true;
 }
 
 void Player::Play(int keycode)

@@ -6,6 +6,10 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    connect(ui->actionDevice_Setup, SIGNAL(triggered()), SLOT(openDeviceSetup()));
+
+    keybinds = ui->keybindList;
+
     restoreAction = new QAction(tr("&Open"), this);
     connect(restoreAction, &QAction::triggered, this, &QWidget::showNormal);
 
@@ -27,13 +31,17 @@ MainWindow::MainWindow(QWidget *parent)
     this->setWindowIcon(QIcon(":/icons/icon.png"));
     connect(trayIcon, &QSystemTrayIcon::activated, this, &MainWindow::iconActivated);
 
-    inputDevices = ui->inputDevices;
-    outputDevices = ui->outputDevices;
-    loopbackDevices = ui->loopbackDevices;
-    virtualInputDevices = ui->virtualInputDevices;
-    virtualOutputDevices = ui->virtualOutputDevices;
-
-    keybinds = ui->tableWidget;
+    d_data = new device_data;
+    d_data->inputDevices = std::map<int, QString>();
+    d_data->inputIdx = 0;
+    d_data->outputDevices = std::map<int, QString>();
+    d_data->outputIdx = 0;
+    d_data->loopbackDevices = std::map<int, QString>();
+    d_data->loopbackIdx = 0;
+    d_data->vInputDevices = std::map<int, QString>();
+    d_data->vInputIdx = 0;
+    d_data->vOutputDevices = std::map<int, QString>();
+    d_data->vOutputIdx = 0;
 
     int currentDevice = 0;
     for (auto const& [dName, i] : audioManager->deviceList)
@@ -42,19 +50,19 @@ MainWindow::MainWindow(QWidget *parent)
         {
             if (dName.find("Input") != std::string::npos)
             {
-                virtualInputDevices->addItem(QString::fromStdString(dName));
+                d_data->vInputDevices[i] = QString::fromStdString(dName);
+
                 if (dName.find(Pa_GetDeviceInfo(audioManager->virtualInputDevice)->name) != std::string::npos)
                 {
-                    virtualInputDevices->setCurrentIndex(currentDevice);
+                    d_data->vInputIdx = i;
                 }
             }
             else if (dName.find("Output") != std::string::npos)
             {
-                virtualOutputDevices->addItem(QString::fromStdString(dName));
+                d_data->vOutputDevices[i] = QString::fromStdString(dName);
                 if (dName.find(Pa_GetDeviceInfo(audioManager->virtualOutputDevice)->name) != std::string::npos)
                 {
-                    fprintf(stdout, "%s %s\n", dName.c_str(), Pa_GetDeviceInfo(audioManager->virtualOutputDevice)->name); fflush(stdout);
-                    virtualOutputDevices->setCurrentIndex(currentDevice);
+                    d_data->vOutputIdx = i;
                 }
             }
         }
@@ -63,10 +71,10 @@ MainWindow::MainWindow(QWidget *parent)
     currentDevice = 0;
     for (auto const& [dName, i] : audioManager->inputDevices)
     {
-        inputDevices->addItem(QString::fromStdString(dName));
+        d_data->inputDevices[i.id] = QString::fromStdString(dName);
         if (dName.find(Pa_GetDeviceInfo(audioManager->inputDevice)->name) != std::string::npos)
         {
-            inputDevices->setCurrentIndex(currentDevice);
+            d_data->inputIdx = i.id;
         }
         currentDevice++;
     }
@@ -74,10 +82,10 @@ MainWindow::MainWindow(QWidget *parent)
     currentDevice = 0;
     for (auto const& [dName, i] : audioManager->outputDevices)
     {
-        outputDevices->addItem(QString::fromStdString(dName));
+        d_data->outputDevices[i.id] = QString::fromStdString(dName);
         if (dName.find(Pa_GetDeviceInfo(audioManager->outputDevice)->name) != std::string::npos)
         {
-            outputDevices->setCurrentIndex(currentDevice);
+            d_data->outputIdx = i.id;
         }
         currentDevice++;
     }
@@ -85,36 +93,39 @@ MainWindow::MainWindow(QWidget *parent)
     currentDevice = 0;
     for (auto const& [dName, i] : audioManager->loopbackDevices)
     {
-        loopbackDevices->addItem(QString::fromStdString(dName));
+        d_data->loopbackDevices[i.id] = QString::fromStdString(dName);
         if (dName.find(Pa_GetDeviceInfo(audioManager->loopbackDevice)->name) != std::string::npos)
         {
-            loopbackDevices->setCurrentIndex(currentDevice);
+            d_data->loopbackIdx = i.id;
         }
 
         currentDevice++;
     }
 
-    keybinds->setColumnWidth(0, 256);
-    keybinds->setColumnWidth(1, 5);
-
-    for (auto const& [keybind, settings] : audioManager->keybinds)
+    for (auto& [keybind, settings] : audioManager->soundboardHotkeys.items())
     {
-        int i = keybinds->rowCount();
-        keybinds->insertRow(i);
-        QString qKeybind = GetKeyName(keybind);
-
-        QTableWidgetItem* item = new QTableWidgetItem();
-        item->setText(qKeybind);
-        item->setFlags(item->flags() ^ Qt::ItemIsEditable);
-
-        QTableWidgetItem* settingItem = new QTableWidgetItem();
-        settingItem->setIcon(QIcon(":/icons/settings.png"));
-        settingItem->setFlags(settingItem->flags() ^ Qt::ItemIsEditable);
-
-        keybinds->setItem(i, 0, item);
-        keybinds->setItem(i, 1, settingItem);
-        keycodeMap[qKeybind] = keybind;
+        QString qKeybind = vkCodenames[std::stoi(keybind)];
+        addBind(0, std::stoi(keybind), QString::fromStdString(settings["label"].get<std::string>()));
     }
+
+    for (auto& [keybind, settings] : audioManager->voiceFXHotkeys.items())
+    {
+        QString qKeybind = vkCodenames[std::stoi(keybind)];
+        addBind(1, std::stoi(keybind), QString::fromStdString(settings["label"].get<std::string>()));
+    }
+
+    connect(&mapper, SIGNAL(mappedInt(int)), this, SLOT(addBind(int)));
+    connect(ui->addBind, SIGNAL(clicked()), &mapper, SLOT(map()));
+    mapper.setMapping(ui->addBind, 0);
+    connect(ui->addBind_2, SIGNAL(clicked()), &mapper, SLOT(map()));
+    mapper.setMapping(ui->addBind_2, 1);
+
+    connect(ui->state, SIGNAL(stateChanged(int)), this, SLOT(toggleReverb(int)));
+    connect(ui->state_2, SIGNAL(stateChanged(int)), this, SLOT(toggleAutotune(int)));
+
+    checkboxes["reverb"] = ui->state;
+    checkboxes["autotune"] = ui->state_2;
+    audioManager->SetCheckboxes(&checkboxes);
 
     setup = true;
 }
@@ -124,130 +135,49 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_inputDevices_currentIndexChanged(int index)
-{
-    if (setup)
-    {
-        audioManager->inputDevice = audioManager->deviceList[inputDevices->currentText().toStdString()];
-        //audioManager->ResetInputRecorder();
-        audioManager->ResetPassthrough();
-    }
-}
-
-
-void MainWindow::on_outputDevices_currentIndexChanged(int index)
-{
-    if (setup)
-    {
-        audioManager->outputDevice = audioManager->deviceList[outputDevices->currentText().toStdString()];
-        audioManager->ResetMonitor();
-    }
-}
-
-
-void MainWindow::on_loopbackDevices_currentIndexChanged(int index)
-{
-    if (setup)
-    {
-        audioManager->loopbackDevice = audioManager->loopbackDevices[loopbackDevices->currentText().toStdString()].id;
-        audioManager->ResetLoopbackRecorder();
-    }
-}
-
-
-void MainWindow::on_virtualInputDevices_currentIndexChanged(int index)
-{
-    if (setup)
-    {
-        audioManager->virtualInputDevice = audioManager->deviceList[virtualInputDevices->currentText().toStdString()];
-        audioManager->ResetPlayer();
-        audioManager->ResetPassthrough();
-    }
-}
-
-void MainWindow::on_virtualOutputDevices_currentIndexChanged(int index)
-{
-    if (setup)
-    {
-        audioManager->virtualOutputDevice = audioManager->deviceList[virtualOutputDevices->currentText().toStdString()];
-        audioManager->ResetInputRecorder();
-    }
-}
-
 KeyboardListener* MainWindow::keyboardListener = new KeyboardListener();
-
 AudioManager* KeyboardListener::audioManager = new AudioManager();
 AudioManager* MainWindow::audioManager = KeyboardListener::audioManager;
 std::map<QString, int> MainWindow::keycodeMap = {};
 
 
-
-void MainWindow::on_tableWidget_cellDoubleClicked(int row, int column)
+void MainWindow::addBind(int type, int keybind, QString label)
 {
-    QTableWidgetItem* item = keybinds->item(row, 0);
-    int keycode = keycodeMap[item->text()];
-    if (column == 0)
-    {
-        audioManager->Rebind(keycode);
-        keyboardListener->rebinding = true;
+    QListWidget *list = type == 0 ? ui->keybindList : ui->fxToggleList;
+    //std::cout << "adding bind" << std::endl;
+    //QListWidget *list = keybinds;
+    HotkeyItem *item = new HotkeyItem(
+                type == 0,
+                label == "" ? "Bind " + QString::number(list->count() + 1) : label,
+                list->width(),
+                keybind,
+                audioManager,
+                keyboardListener
+                );
+    QListWidgetItem *orig = new QListWidgetItem();
+    orig->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable);
+    list->addItem(orig);
+    list->setItemWidget(orig, item);
+    orig->setSizeHint(QSize(0, 32));
 
-        item->setText("Listening...");
-
-        std::thread t (WaitForKeyboardInput, item);
-        t.detach();
-    }
-    else if (column == 1)
-    {
-        KeybindSettings popup (&audioManager->keybinds[keycode], audioManager);
-        popup.setModal(true);
-        popup.exec();
-    }
-}
-
-void MainWindow::WaitForKeyboardInput(QTableWidgetItem* item)
-{
-    std::unique_lock<std::mutex> lck(*keyboardListener->mtx);
-    keyboardListener->cv->wait(lck, keyboardListener->ready);
-
-    QString qKeybind = GetKeyName(keyboardListener->rebindTo);
-    item->setText(qKeybind);
-    audioManager->SetNewBind(keyboardListener->rebindTo);
-
-    keycodeMap[item->text()] = keyboardListener->rebindTo;
-}
-
-
-
-
-void MainWindow::on_addBind_clicked()
-{
-    int i = keybinds->rowCount();
-    keybinds->insertRow(i);
-
-    QTableWidgetItem* item = new QTableWidgetItem();
-    item->setFlags(item->flags() ^ Qt::ItemIsEditable);
-    item->setText("Listening...");
-    keybinds->setItem(i, 0, item);
-    keyboardListener->rebinding = true;
-    keybinds->scrollToBottom();
-
-    QTableWidgetItem* settingItem = new QTableWidgetItem();
-    settingItem->setIcon(QIcon(":/icons/settings.png"));
-    settingItem->setFlags(item->flags() ^ Qt::ItemIsEditable);
-    keybinds->setItem(i, 1, settingItem);
-
-    std::thread t (WaitForKeyboardInput, item);
-    t.detach();
+    list->scrollToBottom();
 }
 
 
 void MainWindow::on_removeBind_clicked()
 {
-    int i = keybinds->currentRow();
-    QTableWidgetItem* item = keybinds->item(i, 0);
+    /*int i = keybinds->currentRow();
+    QListWidgetItem* item = keybinds->item(i, 0);
     int keycode = keycodeMap[item->text()];
     keybinds->removeRow(i);
-    audioManager->RemoveBind(keycode);
+    audioManager->RemoveBind(keycode);*/
+}
+
+void MainWindow::openDeviceSetup()
+{
+    DeviceSettings popup (d_data, audioManager);
+    popup.setModal(true);
+    popup.exec();
 }
 
 
@@ -283,6 +213,7 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
     switch (reason)
     {
     case QSystemTrayIcon::DoubleClick:
+        this->audioManager->WaitForReady();
         this->show();
         this->setWindowState(Qt::WindowState::WindowActive);
         break;
@@ -291,23 +222,14 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
     }
 }
 
-QString MainWindow::GetKeyName(int keybind)
+void MainWindow::toggleReverb(int state)
 {
-    QString qKeybind;
-    if (vkCodenames.find(keybind) != vkCodenames.end())
-    {
-        qKeybind = QString::fromStdString(vkCodenames[keybind]);
-    }
-    else
-    {
-        WCHAR keybindAsStr[1024];
-        UINT scanCode = MapVirtualKeyW(keybind, MAPVK_VK_TO_VSC);
-        LONG lParamValue = (scanCode << 16);
-        GetKeyNameTextW(lParamValue, keybindAsStr, 1024);
-        qKeybind = QString::fromWCharArray(keybindAsStr);
-    }
-
-    return qKeybind;
+    std::cout<<state<<std::endl;
+    audioManager->passthrough->data.useReverb = state == 0 ? false : true;
 }
 
+void MainWindow::toggleAutotune(int state)
+{
+    audioManager->passthrough->data.useAutotune = state == 0 ? false : true;
+}
 

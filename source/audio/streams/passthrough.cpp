@@ -5,6 +5,7 @@
 Passthrough::Passthrough(device inputDevice, device outputDevice, int sampleRate, int framesPerBuffer)
     : AudioStream(inputDevice, outputDevice, sampleRate, framesPerBuffer, "")
 {
+    initialSetup = false;
     // start a stream on creation of this object, since audio from the default input should always be written to the virtual cable input
     this->err = Pa_OpenStream(
                 &this->stream,
@@ -29,12 +30,25 @@ Passthrough::Passthrough(device inputDevice, device outputDevice, int sampleRate
     }
 
     data.reverb = new revmodel();
-    fprintf(stdout, "reverberator made\n"); fflush(stdout);
     data.useReverb = false;
 
-    data.freq = new Frequency(framesPerBuffer);
     data.ps = new PitchShift(framesPerBuffer, sampleRate);
-    data.useAutotune = true;
-    //delete pv;
-    //data.reverb->SetDelay(300);
+    data.useAutotune = false;
+
+    initialSetup = true;
+}
+
+void Passthrough::SetFX(json settings)
+{
+    data.useReverb = settings["reverb"]["enabled"].get<bool>();
+    (*checkboxes)["reverb"]->setCheckState(data.useReverb ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
+    data.reverb->setwet(settings["reverb"]["mix"].get<float>());
+    data.reverb->setdry(1.f - settings["reverb"]["mix"].get<float>());
+    data.reverb->setdamp(settings["reverb"]["damp"].get<float>());
+    data.reverb->setroomsize(settings["reverb"]["roomsize"].get<float>());
+    data.reverb->setwidth(settings["reverb"]["width"].get<float>());
+
+    data.useAutotune = settings["autotune"]["enabled"].get<bool>();
+    (*checkboxes)["autotune"]->setCheckState(data.useAutotune ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
+    //data.ps.setSpeed(settings["autotune"]["speed"].get<float>();
 }

@@ -12,6 +12,8 @@ public:
            std::string dir,
            int maxLiveSamples = 5);
 
+    //~Player() { done(); }
+
     void Play(int keycode);
 
     bool CanPlay(int keycode);

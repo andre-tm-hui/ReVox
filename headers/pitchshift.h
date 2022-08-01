@@ -12,8 +12,16 @@ class PitchShift
 {
 public:
     PitchShift(int bufSize, int sampleRate);
+    ~PitchShift()
+    {
+        delete freq;
+        delete[] inputs;
+        delete[] outputs;
+    }
 
     void repitch(float *buf, float scale, bool tune = false);
+
+    bool working = false;
 
 private:
     void add(float *buf);
@@ -28,15 +36,15 @@ private:
     // case pitchshift down: cut end of resampled vector, adjust phases to match
 
 private:
-    Frequency* freq;
-    int bufSize;
+    Frequency *freq;
+    int bufSize, sampleRate;
     float *inputs, *outputs;
     float period = 0.f, prevPeriod = 0.f;
     float factor = 0.f, prevFactor = 0.f;
     float marker = 0.f, lastMarker = 0.f;
 
     bool setupFlag = false;
-    bool working = false;
+
 };
 
 const float TWELTH_ROOT_TWO = pow(2.f, 1.f / 12.f);

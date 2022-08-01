@@ -10,6 +10,12 @@ class Frequency
 {
 public:
     Frequency(float bufSize);
+    ~Frequency()
+    {
+        delete[] in;
+        delete[] out;
+        delete[] fft;
+    }
 
     float GetPeriod(float *buf);
 
