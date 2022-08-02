@@ -54,7 +54,14 @@ public:
         this->settings->setFixedSize(QSize(24, 24));
         this->settings->setIcon(isSoundboard ? QIcon(":/icons/settings.png") :  QIcon(":/icons/save.png"));
         this->settings->setStyleSheet("border: 0px; background-color: transparent;");
-        connect(this->settings, SIGNAL(clicked()), this, SLOT(openSettings()));
+        if (isSoundboard)
+        {
+            connect(this->settings, SIGNAL(clicked()), this, SLOT(openSettings()));
+        }
+        else
+        {
+            connect(this->settings, SIGNAL(clicked()), this, SLOT(overrideConfig()));
+        }
 
         if (keycode < 0)
         {
@@ -69,17 +76,16 @@ public:
     QPushButton *hotkey;
     QToolButton *settings;
     QTextEdit *label;
-
+    cbData cb;
 
 private slots:
     void rebind();
     void openSettings();
+    void overrideConfig();
     void labelChanged();
 
 
 private:
-    cbData cb;
-
     static void WaitForKeyboardInput(void *data);
     QString GetKeyName(int keybind);
 };

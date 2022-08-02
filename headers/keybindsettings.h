@@ -2,6 +2,7 @@
 #define KEYBINDSETTINGS_H
 
 #include <QDialog>
+#include <QFileDialog>
 #include <QDoubleValidator>
 #include "audiomanager.h"
 
@@ -14,7 +15,7 @@ class KeybindSettings : public QDialog
     Q_OBJECT
 
 public:
-    explicit KeybindSettings(json *settings, AudioManager *audioManager, QWidget *parent = nullptr);
+    explicit KeybindSettings(int keycode, json *settings, AudioManager *audioManager, QWidget *parent = nullptr);
     ~KeybindSettings();
 
 private slots:
@@ -22,10 +23,14 @@ private slots:
 
     void on_recordLoopback_stateChanged(int arg1);
 
+    void on_browse_triggered(QAction *arg1);
+
 private:
     Ui::KeybindSettings *ui;
     json *settings;
     AudioManager *audioManager;
+    int keycode;
+    QString fname = "";
 };
 
 #endif // KEYBINDSETTINGS_H

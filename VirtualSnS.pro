@@ -26,7 +26,8 @@ SOURCES += \
     source/audio/streams/passthrough.cpp \
     source/audio/streams/player.cpp \
     source/audio/streams/recorder.cpp \
-    source/qt/rc/hotkeyitem.cpp
+    source/qt/rc/hotkeyitem.cpp \
+    source/qt/rc/keypresseater.cpp
 
 HEADERS += \
     headers/devicesettings.h \
@@ -40,6 +41,7 @@ HEADERS += \
     headers/hotkeyitem.h \
     headers/keybindsettings.h \
     headers/keyboardlistener.h \
+    headers/keypresseater.h \
     headers/mainwindow.h \
     headers/passthrough.h \
     headers/pitchshift.h \

@@ -373,10 +373,20 @@ void AudioManager::SetNewBind(int keycode, bool isSoundboard)
 
 void AudioManager::RemoveBind(int keycode)
 {
-    keybinds.erase(keycode);
-    if (std::filesystem::exists(appdata + dirName + "samples/" + std::to_string(keycode) + ".wav"))
+    std::cout << keycode << std::endl;
+    if (soundboardHotkeys.find(std::to_string(keycode)) != soundboardHotkeys.end())
     {
-        std::filesystem::remove(appdata + dirName + "samples/" + std::to_string(keycode) + ".wav");
+        soundboardHotkeys.erase(std::to_string(keycode));
+        std::cout << "deletd" << std::endl;
+    }
+    else if (voiceFXHotkeys.find(std::to_string(keycode)) != voiceFXHotkeys.end())
+    {
+        voiceFXHotkeys.erase(std::to_string(keycode));
+        std::cout << "deleteed" << std::endl;
+    }
+    if (std::filesystem::exists(appdata + dirName + "samples/" + std::to_string(keycode) + ".mp3"))
+    {
+        std::filesystem::remove(appdata + dirName + "samples/" + std::to_string(keycode) + ".mp3");
     }
     SaveBinds();
 }
@@ -408,4 +418,30 @@ device AudioManager::GetDeviceByIndex(int i)
     }
 
     return {-1, -1};
+}
+
+void AudioManager::OverrideConfig(std::string keycode)
+{
+    voiceFXHotkeys[keycode]["reverb"]["enabled"] = passthrough->data.useReverb;
+    voiceFXHotkeys[keycode]["reverb"]["roomsize"] = passthrough->data.reverb->getroomsize();
+    voiceFXHotkeys[keycode]["reverb"]["mix"] = passthrough->data.reverb->getwet();
+    voiceFXHotkeys[keycode]["reverb"]["width"] = passthrough->data.reverb->getwidth();
+    voiceFXHotkeys[keycode]["reverb"]["damp"] = passthrough->data.reverb->getdamp();
+
+    voiceFXHotkeys[keycode]["autotune"]["enabled"] = passthrough->data.useAutotune;
+    voiceFXHotkeys[keycode]["autotune"]["speed"] = 1.f;//passthrough->data.autotune->getspeed();
+
+    SaveBinds();
+}
+
+void AudioManager::OverrideSound(std::string fname, int keycode)
+{
+    std::string path = appdata + dirName + "samples/" + std::to_string(keycode) + ".mp3";
+    if (std::filesystem::exists(path))
+    {
+        std::filesystem::remove(path);
+    }
+    std::filesystem::copy(fname, path);
+
+
 }

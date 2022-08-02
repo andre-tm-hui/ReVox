@@ -13,6 +13,7 @@
 #include "keybindsettings.h"
 #include "vkcodenames.h"
 #include "devicesettings.h"
+#include "keypresseater.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -35,15 +36,13 @@ protected:
     bool event(QEvent *event) override;
 
 private slots:
-    void on_removeBind_clicked();
-
     void iconActivated(QSystemTrayIcon::ActivationReason reason);
 
     void openDeviceSetup();
 
     void addBind(int type, int keybind = -1, QString label = "");
 
-
+    void removeBind(int type);
 
     void toggleReverb(int state);
 
@@ -67,10 +66,12 @@ private:
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
 
-    QSignalMapper mapper;
+    QSignalMapper mapper_add, mapper_remove;
 
     static QString GetKeyName(int keybind);
 
     device_data *d_data;
+
+    KeyPressEater *keyPressEater;
 };
 #endif // MAINWINDOW_H

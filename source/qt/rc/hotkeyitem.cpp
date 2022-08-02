@@ -16,7 +16,7 @@ void HotkeyItem::openSettings()
 {
     if (cb.isSoundboard)
     {
-        KeybindSettings popup (&cb.audioManager->soundboardHotkeys[std::to_string(cb.keycode)], cb.audioManager);
+        KeybindSettings popup (cb.keycode, &cb.audioManager->soundboardHotkeys[std::to_string(cb.keycode)], cb.audioManager);
         popup.setModal(true);
         popup.exec();
     }
@@ -60,4 +60,9 @@ void HotkeyItem::WaitForKeyboardInput(void *data)
 QString HotkeyItem::GetKeyName(int keybind)
 {
     return vkCodenames[keybind];
+}
+
+void HotkeyItem::overrideConfig()
+{
+    cb.audioManager->OverrideConfig(std::to_string(cb.keycode));
 }

@@ -50,6 +50,8 @@ public:
     void RemoveBind(int keycode);
     void SaveBinds();
     void SetCheckboxes(std::map<std::string, QCheckBox*> *checkboxes);
+    void OverrideConfig(std::string keycode);
+    void OverrideSound(std::string fname, int keycode);
 
     void WaitForReady();
 

@@ -3,12 +3,12 @@
 
 /* Class for the keybind settings popup. */
 
-KeybindSettings::KeybindSettings(json *settings, AudioManager *audioManager, QWidget *parent) :
+KeybindSettings::KeybindSettings(int keycode, json *settings, AudioManager *audioManager, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::KeybindSettings)
 {
     ui->setupUi(this);
-
+    this->keycode = keycode;
     this->settings = settings;
     this->audioManager = audioManager;
     ui->recordInput->setCheckState((*settings)["recordInput"] ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
@@ -26,6 +26,10 @@ KeybindSettings::KeybindSettings(json *settings, AudioManager *audioManager, QWi
 
 KeybindSettings::~KeybindSettings()
 {
+    if (fname != "")
+    {
+        audioManager->OverrideSound(fname.toStdString(), keycode);
+    }
     delete ui;
 }
 
@@ -52,4 +56,10 @@ void KeybindSettings::on_recordLoopback_stateChanged(int arg1)
 }
 
 
+
+
+void KeybindSettings::on_browse_triggered(QAction *arg1)
+{
+    fname = QFileDialog::getOpenFileName(this, tr("Choose Soundbyte"), "", tr("WAV (*.wav)"));
+}
 

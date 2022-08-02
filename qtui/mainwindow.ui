@@ -40,24 +40,27 @@ color: #FFFFFF;</string>
      <rect>
       <x>20</x>
       <y>10</y>
-      <width>101</width>
-      <height>21</height>
+      <width>171</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <family>Unispace</family>
+      <pointsize>14</pointsize>
+      <italic>false</italic>
+      <bold>true</bold>
      </font>
     </property>
     <property name="text">
-     <string>Keybinds</string>
+     <string>SOUNDBOARD</string>
     </property>
    </widget>
    <widget class="QPushButton" name="addBind">
     <property name="geometry">
      <rect>
       <x>312</x>
-      <y>330</y>
+      <y>350</y>
       <width>20</width>
       <height>20</height>
      </rect>
@@ -87,7 +90,7 @@ line-height: 20px;</string>
     <property name="geometry">
      <rect>
       <x>331</x>
-      <y>330</y>
+      <y>350</y>
       <width>20</width>
       <height>20</height>
      </rect>
@@ -113,7 +116,7 @@ background-color: #303030;</string>
     <property name="geometry">
      <rect>
       <x>370</x>
-      <y>30</y>
+      <y>50</y>
       <width>331</width>
       <height>101</height>
      </rect>
@@ -315,14 +318,17 @@ QCheckBox::indicator::unchecked {image: url(:/icons/FXOff.png); width: 12px; hei
    <widget class="QListWidget" name="keybindList">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>30</y>
+      <x>20</x>
+      <y>50</y>
       <width>331</width>
       <height>296</height>
      </rect>
     </property>
     <property name="mouseTracking">
      <bool>false</bool>
+    </property>
+    <property name="focusPolicy">
+     <enum>Qt::NoFocus</enum>
     </property>
     <property name="styleSheet">
      <string notr="true">QListWidget::item:disabled,
@@ -347,7 +353,7 @@ QListWidget::item { margin: 4px; }</string>
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>380</y>
+      <y>400</y>
       <width>141</width>
       <height>24</height>
      </rect>
@@ -382,7 +388,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>360</y>
+      <y>380</y>
       <width>141</width>
       <height>16</height>
      </rect>
@@ -398,7 +404,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>200</x>
-      <y>380</y>
+      <y>400</y>
       <width>141</width>
       <height>24</height>
      </rect>
@@ -433,7 +439,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>200</x>
-      <y>360</y>
+      <y>380</y>
       <width>141</width>
       <height>16</height>
      </rect>
@@ -449,7 +455,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>370</x>
-      <y>140</y>
+      <y>160</y>
       <width>331</width>
       <height>186</height>
      </rect>
@@ -477,7 +483,7 @@ QListWidget::item { margin: 4px; }</string>
     <property name="geometry">
      <rect>
       <x>662</x>
-      <y>330</y>
+      <y>350</y>
       <width>20</width>
       <height>20</height>
      </rect>
@@ -507,7 +513,7 @@ line-height: 20px;</string>
     <property name="geometry">
      <rect>
       <x>681</x>
-      <y>330</y>
+      <y>350</y>
       <width>20</width>
       <height>20</height>
      </rect>
@@ -527,6 +533,27 @@ background-color: #303030;</string>
     </property>
     <property name="text">
      <string>-</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_6">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>10</y>
+      <width>171</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Unispace</family>
+      <pointsize>14</pointsize>
+      <italic>false</italic>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>VOICE FX</string>
     </property>
    </widget>
   </widget>

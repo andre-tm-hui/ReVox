@@ -44,7 +44,7 @@ Player::Player(device outputDevice, int sampleRate, int framesPerBuffer, std::st
 void Player::Play(int keycode)
 {
     // check if a file corresponding to the keycode exists
-    std::string FILE_NAME = dir + "/samples/" + std::to_string(keycode) + ".wav";
+    std::string FILE_NAME = dir + "/samples/" + std::to_string(keycode) + ".mp3";
     if (!std::filesystem::exists(FILE_NAME.c_str()))
     {
         return;
@@ -55,6 +55,10 @@ void Player::Play(int keycode)
      * toggle between playing clips over each other and stopping the previous clip to play the next clip (maxLiveSamples = 1?)
      */
     SNDFILE* file = sf_open(FILE_NAME.c_str(), SFM_READ, &data.info);
+    if (data.info.samplerate != this->sampleRate)
+    {
+        //resample
+    }
     if ((int)data.files->size() < maxLiveSamples) {
         (*data.files)[file] = 0;
     }
@@ -63,13 +67,13 @@ void Player::Play(int keycode)
 /* Utility function to check if a file corresponding to the keycode exists */
 bool Player::CanPlay(int keycode)
 {
-    std::string FILE_NAME = dir + "samples/" + std::to_string(keycode) + ".wav";
+    std::string FILE_NAME = dir + "samples/" + std::to_string(keycode) + ".mp3";
     return std::filesystem::exists(FILE_NAME.c_str());
 }
 
 /* Utility function to rename a file if the keybind is being rebinded */
 void Player::Rename(int keycodeFrom, int keycodeTo)
 {
-    std::filesystem::rename(dir + "samples/" + std::to_string(keycodeFrom) + ".wav",
-                            dir + "samples/" + std::to_string(keycodeTo) + ".wav");
+    std::filesystem::rename(dir + "samples/" + std::to_string(keycodeFrom) + ".mp3",
+                            dir + "samples/" + std::to_string(keycodeTo) + ".mp3");
 }

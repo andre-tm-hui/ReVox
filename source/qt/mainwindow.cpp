@@ -114,11 +114,17 @@ MainWindow::MainWindow(QWidget *parent)
         addBind(1, std::stoi(keybind), QString::fromStdString(settings["label"].get<std::string>()));
     }
 
-    connect(&mapper, SIGNAL(mappedInt(int)), this, SLOT(addBind(int)));
-    connect(ui->addBind, SIGNAL(clicked()), &mapper, SLOT(map()));
-    mapper.setMapping(ui->addBind, 0);
-    connect(ui->addBind_2, SIGNAL(clicked()), &mapper, SLOT(map()));
-    mapper.setMapping(ui->addBind_2, 1);
+    connect(&mapper_add, SIGNAL(mappedInt(int)), this, SLOT(addBind(int)));
+    connect(ui->addBind, SIGNAL(clicked()), &mapper_add, SLOT(map()));
+    mapper_add.setMapping(ui->addBind, 0);
+    connect(ui->addBind_2, SIGNAL(clicked()), &mapper_add, SLOT(map()));
+    mapper_add.setMapping(ui->addBind_2, 1);
+
+    connect(&mapper_remove, SIGNAL(mappedInt(int)), this, SLOT(removeBind(int)));
+    connect(ui->removeBind, SIGNAL(clicked()), &mapper_remove, SLOT(map()));
+    mapper_remove.setMapping(ui->removeBind, 0);
+    connect(ui->removeBind_2, SIGNAL(clicked()), &mapper_remove, SLOT(map()));
+    mapper_remove.setMapping(ui->removeBind_2, 1);
 
     connect(ui->state, SIGNAL(stateChanged(int)), this, SLOT(toggleReverb(int)));
     connect(ui->state_2, SIGNAL(stateChanged(int)), this, SLOT(toggleAutotune(int)));
@@ -126,6 +132,12 @@ MainWindow::MainWindow(QWidget *parent)
     checkboxes["reverb"] = ui->state;
     checkboxes["autotune"] = ui->state_2;
     audioManager->SetCheckboxes(&checkboxes);
+
+    keyPressEater = new KeyPressEater(this);
+    ui->keybindList->installEventFilter(keyPressEater);
+    ui->fxToggleList->installEventFilter(keyPressEater);
+    ui->addBind->installEventFilter(keyPressEater);
+    ui->addBind_2->installEventFilter(keyPressEater);
 
     setup = true;
 }
@@ -163,14 +175,13 @@ void MainWindow::addBind(int type, int keybind, QString label)
     list->scrollToBottom();
 }
 
-
-void MainWindow::on_removeBind_clicked()
+void MainWindow::removeBind(int type)
 {
-    /*int i = keybinds->currentRow();
-    QListWidgetItem* item = keybinds->item(i, 0);
-    int keycode = keycodeMap[item->text()];
-    keybinds->removeRow(i);
-    audioManager->RemoveBind(keycode);*/
+    QListWidget *list = type == 0 ? ui->keybindList : ui->fxToggleList;
+    HotkeyItem *item = qobject_cast<HotkeyItem *>(list->itemWidget(list->currentItem()));
+    audioManager->RemoveBind(item->cb.keycode);
+    list->removeItemWidget(list->currentItem());
+    delete list->currentItem();
 }
 
 void MainWindow::openDeviceSetup()
@@ -232,4 +243,3 @@ void MainWindow::toggleAutotune(int state)
 {
     audioManager->passthrough->data.useAutotune = state == 0 ? false : true;
 }
-
