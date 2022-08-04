@@ -14,19 +14,24 @@
 #include "frequency.h"
 
 typedef struct{
-    SNDFILE* file;
-    std::map<SNDFILE*, int>* files;
+    SNDFILE *file;
     SF_INFO info;
-    bool working;
     bool pad;
     float timeStamp;
-    float maxFileLength;
-    bool useReverb;
-    revmodel* reverb;
-    bool useAutotune;
-    PitchShift* ps;
-} callbackData;
+    bool inUse;
+} recordData;
 
+typedef struct{
+    std::map<SNDFILE*, int> *files;
+    SF_INFO info;
+    float maxFileLength;
+} playData;
+
+typedef struct{
+    revmodel* reverb;
+    PitchShift* autotune;
+    PitchShift* pitchShift;
+} passthroughData;
 
 int recordCallback(const void* inputBuffer, void* outputBuffer,
                    unsigned long framesPerBuffer,

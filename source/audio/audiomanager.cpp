@@ -19,46 +19,13 @@ AudioManager::AudioManager()
             std::filesystem::create_directory(appdata + dirName);
             std::filesystem::create_directory(appdata + dirName + "samples/");
 
-            // set default settings values
-            this->sampleRate = 48000;
-            this->framesPerBuffer = 1024;
-
-            // start the portaudio objects
-            inputDeviceRecorder = new Recorder(GetDeviceByIndex(virtualOutputDevice), this->sampleRate, this->framesPerBuffer, std::string(appdata_c) + dirName);
-            loopbackRecorder = new Recorder(GetDeviceByIndex(loopbackDevice), this->sampleRate, this->framesPerBuffer, std::string(appdata_c) + dirName, "l");
-            player = new Player(GetDeviceByIndex(virtualInputDevice), this->sampleRate, this->framesPerBuffer, std::string(appdata_c) + dirName);
-            monitor = new Player(GetDeviceByIndex(outputDevice), this->sampleRate, this->framesPerBuffer, std::string(appdata_c) + dirName);
-            passthrough = new Passthrough(GetDeviceByIndex(inputDevice), GetDeviceByIndex(virtualInputDevice), this->sampleRate, this->framesPerBuffer);
-
             SaveSettings();
         }
         // otherwise, load saved configurations
         else
         {
-            std::ifstream settingsFile (appdata + dirName + "settings.cfg");
-            std::string line, settingText, settingValue;;
-
-            if (settingsFile.is_open())
-            {
-                while (std::getline(settingsFile, line))
-                {
-                    int equal = line.find("=");
-                    if ((std::size_t)equal != std::string::npos)
-                    {
-                        settingText = line.substr(0, equal);
-                        settingValue = line.substr(equal + 1);
-
-                        if (settingText.compare("inputDevice") == 0) { this->inputDevice = std::stoi(settingValue); }
-                        else if (settingText.compare("outputDevice") == 0) { this->outputDevice = std::stoi(settingValue); }
-                        else if (settingText.compare("loopbackDevice") == 0) { this->loopbackDevice = std::stoi(settingValue); }
-                        else if (settingText.compare("virtualInputDevice") == 0) { this->virtualInputDevice = std::stoi(settingValue); }
-                        else if (settingText.compare("virtualOutputDevice") == 0) { this->virtualOutputDevice = std::stoi(settingValue); }
-                        else if (settingText.compare("sampleRate") == 0) { this->sampleRate = std::stoi(settingValue); }
-                        else if (settingText.compare("framesPerBuffer") == 0) { this->framesPerBuffer = std::stoi(settingValue); fprintf(stdout, "%d\n", this->framesPerBuffer); fflush(stdout);}
-                    }
-                }
-                settingsFile.close();
-            }
+            std::ifstream settingsFile (appdata + dirName + "settings.json");
+            if (!settingsFile.fail()) settingsFile >> settings;
 
             std::ifstream soundboardBindsFile(appdata + dirName + "soundboard.json");
             if (!soundboardBindsFile.fail()) soundboardBindsFile >> soundboardHotkeys;
@@ -69,18 +36,28 @@ AudioManager::AudioManager()
     }
 
     // start the portaudio stream objects
-    inputDeviceRecorder = new Recorder(GetDeviceByIndex(virtualOutputDevice), this->sampleRate, this->framesPerBuffer, std::string(appdata_c) + dirName);
-    fprintf(stdout, "recorder\n"); fflush(stdout);
-    loopbackRecorder = new Recorder(GetDeviceByIndex(loopbackDevice), this->sampleRate, this->framesPerBuffer, std::string(appdata_c) + dirName, "l");
-    fprintf(stdout, "loopback\n"); fflush(stdout);
-    player = new Player(GetDeviceByIndex(virtualInputDevice), this->sampleRate, this->framesPerBuffer, std::string(appdata_c) + dirName);
-    fprintf(stdout, "player\n"); fflush(stdout);
-    monitor = new Player(GetDeviceByIndex(outputDevice), this->sampleRate, this->framesPerBuffer, std::string(appdata_c) + dirName);
-    fprintf(stdout, "monitor\n"); fflush(stdout);
-    passthrough = new Passthrough(GetDeviceByIndex(inputDevice), GetDeviceByIndex(virtualInputDevice), this->sampleRate, this->framesPerBuffer);
-    fprintf(stdout, "passthrough\n"); fflush(stdout);
+    inputDeviceRecorder = new Recorder(     GetDeviceByIndex(settings["virtualOutputDevice"]),
+                                            settings["sampleRate"].get<int>(),
+                                            settings["framesPerBuffer"].get<int>(),
+                                            std::string(appdata_c) + dirName);
+    loopbackRecorder    = new Recorder(     GetDeviceByIndex(settings["loopbackDevice"]),
+                                            settings["sampleRate"].get<int>(),
+                                            settings["framesPerBuffer"].get<int>(),
+                                            std::string(appdata_c) + dirName, "l");
+    player              = new Player(       GetDeviceByIndex(settings["virtualInputDevice"]),
+                                            settings["sampleRate"].get<int>(),
+                                            settings["framesPerBuffer"].get<int>(),
+                                            std::string(appdata_c) + dirName);
+    monitor             = new Player(       GetDeviceByIndex(settings["outputDevice"]),
+                                            settings["sampleRate"].get<int>(),
+                                            settings["framesPerBuffer"].get<int>(),
+                                            std::string(appdata_c) + dirName);
+    passthrough         = new Passthrough(  GetDeviceByIndex(settings["inputDevice"]),
+                                            GetDeviceByIndex(settings["virtualInputDevice"]),
+                                            settings["sampleRate"].get<int>(),
+                                            settings["framesPerBuffer"].get<int>());
 
-    WaitForReady();
+    //WaitForReady();
 }
 
 AudioManager::~AudioManager()
@@ -100,14 +77,16 @@ void AudioManager::WaitForReady()
            !loopbackRecorder->initialSetup ||
            !player->initialSetup ||
            !monitor->initialSetup ||
-           !passthrough->initialSetup) { std::cout << "waiting" << std::endl; }
+           !passthrough->initialSetup) { /*std::cout << "waiting" << std::endl;*/ }
 }
 
 void AudioManager::GetDeviceSettings()
 {
+    std::map<std::string, int> apiMap;
+
     // instantiate devices to default values
-    inputDevice = Pa_GetDefaultInputDevice();
-    outputDevice = Pa_GetDefaultOutputDevice();
+    settings["inputDevice"] = Pa_GetDefaultInputDevice();
+    settings["outputDevice"] = Pa_GetDefaultOutputDevice();
 
     // get all available audio APIs on the system
     for (int i = 0; i < Pa_GetHostApiCount(); i++)
@@ -127,9 +106,9 @@ void AudioManager::GetDeviceSettings()
             {
                 loopbackDevices[deviceName] = {Pa_HostApiDeviceIndexToDeviceIndex(apiMap["Windows WASAPI"], i), 1};
                 // for default device setup
-                if (deviceName.find(Pa_GetDeviceInfo(outputDevice)->name) != std::string::npos)
+                if (deviceName.find(Pa_GetDeviceInfo(settings["outputDevice"])->name) != std::string::npos)
                 {
-                    loopbackDevice = loopbackDevices[deviceName].id;
+                    settings["loopbackDevice"] = loopbackDevices[deviceName].id;
                 }
             }
             else
@@ -159,11 +138,11 @@ void AudioManager::GetDeviceSettings()
             // set the default virtual input device - assumes the user is using VB-Audio's Virtual Cable https://vb-audio.com/Cable/
             if (deviceName.find("CABLE Input") != std::string::npos)
             {
-                virtualInputDevice = deviceList[deviceName];
+                settings["virtualInputDevice"] = deviceList[deviceName];
             }
             else if (deviceName.find("CABLE Output") != std::string::npos)
             {
-                virtualOutputDevice = deviceList[deviceName];
+                settings["virtualOutputDevice"] = deviceList[deviceName];
             }
         }
     }
@@ -237,38 +216,50 @@ void AudioManager::GetDeviceSettings()
 void AudioManager::ResetInputRecorder()
 {
     delete inputDeviceRecorder;
-    inputDeviceRecorder = new Recorder(GetDeviceByIndex(virtualOutputDevice), sampleRate, framesPerBuffer, appdata + dirName);
+    inputDeviceRecorder = new Recorder(GetDeviceByIndex(settings["virtualOutputDevice"]),
+                                       settings["sampleRate"].get<int>(),
+                                       settings["framesPerBuffer"].get<int>(),
+                                       appdata + dirName);
     SaveSettings();
 }
 
 void AudioManager::ResetLoopbackRecorder()
 {
     delete loopbackRecorder;
-    loopbackRecorder = new Recorder(GetDeviceByIndex(loopbackDevice), sampleRate, framesPerBuffer, appdata + dirName);
+    loopbackRecorder = new Recorder(GetDeviceByIndex(settings["loopbackDevice"]),
+                                    settings["sampleRate"].get<int>(),
+                                    settings["framesPerBuffer"].get<int>(),
+                                    appdata + dirName, "l");
     SaveSettings();
 }
 
 void AudioManager::ResetPlayer()
 {
     delete player;
-    player = new Player(GetDeviceByIndex(virtualInputDevice), sampleRate, framesPerBuffer, appdata + dirName);
+    player = new Player(GetDeviceByIndex(settings["virtualInputDevice"]),
+                        settings["sampleRate"].get<int>(),
+                        settings["framesPerBuffer"].get<int>(),
+                        appdata + dirName);
     SaveSettings();
 }
 
 void AudioManager::ResetMonitor()
 {
     delete monitor;
-    monitor = new Player(GetDeviceByIndex(outputDevice), sampleRate, framesPerBuffer, appdata + dirName);
+    monitor = new Player(GetDeviceByIndex(settings["outputDevice"]),
+                         settings["sampleRate"].get<int>(),
+                         settings["framesPerBuffer"].get<int>(),
+                         appdata + dirName);
     SaveSettings();
 }
 
 void AudioManager::ResetPassthrough()
 {
-    passthrough->data.useAutotune = false;
-    passthrough->data.useReverb = false;
     delete passthrough;
-    Sleep(300);
-    passthrough = new Passthrough(GetDeviceByIndex(inputDevice), GetDeviceByIndex(virtualInputDevice), sampleRate, framesPerBuffer);
+    passthrough = new Passthrough(GetDeviceByIndex(settings["inputDevice"]),
+                                  GetDeviceByIndex(settings["virtualInputDevice"]),
+                                  settings["sampleRate"].get<int>(),
+                                  settings["framesPerBuffer"].get<int>());
     SaveSettings();
 }
 
@@ -276,22 +267,17 @@ void AudioManager::Reset(int input, int output, int loopback, int vInput, int vO
 {
     Pa_Terminate();
     Pa_Initialize();
-    inputDevice = input;
-    outputDevice = output;
-    loopbackDevice = loopback;
-    virtualInputDevice = vInput;
-    virtualOutputDevice = vOutput;
+    settings["inputDevice"] = input;
+    settings["outputDevice"] = output;
+    settings["loopbackDevice"] = loopback;
+    settings["virtualInputDevice"] = vInput;
+    settings["virtualOutputDevice"] = vOutput;
 
     ResetInputRecorder();
-    fprintf(stdout, "rec\n"); fflush(stdout);
     ResetLoopbackRecorder();
-    fprintf(stdout, "loop\n"); fflush(stdout);
     ResetPlayer();
-    fprintf(stdout, "play\n"); fflush(stdout);
     ResetMonitor();
-    fprintf(stdout, "mon\n"); fflush(stdout);
     ResetPassthrough();
-    fprintf(stdout, "passthrough\n"); fflush(stdout);
 
     WaitForReady();
 }
@@ -299,16 +285,8 @@ void AudioManager::Reset(int input, int output, int loopback, int vInput, int vO
 /* Configuration save functions */
 void AudioManager::SaveSettings()
 {
-    std::ofstream settingsFile;
-    settingsFile.open(appdata + dirName + "settings.cfg", std::ios::out);
-    settingsFile << "inputDevice=" + std::to_string(inputDevice) + "\n";
-    settingsFile << "outputDevice=" + std::to_string(outputDevice) + "\n";
-    settingsFile << "loopbackDevice=" + std::to_string(loopbackDevice) + "\n";
-    settingsFile << "virtualInputDevice=" + std::to_string(virtualInputDevice) + "\n";
-    settingsFile << "virtualOutputDevice=" + std::to_string(virtualOutputDevice) + "\n";
-    settingsFile << "sampleRate=" + std::to_string(this->sampleRate) + "\n";
-    settingsFile << "framesPerBuffer=" + std::to_string(this->framesPerBuffer) + "\n";
-    settingsFile.close();
+    std::ofstream settingsFile(appdata + dirName + "settings.json");
+    settingsFile << std::setw(4) << settings << std::endl;
 }
 
 void AudioManager::SaveBinds()
@@ -340,11 +318,9 @@ void AudioManager::SetNewBind(int keycode, bool isSoundboard)
         entry = baseFXHotkey;
     }
 
-    fprintf(stdout, "%d %d\n", rebindAt, keycode); fflush(stdout);
     if (rebindAt != -1)
     {
         (*obj)[std::to_string(keycode)] = (*obj)[std::to_string(rebindAt)];
-        fprintf(stdout, "set\n"); fflush(stdout);
         if (isSoundboard && player->CanPlay(rebindAt)) player->Rename(rebindAt, keycode);
 
         obj->erase(std::to_string(rebindAt));
@@ -353,19 +329,21 @@ void AudioManager::SetNewBind(int keycode, bool isSoundboard)
     else
     {
         (*obj)[std::to_string(keycode)] = entry;
-        fprintf(stdout, "set\n"); fflush(stdout);
-        std::cout << *obj << std::endl;
 
         if (!isSoundboard)
         {
-            (*obj)[std::to_string(keycode)]["reverb"]["enabled"] = passthrough->data.useReverb;
+            (*obj)[std::to_string(keycode)]["reverb"]["enabled"] = passthrough->data.reverb->getEnabled();
             (*obj)[std::to_string(keycode)]["reverb"]["roomsize"] = passthrough->data.reverb->getroomsize();
             (*obj)[std::to_string(keycode)]["reverb"]["mix"] = passthrough->data.reverb->getwet();
             (*obj)[std::to_string(keycode)]["reverb"]["width"] = passthrough->data.reverb->getwidth();
             (*obj)[std::to_string(keycode)]["reverb"]["damp"] = passthrough->data.reverb->getdamp();
 
-            (*obj)[std::to_string(keycode)]["autotune"]["enabled"] = passthrough->data.useAutotune;
+            (*obj)[std::to_string(keycode)]["autotune"]["enabled"] = passthrough->data.pitchShift->getAutotune();
             (*obj)[std::to_string(keycode)]["autotune"]["speed"] = 1.f;//passthrough->data.autotune->getspeed();
+            (*obj)[std::to_string(keycode)]["autotune"]["notes"] = passthrough->data.pitchShift->getNotes();
+
+            (*obj)[std::to_string(keycode)]["pitch"]["enabled"] = passthrough->data.pitchShift->getPitchshift();
+            (*obj)[std::to_string(keycode)]["pitch"]["pitch"] = passthrough->data.pitchShift->getPitchscale();
         }
     }
     SaveBinds();
@@ -373,16 +351,13 @@ void AudioManager::SetNewBind(int keycode, bool isSoundboard)
 
 void AudioManager::RemoveBind(int keycode)
 {
-    std::cout << keycode << std::endl;
     if (soundboardHotkeys.find(std::to_string(keycode)) != soundboardHotkeys.end())
     {
         soundboardHotkeys.erase(std::to_string(keycode));
-        std::cout << "deletd" << std::endl;
     }
     else if (voiceFXHotkeys.find(std::to_string(keycode)) != voiceFXHotkeys.end())
     {
         voiceFXHotkeys.erase(std::to_string(keycode));
-        std::cout << "deleteed" << std::endl;
     }
     if (std::filesystem::exists(appdata + dirName + "samples/" + std::to_string(keycode) + ".mp3"))
     {
@@ -422,14 +397,18 @@ device AudioManager::GetDeviceByIndex(int i)
 
 void AudioManager::OverrideConfig(std::string keycode)
 {
-    voiceFXHotkeys[keycode]["reverb"]["enabled"] = passthrough->data.useReverb;
+    voiceFXHotkeys[keycode]["reverb"]["enabled"] = passthrough->data.reverb->getEnabled();
     voiceFXHotkeys[keycode]["reverb"]["roomsize"] = passthrough->data.reverb->getroomsize();
     voiceFXHotkeys[keycode]["reverb"]["mix"] = passthrough->data.reverb->getwet();
     voiceFXHotkeys[keycode]["reverb"]["width"] = passthrough->data.reverb->getwidth();
     voiceFXHotkeys[keycode]["reverb"]["damp"] = passthrough->data.reverb->getdamp();
 
-    voiceFXHotkeys[keycode]["autotune"]["enabled"] = passthrough->data.useAutotune;
+    voiceFXHotkeys[keycode]["autotune"]["enabled"] = passthrough->data.pitchShift->getAutotune();
     voiceFXHotkeys[keycode]["autotune"]["speed"] = 1.f;//passthrough->data.autotune->getspeed();
+    voiceFXHotkeys[keycode]["autotune"]["notes"] = passthrough->data.pitchShift->getNotes();
+
+    voiceFXHotkeys[keycode]["pitch"]["enabled"] = passthrough->data.pitchShift->getPitchshift();
+    voiceFXHotkeys[keycode]["pitch"]["pitch"] = passthrough->data.pitchShift->getPitchscale();
 
     SaveBinds();
 }
@@ -442,6 +421,4 @@ void AudioManager::OverrideSound(std::string fname, int keycode)
         std::filesystem::remove(path);
     }
     std::filesystem::copy(fname, path);
-
-
 }

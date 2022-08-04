@@ -10,8 +10,26 @@
     <height>190</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>200</width>
+    <height>190</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>200</width>
+    <height>190</height>
+   </size>
+  </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Recording Settings</string>
   </property>
   <property name="styleSheet">
    <string notr="true">background: #202020;</string>
@@ -51,10 +69,17 @@ height:25%;
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">QCheckBox::indicator {border: 1px solid #008080;}</string>
+    <string notr="true">QCheckBox::indicator {border: 1px solid #008080;}
+
+QCheckBox::indicator:checked {background: #009090;}
+
+QCheckBox{color: #FFFFFF;}</string>
    </property>
    <property name="text">
     <string>Record Input Audio</string>
+   </property>
+   <property name="tristate">
+    <bool>false</bool>
    </property>
   </widget>
   <widget class="QCheckBox" name="recordLoopback">
@@ -67,7 +92,11 @@ height:25%;
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">QCheckBox::indicator {border: 1px solid #008080;}</string>
+    <string notr="true">QCheckBox::indicator {border: 1px solid #008080;}
+
+QCheckBox::indicator:checked {background: #009090;}
+
+QCheckBox{color: #FFFFFF;}</string>
    </property>
    <property name="text">
     <string>Record Loopback</string>
@@ -83,7 +112,15 @@ height:25%;
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">QCheckBox::indicator {border: 1px solid #008080;}</string>
+    <string notr="true">QCheckBox::indicator {border: 1px solid #008080;}
+
+QCheckBox::indicator:checked {background: #009090;}
+
+QCheckBox::indicator:disabled{background: #606060;}
+
+QCheckBox::disabled{color:#606060;}
+
+QCheckBox{color: #FFFFFF;}</string>
    </property>
    <property name="text">
     <string>Pad Loopback</string>
@@ -128,6 +165,9 @@ color: #FFFFFF;</string>
    </property>
    <property name="text">
     <string>Select a sample...</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
    </property>
   </widget>
  </widget>

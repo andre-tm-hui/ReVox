@@ -9,27 +9,7 @@ Recorder::Recorder(device inputDevice, int sampleRate, int framesPerBuffer, std:
     // append a suffix to the filename - used to makes sure the loopback recorder does not overwrite the input device recorder
     this->appendToFname = appendToFname;
 
-    // open and start the stream to record from
-    this->err = Pa_OpenStream(
-                &this->stream,
-                &this->inputParameters,
-                NULL,
-                this->sampleRate,
-                this->framesPerBuffer,
-                paClipOff,
-                recordCallback,
-                &this->data
-                );
-    if (this->err != paNoError) {
-        done(); return;
-    }
-    streamSetup = true;
-
-    this->err = Pa_StartStream(stream);
-    if (err != paNoError) {
-        done(); return;
-    }
-
+    this->data.inUse = false;
     initialSetup = true;
 }
 
@@ -58,8 +38,30 @@ void Recorder::Record(int keycode, bool padAudio, bool deleteFiles)
             fprintf(stderr, (sf_strerror(data.file)));
             return;
         }
+        this->data.inUse = true;
 
         this->data.timeStamp = (float)(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count());
+
+        // open and start the stream to record from
+        this->err = Pa_OpenStream(
+                    &this->stream,
+                    &this->inputParameters,
+                    NULL,
+                    this->sampleRate,
+                    this->framesPerBuffer,
+                    paClipOff,
+                    recordCallback,
+                    &this->data
+                    );
+        if (this->err != paNoError) {
+            done(); return;
+        }
+        streamSetup = true;
+
+        this->err = Pa_StartStream(stream);
+        if (err != paNoError) {
+            done(); return;
+        }
 
         recording = true;
     }
@@ -132,10 +134,15 @@ void Recorder::Merge(int keycode)
 
 void Recorder::Stop(int keycode)
 {
+    while (data.inUse) {}
     // only call if currently recording
     if (recording) {
         // close the file being written to
+        Pa_StopStream(stream);
+        Pa_CloseStream(stream);
+        streamSetup = false;
         sf_close(data.file);
+        fprintf(stdout, "stop\n"); fflush(stdout);
 
         recording = false;
 

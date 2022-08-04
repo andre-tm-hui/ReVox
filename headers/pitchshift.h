@@ -19,14 +19,24 @@ public:
         delete[] outputs;
     }
 
-    void repitch(float *buf, float scale, bool tune = false);
+    void repitch(float *buf);
 
-    bool working = false;
+    void setAutotune(bool enabled) { this->autotune = enabled; }
+    bool getAutotune() { return this->autotune; }
+
+    void setPitchshift(bool enabled) { this->pitchshift = enabled; }
+    bool getPitchshift() { return this->pitchshift; }
+
+    void setPitchscale(float scale) { this->pitchscale = scale; }
+    float getPitchscale() { return this->pitchscale; }
+
+    void setNotes(std::vector<bool> notes);
+    std::vector<bool> getNotes() { std::vector<bool> notes(std::begin(validNotes), std::end(validNotes)); return notes; }
 
 private:
     void add(float *buf);
 
-    std::vector<std::vector<float>> getWindows(float *buffer, float period, std::vector<float> markers);
+    std::vector<std::vector<float>> getWindows(float *buffer, float period, std::vector<float> markers, float scale = 1.f);
 
     void addToBuffer(std::vector<float> window, float marker);
 
@@ -44,7 +54,11 @@ private:
     float marker = 0.f, lastMarker = 0.f;
 
     bool setupFlag = false;
+    bool autotune = false;
+    bool pitchshift = false;
+    float pitchscale = 1.f;
 
+    bool validNotes[12] = {true, false, true, false, true, true, false, true, false, true, false, true};
 };
 
 const float TWELTH_ROOT_TWO = pow(2.f, 1.f / 12.f);

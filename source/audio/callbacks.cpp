@@ -8,8 +8,8 @@ int recordCallback(const void* inputBuffer, void* outputBuffer,
 {
     // create and assign some variables
     float* in = (float*)inputBuffer;
-    callbackData* p_data = (callbackData*)data;
-
+    recordData* p_data = (recordData*)data;
+    //p_data->inUse = true;
 
     if (p_data->file != nullptr)
     {
@@ -37,11 +37,11 @@ int recordCallback(const void* inputBuffer, void* outputBuffer,
             // update the time stamp
             p_data->timeStamp = currentTime;
         }
-
+        fprintf(stdout, "write\n"); fflush(stdout);
         // write the most recent buffer to file
         sf_write_float(p_data->file, in, framesPerBuffer * p_data->info.channels);
     }
-
+    //p_data->inUse = false;
     return paContinue;
 }
 
@@ -52,7 +52,7 @@ int playCallback(const void* inputBuffer, void* outputBuffer,
                  void* data)
 {
     // create and assign some variables
-    callbackData* p_data = (callbackData*) data;
+    playData* p_data = (playData*) data;
     float* out = (float*)outputBuffer;
     float* read = new float[framesPerBuffer * 2];
     sf_count_t num_read;
@@ -85,7 +85,6 @@ int playCallback(const void* inputBuffer, void* outputBuffer,
 
     // unassign the memory allocation for the read buffer
     delete[] read;
-
     return paContinue;
 }
 
@@ -98,9 +97,7 @@ int passthroughCallback(const void* inputBuffer, void* outputBuffer,
     // declare and assign some variables
     float* in = (float*)inputBuffer;
     float* out = (float*)outputBuffer;
-    callbackData* p_data = (callbackData*) data;
-
-    p_data->working = true;
+    passthroughData* p_data = (passthroughData*) data;
 
     float* mono = new float[framesPerBuffer];
     for (int i = 0; i < framesPerBuffer; i++)
@@ -108,26 +105,14 @@ int passthroughCallback(const void* inputBuffer, void* outputBuffer,
         mono[i] = (in[2*i] + in[2*i+1]);
     }
 
-    if (p_data->useAutotune)
+    if (p_data->pitchShift->getAutotune() || p_data->pitchShift->getPitchshift())
     {
-        p_data->ps->repitch(mono, 1.f, true);
-        //p_data->useAutotune = false;
+        p_data->pitchShift->repitch(mono);
     }
 
-    if (p_data->useReverb)
+    if (p_data->reverb->getEnabled())
     {
-        float *inL = new float[framesPerBuffer],
-              *inR = new float[framesPerBuffer],
-              *outL = new float[framesPerBuffer],
-              *outR = new float[framesPerBuffer];
-        memcpy(inL, mono, sizeof(float) * framesPerBuffer);
-        memcpy(inR, mono, sizeof(float) * framesPerBuffer);
-        p_data->reverb->processreplace(inL, inR, outL, outR, framesPerBuffer, 1);
-        memcpy(mono, outL, sizeof(float) * framesPerBuffer);
-        delete[] inL;
-        delete[] inR;
-        delete[] outL;
-        delete[] outR;
+        p_data->reverb->processmono(mono, mono, framesPerBuffer, 1);
     }
 
     for (int i = 0; i < (int)framesPerBuffer; i++)
@@ -135,10 +120,8 @@ int passthroughCallback(const void* inputBuffer, void* outputBuffer,
         out[2*i] = mono[i];
         out[2*i+1] = mono[i];
     }
-    //fprintf(stdout, "\n"); fflush(stdout);
-    delete[] mono;
 
-    p_data->working = false;
+    delete[] mono;
 
     return paContinue;
 }

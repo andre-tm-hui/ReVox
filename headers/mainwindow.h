@@ -3,7 +3,11 @@
 
 #include <QMainWindow>
 #include <QListWidget>
+#include <QHBoxLayout>
 #include <QSystemTrayIcon>
+#include <reverbsettings.h>
+#include <hardtunesettings.h>
+#include <pitchsettings.h>
 #include <hotkeyitem.h>
 #include <thread>
 #include "ui_mainwindow.h"
@@ -48,6 +52,10 @@ private slots:
 
     void toggleAutotune(int state);
 
+    void togglePitchshift(int state);
+
+    void openFXSettings(int type);
+
 private:
     Ui::MainWindow *ui;
 
@@ -66,7 +74,7 @@ private:
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
 
-    QSignalMapper mapper_add, mapper_remove;
+    QSignalMapper mapper_add, mapper_remove, mapper_fx;
 
     static QString GetKeyName(int keybind);
 

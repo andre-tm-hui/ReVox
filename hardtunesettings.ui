@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>HardtuneSettings</class>
+ <widget class="QDialog" name="HardtuneSettings">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>310</width>
+    <height>230</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>310</width>
+    <height>230</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>310</width>
+    <height>230</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background: #202020;
+color: #FFFFFF;</string>
+  </property>
+  <widget class="QComboBox" name="scale">
+   <property name="geometry">
+    <rect>
+     <x>110</x>
+     <y>20</y>
+     <width>181</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::NoFocus</enum>
+   </property>
+   <item>
+    <property name="text">
+     <string>C Major / A Minor</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>C# Major / Bb Minor</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>D Major / B Minor</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>D# Major / C Minor</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>E Major / Db Minor</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>F Major / D Minor</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>F# Major / Eb Minor</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>G Major / E Minor</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>G# Major / F Minor</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>A Major / Gb Minor</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>A# Major / G Minor</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>B Major / Ab Minor</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Custom</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QCheckBox" name="C">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>60</y>
+     <width>30</width>
+     <height>150</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QCheckBox::indicator {width: 30px; height: 150px; border: 0px;}
+
+QCheckBox::indicator:checked {background: #FFFFFF;}
+QCheckBox::indicator:unchecked {background: #505050;}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="D">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>60</y>
+     <width>30</width>
+     <height>150</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QCheckBox::indicator {width: 30px; height: 150px; border: 0px;}
+
+QCheckBox::indicator:checked {background: #FFFFFF;}
+QCheckBox::indicator:unchecked {background: #505050;}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="E">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>60</y>
+     <width>30</width>
+     <height>150</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QCheckBox::indicator {width: 30px; height: 150px; border: 0px;}
+
+QCheckBox::indicator:checked {background: #FFFFFF;}
+QCheckBox::indicator:unchecked {background: #505050;}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="F">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>60</y>
+     <width>30</width>
+     <height>150</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QCheckBox::indicator {width: 30px; height: 150px; border: 0px;}
+
+QCheckBox::indicator:checked {background: #FFFFFF;}
+QCheckBox::indicator:unchecked {background: #505050;}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="G">
+   <property name="geometry">
+    <rect>
+     <x>180</x>
+     <y>60</y>
+     <width>30</width>
+     <height>150</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QCheckBox::indicator {width: 30px; height: 150px; border: 0px;}
+
+QCheckBox::indicator:checked {background: #FFFFFF;}
+QCheckBox::indicator:unchecked {background: #505050;}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="A">
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>60</y>
+     <width>30</width>
+     <height>150</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QCheckBox::indicator {width: 30px; height: 150px; border: 0px;}
+
+QCheckBox::indicator:checked {background: #FFFFFF;}
+QCheckBox::indicator:unchecked {background: #505050;}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="B">
+   <property name="geometry">
+    <rect>
+     <x>260</x>
+     <y>60</y>
+     <width>30</width>
+     <height>150</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QCheckBox::indicator {width: 30px; height: 150px; border: 0px;}
+
+QCheckBox::indicator:checked {background: #FFFFFF;}
+QCheckBox::indicator:unchecked {background: #505050;}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="Db">
+   <property name="geometry">
+    <rect>
+     <x>45</x>
+     <y>60</y>
+     <width>20</width>
+     <height>80</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QCheckBox::indicator {width: 20px; height: 80px; border: 0px;}
+
+QCheckBox::indicator:checked {background: #000000;}
+QCheckBox::indicator:unchecked {background: #505050;}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="Eb">
+   <property name="geometry">
+    <rect>
+     <x>85</x>
+     <y>60</y>
+     <width>20</width>
+     <height>80</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QCheckBox::indicator {width: 20px; height: 80px; border: 0px;}
+
+QCheckBox::indicator:checked {background: #000000;}
+QCheckBox::indicator:unchecked {background: #505050;}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="Gb">
+   <property name="geometry">
+    <rect>
+     <x>165</x>
+     <y>60</y>
+     <width>20</width>
+     <height>80</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QCheckBox::indicator {width: 20px; height: 80px; border: 0px;}
+
+QCheckBox::indicator:checked {background: #000000;}
+QCheckBox::indicator:unchecked {background: #505050;}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="Ab">
+   <property name="geometry">
+    <rect>
+     <x>205</x>
+     <y>60</y>
+     <width>20</width>
+     <height>80</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QCheckBox::indicator {width: 20px; height: 80px; border: 0px;}
+
+QCheckBox::indicator:checked {background: #000000;}
+QCheckBox::indicator:unchecked {background: #505050;}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="Bb">
+   <property name="geometry">
+    <rect>
+     <x>245</x>
+     <y>60</y>
+     <width>20</width>
+     <height>80</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QCheckBox::indicator {width: 20px; height: 80px; border: 0px;}
+
+QCheckBox::indicator:checked {background: #000000;}
+QCheckBox::indicator:unchecked {background: #505050;}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>20</y>
+     <width>91</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Autotune Scale</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

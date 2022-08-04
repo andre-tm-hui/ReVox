@@ -31,12 +31,9 @@ public:
     ~AudioManager();
 
     std::map<std::string, int> deviceList;
-    std::map<std::string, int> apiMap;
     std::map<std::string, device> inputDevices;
     std::map<std::string, device> outputDevices;
     std::map<std::string, device> loopbackDevices;
-
-    int inputDevice, outputDevice, loopbackDevice, virtualInputDevice, virtualOutputDevice;
 
     void ResetInputRecorder();
     void ResetLoopbackRecorder();
@@ -58,11 +55,23 @@ public:
     Recorder *inputDeviceRecorder, *loopbackRecorder;
     Passthrough *passthrough;
     Player *player, *monitor;
-    std::map<int, keybind> keybinds;
     json soundboardHotkeys;
     json voiceFXHotkeys;
 
     bool recording = false;
+
+    json settings = R"(
+        {
+            "inputDevice": 0,
+            "outputDevice": 0,
+            "streamOutputDevice": -1,
+            "loopbackDevice": 0,
+            "virtualInputDevice": 0,
+            "virtualOutputDevice": 0,
+            "sampleRate": 48000,
+            "framesPerBuffer": 1024
+        }
+        )"_json;
 
 private:
     std::map<std::string, QCheckBox*> *checkboxes;
@@ -71,8 +80,6 @@ private:
 
     std::string appdata;
     std::string dirName = "/Virtual SoundTool/";
-
-    std::map<std::string, int> settings;
 
     void SaveSettings();
 
@@ -92,7 +99,7 @@ private:
         {
             "label": "",
             "reverb": { "enabled": false, "roomsize": 0.5, "mix": 0.5, "width": 0.5, "damp": 0.5 },
-            "autotune": { "enabled": false, "speed": 0.5 },
+            "autotune": { "enabled": false, "speed": 0.5, "notes": [ true, false, true, false, true, true, false, true, false, true, false, true ] },
             "pitch": { "enabled": false, "pitch": 1.0 }
         }
         )"_json;

@@ -33,7 +33,7 @@ public:
 
     std::string dir;
 
-    callbackData data = {};
+    //callbackData data = {};
 
     bool initialSetup = false;
 };

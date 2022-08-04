@@ -5,7 +5,6 @@ PitchShift::PitchShift(int bufSize, int sampleRate)
 {
     this->bufSize = bufSize;
     this->sampleRate = sampleRate;
-    std::cout << "hello " << bufSize << std::endl;
     freq = new Frequency(bufSize);
     inputs = new float[bufSize * 3];
     outputs = new float[bufSize * 3];
@@ -15,8 +14,14 @@ PitchShift::PitchShift(int bufSize, int sampleRate)
     lastMarker = (float)bufSize+1.f;
 }
 
-void PitchShift::repitch(float *buf, float scale, bool tune)
+void PitchShift::setNotes(std::vector<bool> notes)
 {
+    for (int i = 0; i < 12; i++) validNotes[i] = notes[i];
+}
+
+void PitchShift::repitch(float *buf)
+{
+    float scale = 1.f;
     // Add the buffer to the process loop
     add(buf);
     // Get the period of the buffer to be processed
@@ -41,11 +46,25 @@ void PitchShift::repitch(float *buf, float scale, bool tune)
         }
     }
 
-    if (tune)
+    if (pitchshift) scale *= pitchscale;
+
+    if (autotune)
     {
         float ffreq = (float)sampleRate / period;
         float semitoneOffset = log(ffreq / 440.f) / log(TWELTH_ROOT_TWO);
-        float targetFreq = 440.f * pow(TWELTH_ROOT_TWO, roundf(semitoneOffset));
+        float modOffset = fmod(semitoneOffset, 12);
+        int octaveOffset = (int)(semitoneOffset / 12);
+        int closest = 0;
+        float distance = INFINITY;
+        for (int i = 0; i < 12; i++)
+        {
+            if (validNotes[i] && abs(modOffset - (i - 9)) < distance)
+            {
+                distance = abs(modOffset - (i-9));
+                closest = i - 9;
+            }
+        }
+        float targetFreq = 440.f * pow(TWELTH_ROOT_TWO, roundf(closest + octaveOffset * 12));
         scale *= targetFreq / ffreq;
     }
     scale = 1.f / scale;
@@ -75,7 +94,7 @@ void PitchShift::repitch(float *buf, float scale, bool tune)
     //fprintf(stdout, "\n%d markers found\n", markers.size()); fflush(stdout);
 
     // Get windows
-    std::vector<std::vector<float>> windows = getWindows(inputs + bufSize, period, markers);
+    std::vector<std::vector<float>> windows = getWindows(inputs + bufSize, period, markers, scale);
     //fprintf(stdout, "windows generated\n"); fflush(stdout);
 
     // Get synthesized markers
@@ -160,7 +179,7 @@ void PitchShift::addToBuffer(std::vector<float> window, float marker)
     }
 }
 
-std::vector<std::vector<float>> PitchShift::getWindows(float *buf, float period, std::vector<float> markers)
+std::vector<std::vector<float>> PitchShift::getWindows(float *buf, float period, std::vector<float> markers, float scale)
 {
     std::vector<std::vector<float>> output = {};
     for (auto marker : markers)
@@ -170,6 +189,7 @@ std::vector<std::vector<float>> PitchShift::getWindows(float *buf, float period,
         {
             window.push_back(lerp(buf[(int)floor(marker+i)], buf[(int)ceil(marker+i)], fmod(marker+i, floor(marker+i))));
         }
+        if (scale != 1.f) window = resample(window, scale);
         output.push_back(window);
     }
     return output;
@@ -187,7 +207,7 @@ void PitchShift::add(float *buf)
 }
 
 
-std::vector<float> resample(std::vector<float> input, float scale)
+std::vector<float> PitchShift::resample(std::vector<float> input, float scale)
 {
     std::vector<float> out = {};
 
@@ -198,7 +218,7 @@ std::vector<float> resample(std::vector<float> input, float scale)
 
     for (int i = 0; i < outputSize; i++)
     {
-        float idx = (float)input.size() * (float)i / (float)(outputSize-1); // -1 to make sure the last of both arrays match
+        float idx = (float)((int)input.size()-1) * (float)i / (float)(outputSize-1); // -1 to make sure the last of both arrays match
 
         out.push_back(lerp(input[floor(idx)], input[ceil(idx)], idx - floor(idx)));
     }

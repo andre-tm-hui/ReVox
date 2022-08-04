@@ -52,7 +52,7 @@ MainWindow::MainWindow(QWidget *parent)
             {
                 d_data->vInputDevices[i] = QString::fromStdString(dName);
 
-                if (dName.find(Pa_GetDeviceInfo(audioManager->virtualInputDevice)->name) != std::string::npos)
+                if (dName.find(Pa_GetDeviceInfo(audioManager->settings["virtualInputDevice"])->name) != std::string::npos)
                 {
                     d_data->vInputIdx = i;
                 }
@@ -60,7 +60,7 @@ MainWindow::MainWindow(QWidget *parent)
             else if (dName.find("Output") != std::string::npos)
             {
                 d_data->vOutputDevices[i] = QString::fromStdString(dName);
-                if (dName.find(Pa_GetDeviceInfo(audioManager->virtualOutputDevice)->name) != std::string::npos)
+                if (dName.find(Pa_GetDeviceInfo(audioManager->settings["virtualOutputDevice"])->name) != std::string::npos)
                 {
                     d_data->vOutputIdx = i;
                 }
@@ -72,7 +72,7 @@ MainWindow::MainWindow(QWidget *parent)
     for (auto const& [dName, i] : audioManager->inputDevices)
     {
         d_data->inputDevices[i.id] = QString::fromStdString(dName);
-        if (dName.find(Pa_GetDeviceInfo(audioManager->inputDevice)->name) != std::string::npos)
+        if (dName.find(Pa_GetDeviceInfo(audioManager->settings["inputDevice"])->name) != std::string::npos)
         {
             d_data->inputIdx = i.id;
         }
@@ -83,7 +83,7 @@ MainWindow::MainWindow(QWidget *parent)
     for (auto const& [dName, i] : audioManager->outputDevices)
     {
         d_data->outputDevices[i.id] = QString::fromStdString(dName);
-        if (dName.find(Pa_GetDeviceInfo(audioManager->outputDevice)->name) != std::string::npos)
+        if (dName.find(Pa_GetDeviceInfo(audioManager->settings["outputDevice"])->name) != std::string::npos)
         {
             d_data->outputIdx = i.id;
         }
@@ -94,7 +94,7 @@ MainWindow::MainWindow(QWidget *parent)
     for (auto const& [dName, i] : audioManager->loopbackDevices)
     {
         d_data->loopbackDevices[i.id] = QString::fromStdString(dName);
-        if (dName.find(Pa_GetDeviceInfo(audioManager->loopbackDevice)->name) != std::string::npos)
+        if (dName.find(Pa_GetDeviceInfo(audioManager->settings["loopbackDevice"])->name) != std::string::npos)
         {
             d_data->loopbackIdx = i.id;
         }
@@ -128,9 +128,20 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->state, SIGNAL(stateChanged(int)), this, SLOT(toggleReverb(int)));
     connect(ui->state_2, SIGNAL(stateChanged(int)), this, SLOT(toggleAutotune(int)));
+    connect(ui->state_4, SIGNAL(stateChanged(int)), this, SLOT(togglePitchshift(int)));
+
+    connect(&mapper_fx, SIGNAL(mappedInt(int)), this, SLOT(openFXSettings(int)));
+    connect(ui->settings, SIGNAL(clicked()), &mapper_fx, SLOT(map()));
+    mapper_fx.setMapping(ui->settings, 0);
+    connect(ui->settings_2, SIGNAL(clicked()), &mapper_fx, SLOT(map()));
+    mapper_fx.setMapping(ui->settings_2, 1);
+    connect(ui->settings_4, SIGNAL(clicked()), &mapper_fx, SLOT(map()));
+    mapper_fx.setMapping(ui->settings_4, 2);
+
 
     checkboxes["reverb"] = ui->state;
     checkboxes["autotune"] = ui->state_2;
+    checkboxes["pitchshift"] = ui->state_4;
     audioManager->SetCheckboxes(&checkboxes);
 
     keyPressEater = new KeyPressEater(this);
@@ -235,11 +246,42 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
 
 void MainWindow::toggleReverb(int state)
 {
-    std::cout<<state<<std::endl;
-    audioManager->passthrough->data.useReverb = state == 0 ? false : true;
+    audioManager->passthrough->data.reverb->setEnabled(state == 0 ? false : true);
 }
 
 void MainWindow::toggleAutotune(int state)
 {
-    audioManager->passthrough->data.useAutotune = state == 0 ? false : true;
+    audioManager->passthrough->data.pitchShift->setAutotune(state == 0 ? false : true);
+}
+
+void MainWindow::togglePitchshift(int state)
+{
+    audioManager->passthrough->data.pitchShift->setPitchshift(state == 0 ? false : true);
+}
+
+void MainWindow::openFXSettings(int type)
+{
+    switch (type)
+    {
+    case 0: {// reverb
+        ReverbSettings rv(audioManager->passthrough->data.reverb);
+        rv.setModal(true);
+        rv.exec();
+        break;
+    }
+    case 1: {
+        HardtuneSettings ht(audioManager->passthrough->data.pitchShift);
+        ht.setModal(true);
+        ht.exec();
+        break;
+    }
+    case 2: {
+        PitchSettings pt(audioManager->passthrough->data.pitchShift);
+        pt.setModal(true);
+        pt.exec();
+        break;
+    }
+    default:
+        break;
+    }
 }

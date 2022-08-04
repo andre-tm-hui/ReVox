@@ -60,4 +60,6 @@ void AudioStream::done()
     {
         Pa_CloseStream(stream);
     }
+
+    initialSetup = true;
 }

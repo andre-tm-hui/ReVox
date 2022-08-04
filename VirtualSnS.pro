@@ -9,6 +9,9 @@ CONFIG += c++20
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    hardtunesettings.cpp \
+    pitchsettings.cpp \
+    reverbsettings.cpp \
     source/qt/devicesettings.cpp \
     source/audio/dsp/comb.cpp \
     source/audio/audiomanager.cpp \
@@ -30,6 +33,7 @@ SOURCES += \
     source/qt/rc/keypresseater.cpp
 
 HEADERS += \
+    hardtunesettings.h \
     headers/devicesettings.h \
     headers/allpass.h \
     headers/audiomanager.h \
@@ -93,14 +97,19 @@ HEADERS += \
     nlohmann/json_fwd.hpp \
     nlohmann/ordered_map.hpp \
     nlohmann/thirdparty/hedley/hedley.hpp \
-    nlohmann/thirdparty/hedley/hedley_undef.hpp
+    nlohmann/thirdparty/hedley/hedley_undef.hpp \
+    pitchsettings.h \
+    reverbsettings.h
 
 INCLUDEPATH += headers
 
 FORMS += \
+    hardtunesettings.ui \
+    pitchsettings.ui \
     qtui/devicesettings.ui \
     qtui/keybindsettings.ui \
-    qtui/mainwindow.ui
+    qtui/mainwindow.ui \
+    reverbsettings.ui
 
 TRANSLATIONS += \
     VirtualSnS_en_001.ts

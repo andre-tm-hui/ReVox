@@ -21,6 +21,8 @@ public:
     void Rename(int keycodeFrom, int keycodeTo);
 
     int maxLiveSamples;
+
+    playData data = {};
 };
 
 #endif // PLAYER_H

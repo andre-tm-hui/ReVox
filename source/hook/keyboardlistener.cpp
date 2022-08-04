@@ -61,14 +61,6 @@ LRESULT CALLBACK KeyboardListener::KeyboardEvent(int nCode, WPARAM wParam, LPARA
                     }
                     else
                     {
-                        /*switch (bindSettings.fxType)
-                        {
-                        case 0:
-                            audioManager->passthrough->data.useReverb = !audioManager->passthrough->data.useReverb;
-                            break;
-                        default:
-                            break;
-                        }*/
                         audioManager->passthrough->SetFX(audioManager->voiceFXHotkeys[std::to_string(p->vkCode)]);
                     }
 
@@ -96,7 +88,9 @@ LRESULT CALLBACK KeyboardListener::KeyboardEvent(int nCode, WPARAM wParam, LPARA
                         if (!audioManager->recording)
                         {
                             if (bindSettings["recordInput"]) audioManager->inputDeviceRecorder->Record(p->vkCode);
+                            std::cout<<"input"<<std::endl;
                             if (bindSettings["recordLoopback"]) audioManager->loopbackRecorder->Record(p->vkCode, bindSettings["syncStreams"], !bindSettings["recordInput"]);
+                            std::cout<<"loopback"<<std::endl;
                             audioManager->recording = true;
                         }
                     }

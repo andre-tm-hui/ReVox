@@ -127,7 +127,7 @@ background-color: #303030;</string>
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">border: 1px solid #006060;</string>
+     <string notr="true">QGroupBox{border: 1px solid #006060;}</string>
     </property>
     <property name="title">
      <string/>
@@ -314,6 +314,97 @@ QCheckBox::indicator::unchecked {image: url(:/icons/FXOff.png); width: 12px; hei
       </property>
      </widget>
     </widget>
+    <widget class="QGroupBox" name="pitchshift">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>70</y>
+       <width>151</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">border: 0px;</string>
+     </property>
+     <property name="title">
+      <string/>
+     </property>
+     <widget class="QToolButton" name="settings_4">
+      <property name="geometry">
+       <rect>
+        <x>120</x>
+        <y>0</y>
+        <width>23</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: transparent;
+border: 0px;</string>
+      </property>
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../appicon.qrc">
+        <normaloff>:/icons/settings.png</normaloff>:/icons/settings.png</iconset>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="state_4">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>0</y>
+        <width>16</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+        <bold>false</bold>
+        <kerning>true</kerning>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QCheckBox::indicator::checked {image: url(:/icons/FXOn.png); width: 12px; height: 12px;}
+QCheckBox::indicator::unchecked {image: url(:/icons/FXOff.png); width: 12px; height: 12px;}</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>12</width>
+        <height>12</height>
+       </size>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+      <property name="checked">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_8">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>-1</y>
+        <width>81</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Pitch Shift</string>
+      </property>
+     </widget>
+    </widget>
    </widget>
    <widget class="QListWidget" name="keybindList">
     <property name="geometry">
@@ -342,8 +433,11 @@ QListWidget { border: 1px solid #006060; padding: 4px; outline: 0; }
 
 QListWidget::item { margin: 4px; }</string>
     </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
     <property name="horizontalScrollBarPolicy">
-     <enum>Qt::ScrollBarAsNeeded</enum>
+     <enum>Qt::ScrollBarAlwaysOff</enum>
     </property>
     <property name="itemAlignment">
      <set>Qt::AlignVCenter</set>
@@ -475,8 +569,11 @@ QListWidget { border: 1px solid #006060; padding: 4px; outline: 0; }
 
 QListWidget::item { margin: 4px; }</string>
     </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
     <property name="horizontalScrollBarPolicy">
-     <enum>Qt::ScrollBarAsNeeded</enum>
+     <enum>Qt::ScrollBarAlwaysOff</enum>
     </property>
    </widget>
    <widget class="QPushButton" name="addBind_2">

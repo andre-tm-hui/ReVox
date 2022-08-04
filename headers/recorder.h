@@ -21,6 +21,8 @@ public:
     void Stop(int keycode);
     void Merge(int keycode);
 
+    recordData data = {};
+
 private:
     bool recording = false;
     std::string appendToFname;

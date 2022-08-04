@@ -17,12 +17,14 @@ public:
     ~Passthrough()
     {
         delete data.reverb;
-        delete data.ps;
+        delete data.autotune;
     }
 
     void SetFX(json settings);
 
     std::map<std::string, QCheckBox*> *checkboxes;
+
+    passthroughData data = {};
 };
 
 #endif // PASSTHROUGH_H

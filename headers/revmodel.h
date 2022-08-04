@@ -34,6 +34,8 @@ public:
             float	getwidth();
             void	setmode(float value);
             float	getmode();
+            void    setEnabled(bool enabled) { this->enabled = enabled; }
+            bool    getEnabled() { return enabled; }
 private:
             void	update();
 private:
@@ -44,6 +46,7 @@ private:
     float	dry;
     float	width;
     float	mode;
+    bool    enabled;
 
     bool err = false;
 

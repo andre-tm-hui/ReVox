@@ -23,7 +23,7 @@ private slots:
 
     void on_recordLoopback_stateChanged(int arg1);
 
-    void on_browse_triggered(QAction *arg1);
+    void openFile();
 
 private:
     Ui::KeybindSettings *ui;
