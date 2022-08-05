@@ -12,6 +12,7 @@ SOURCES += \
     hardtunesettings.cpp \
     pitchsettings.cpp \
     reverbsettings.cpp \
+    source/audio/streams/monitor.cpp \
     source/qt/devicesettings.cpp \
     source/audio/dsp/comb.cpp \
     source/audio/audiomanager.cpp \
@@ -47,6 +48,7 @@ HEADERS += \
     headers/keyboardlistener.h \
     headers/keypresseater.h \
     headers/mainwindow.h \
+    headers/monitor.h \
     headers/passthrough.h \
     headers/pitchshift.h \
     headers/player.h \
@@ -143,3 +145,8 @@ win32: LIBS += -L$$PWD/'../../C++ Libraries/fftw/' -llibfftw3f-3
 
 INCLUDEPATH += $$PWD/'../../C++ Libraries/fftw'
 DEPENDPATH += $$PWD/'../../C++ Libraries/fftw'
+
+win32: LIBS += -L$$PWD/'../../C++ Libraries/libsamplerate-0.2.2-win64/lib/' -lsamplerate
+
+INCLUDEPATH += $$PWD/'../../C++ Libraries/libsamplerate-0.2.2-win64/include'
+DEPENDPATH += $$PWD/'../../C++ Libraries/libsamplerate-0.2.2-win64/bin'

@@ -2,8 +2,8 @@
 
 /* The passthrough stream object, writes audio from the input device directly to the output device. */
 
-Passthrough::Passthrough(device inputDevice, device outputDevice, int sampleRate, int framesPerBuffer)
-    : AudioStream(inputDevice, outputDevice, sampleRate, framesPerBuffer, "")
+Passthrough::Passthrough(device inputDevice, device outputDevice, int sampleRate, int framesPerBuffer, std::string dir)
+    : AudioStream(inputDevice, outputDevice, sampleRate, framesPerBuffer, dir)
 {
     initialSetup = false;
 
@@ -13,7 +13,7 @@ Passthrough::Passthrough(device inputDevice, device outputDevice, int sampleRate
                 &inputParameters,
                 &outputParameters,
                 this->sampleRate,
-                this->framesPerBuffer,              // this has to be as low as possible, and non-zero, because copying a large buffer introduces audio distortion
+                this->framesPerBuffer,
                 paClipOff,
                 passthroughCallback,
                 &this->data
@@ -30,10 +30,14 @@ Passthrough::Passthrough(device inputDevice, device outputDevice, int sampleRate
         done(); return;
     }
 
+    data.nChannels = inputParameters.channelCount;
+
     data.reverb = new revmodel();
 
     data.pitchShift = new PitchShift(framesPerBuffer, sampleRate);
 
+    data.rData = new recordData();
+    data.rData->info = {};
     initialSetup = true;
 }
 
@@ -54,4 +58,43 @@ void Passthrough::SetFX(json settings)
     data.pitchShift->setPitchshift(settings["pitch"]["enabled"].get<bool>());
     (*checkboxes)["pitchshift"]->setCheckState(data.pitchShift->getPitchshift() ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
     data.pitchShift->setPitchscale(settings["pitch"]["pitch"].get<float>());
+}
+
+
+void Passthrough::Record(int keycode)
+{
+    if (!recording)
+    {
+        std::string FILE_NAME = dir + "/samples/" + std::to_string(keycode) + ".mp3";
+
+        // set the sndfile info to be a .mp3 file
+        this->data.rData->info.samplerate = this->sampleRate;
+        this->data.rData->info.channels = 2;
+        this->data.rData->info.format = SF_FORMAT_MPEG | SF_FORMAT_MPEG_LAYER_III;
+
+        // open the file
+        this->data.rData->file = sf_open(FILE_NAME.c_str(), SFM_WRITE, &this->data.rData->info);
+        if (sf_error(this->data.rData->file) != SF_ERR_NO_ERROR) {
+            fprintf(stderr, (sf_strerror(data.rData->file)));
+            return;
+        }
+
+        this->data.rData->inUse = true;
+
+        recording = true;
+    }
+}
+
+void Passthrough::Stop(int keycode)
+{
+    // only call if currently recording
+    if (recording) {
+        // tell the callback to stop recording, and wait for thee callback to finish up any work
+        this->data.rData->inUse = false;
+        Sleep(200);
+        // close the file being written to
+        sf_close(data.rData->file);
+
+        recording = false;
+    }
 }

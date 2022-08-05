@@ -150,6 +150,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->addBind->installEventFilter(keyPressEater);
     ui->addBind_2->installEventFilter(keyPressEater);
 
+    ui->maxOverlappingSounds->setValue(audioManager->settings["maxNumberOfSounds"].get<int>());
+    ui->maxPlaybackLength->setValue(audioManager->settings["maxFileLength"].get<int>());
+
     setup = true;
 }
 
@@ -285,3 +288,15 @@ void MainWindow::openFXSettings(int type)
         break;
     }
 }
+
+void MainWindow::on_maxPlaybackLength_valueChanged(int arg1)
+{
+    audioManager->SetPlaybackLength(arg1);
+}
+
+
+void MainWindow::on_maxOverlappingSounds_valueChanged(int arg1)
+{
+    audioManager->SetNumberOfSounds(arg1);
+}
+

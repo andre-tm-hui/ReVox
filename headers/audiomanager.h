@@ -6,6 +6,7 @@
 #include "recorder.h"
 #include <QCheckBox>
 #include <nlohmann/json.hpp>
+#include <samplerate.h>
 using namespace nlohmann;
 
 // struct containing all settings related to a keybind
@@ -35,12 +36,11 @@ public:
     std::map<std::string, device> outputDevices;
     std::map<std::string, device> loopbackDevices;
 
-    void ResetInputRecorder();
     void ResetLoopbackRecorder();
     void ResetPassthrough();
     void ResetPlayer();
     void ResetMonitor();
-    void Reset(int input, int output, int loopback, int vInput, int vOutput);
+    void Reset(int input, int output, int loopback);
 
     void Rebind(int keycode);
     void SetNewBind(int keycode, bool isSoundboard);
@@ -50,9 +50,12 @@ public:
     void OverrideConfig(std::string keycode);
     void OverrideSound(std::string fname, int keycode);
 
+    void SetNumberOfSounds(int n) { settings["maxNumberOfSounds"] = n; player->maxLiveSamples = n; }
+    void SetPlaybackLength(int n) { settings["maxFileLength"] = n; player->data.maxFileLength = n; }
+
     void WaitForReady();
 
-    Recorder *inputDeviceRecorder, *loopbackRecorder;
+    Recorder *loopbackRecorder;
     Passthrough *passthrough;
     Player *player, *monitor;
     json soundboardHotkeys;
@@ -69,13 +72,15 @@ public:
             "virtualInputDevice": 0,
             "virtualOutputDevice": 0,
             "sampleRate": 48000,
-            "framesPerBuffer": 1024
+            "framesPerBuffer": 1024,
+            "maxNumberOfSounds": 3,
+            "maxFileLength": 5
         }
         )"_json;
 
 private:
     std::map<std::string, QCheckBox*> *checkboxes;
-    int sampleRate, framesPerBuffer;
+    int sampleRate, framesPerBuffer, defVInput, defVOutput;
     int rebindAt = -1;
 
     std::string appdata;
@@ -103,6 +108,8 @@ private:
             "pitch": { "enabled": false, "pitch": 1.0 }
         }
         )"_json;
+
+    float *inputBuffer, *playbackBuffer, *streamBuffer;
 };
 
 #endif // AUDIOMANAGER_H

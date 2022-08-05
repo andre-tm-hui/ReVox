@@ -47,13 +47,15 @@ LRESULT CALLBACK KeyboardListener::KeyboardEvent(int nCode, WPARAM wParam, LPARA
                             // check if button has a recorded file, otherwise, start recording
                             if (audioManager->player->CanPlay(p->vkCode))
                             {
+                                std::cout<<"plyaer playing"<<std::endl;
                                 audioManager->player->Play(p->vkCode);
-                                audioManager->monitor->Play(p->vkCode);
+                                //std::cout<<"monitor playing"<<std::endl;
+                                //audioManager->monitor->Play(p->vkCode);
                             }
                             // if not, start recording
                             else
                             {
-                                if (bindSettings["recordInput"]) audioManager->inputDeviceRecorder->Record(p->vkCode);
+                                if (bindSettings["recordInput"]) audioManager->passthrough->Record(p->vkCode);
                                 if (bindSettings["recordLoopback"]) audioManager->loopbackRecorder->Record(p->vkCode, bindSettings["syncStreams"], !bindSettings["recordInput"]);
                                 audioManager->recording = true;
                             }
@@ -71,7 +73,7 @@ LRESULT CALLBACK KeyboardListener::KeyboardEvent(int nCode, WPARAM wParam, LPARA
                         // stop recording when button is released
                         if (audioManager->recording)
                         {
-                            if (bindSettings["recordInput"]) audioManager->inputDeviceRecorder->Stop(p->vkCode);
+                            if (bindSettings["recordInput"]) audioManager->passthrough->Stop(p->vkCode);
                             if (bindSettings["recordLoopback"])
                             {
                                 audioManager->loopbackRecorder->Stop(p->vkCode);
@@ -87,10 +89,8 @@ LRESULT CALLBACK KeyboardListener::KeyboardEvent(int nCode, WPARAM wParam, LPARA
                         // secondary record button - used to record over already existing clips
                         if (!audioManager->recording)
                         {
-                            if (bindSettings["recordInput"]) audioManager->inputDeviceRecorder->Record(p->vkCode);
-                            std::cout<<"input"<<std::endl;
+                            if (bindSettings["recordInput"]) audioManager->passthrough->Record(p->vkCode);
                             if (bindSettings["recordLoopback"]) audioManager->loopbackRecorder->Record(p->vkCode, bindSettings["syncStreams"], !bindSettings["recordInput"]);
-                            std::cout<<"loopback"<<std::endl;
                             audioManager->recording = true;
                         }
                     }
@@ -101,7 +101,7 @@ LRESULT CALLBACK KeyboardListener::KeyboardEvent(int nCode, WPARAM wParam, LPARA
                         // stop recording when button is released
                         if (audioManager->recording)
                         {
-                            if (bindSettings["recordInput"]) audioManager->inputDeviceRecorder->Stop(p->vkCode);
+                            if (bindSettings["recordInput"]) audioManager->passthrough->Stop(p->vkCode);
                             if (bindSettings["recordLoopback"])
                             {
                                 audioManager->loopbackRecorder->Stop(p->vkCode);

@@ -56,6 +56,10 @@ private slots:
 
     void openFXSettings(int type);
 
+    void on_maxPlaybackLength_valueChanged(int arg1);
+
+    void on_maxOverlappingSounds_valueChanged(int arg1);
+
 private:
     Ui::MainWindow *ui;
 

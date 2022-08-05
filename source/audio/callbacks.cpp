@@ -37,7 +37,6 @@ int recordCallback(const void* inputBuffer, void* outputBuffer,
             // update the time stamp
             p_data->timeStamp = currentTime;
         }
-        fprintf(stdout, "write\n"); fflush(stdout);
         // write the most recent buffer to file
         sf_write_float(p_data->file, in, framesPerBuffer * p_data->info.channels);
     }
@@ -85,6 +84,7 @@ int playCallback(const void* inputBuffer, void* outputBuffer,
 
     // unassign the memory allocation for the read buffer
     delete[] read;
+    //memcpy(p_data->buf, out, sizeof(float) * framesPerBuffer * 2);
     return paContinue;
 }
 
@@ -102,7 +102,8 @@ int passthroughCallback(const void* inputBuffer, void* outputBuffer,
     float* mono = new float[framesPerBuffer];
     for (int i = 0; i < framesPerBuffer; i++)
     {
-        mono[i] = (in[2*i] + in[2*i+1]);
+        mono[i] = 0.f;
+        for (int j = 0; j < p_data->nChannels; ++j) mono[i] += in[p_data->nChannels*i+j];
     }
 
     if (p_data->pitchShift->getAutotune() || p_data->pitchShift->getPitchshift())
@@ -122,6 +123,48 @@ int passthroughCallback(const void* inputBuffer, void* outputBuffer,
     }
 
     delete[] mono;
+    if (p_data->rData->inUse)
+    {
+        sf_write_float(p_data->rData->file, out, framesPerBuffer * p_data->rData->info.channels);
+    }
+
+    //memcpy(p_data->buf, out, sizeof(float) * framesPerBuffer * 2);
+    return paContinue;
+}
+
+
+int monitorCallback(const void* inputBuffer, void* outputBuffer,
+    unsigned long framesPerBuffer,
+    const PaStreamCallbackTimeInfo* timeInfo,
+    PaStreamCallbackFlags statusFlags,
+    void* data)
+{
+    // set some variables
+    monitorData *c_data = (monitorData*) c_data;
+    float* in = (float*)inputBuffer;
+    float* out = (float*)outputBuffer;
+
+    // record if flag is set
+    if (c_data->rData->inUse)
+    {
+        sf_write_float(c_data->rData->file, out, framesPerBuffer * c_data->rData->info.channels);
+    }
+
+    // copy the input (loopback) to a shared buffer, going to another stream
+    memcpy(c_data->streamBuffer, in, sizeof(float) * framesPerBuffer * 2);
+    memset(out, 0, sizeof(float) * framesPerBuffer * 2);
+
+    // copy the sample playback buffer if monitoring is enabled
+    if (c_data->monitorSamples) memcpy(out, c_data->playbackBuffer, sizeof(float) * framesPerBuffer * 2);
+
+    // copy the mic input buffer if monitoring is enabled
+    if (c_data->monitorMic)
+    {
+        for (int i = 0; i < framesPerBuffer * 2; i++)
+        {
+            out[i] += c_data->inputBuffer[i];
+        }
+    }
 
     return paContinue;
 }

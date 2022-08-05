@@ -12,7 +12,8 @@ public:
     Passthrough(device inputDevice,
                 device outputDevice,
                 int sampleRate,
-                int framesPerBuffer);
+                int framesPerBuffer,
+                std::string dir);
 
     ~Passthrough()
     {
@@ -20,11 +21,16 @@ public:
         delete data.autotune;
     }
 
+    void Record(int keycode);
+    void Stop(int keycode);
+
     void SetFX(json settings);
 
     std::map<std::string, QCheckBox*> *checkboxes;
 
     passthroughData data = {};
+
+    bool recording = false;
 };
 
 #endif // PASSTHROUGH_H

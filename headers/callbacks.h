@@ -23,15 +23,29 @@ typedef struct{
 
 typedef struct{
     std::map<SNDFILE*, int> *files;
+    std::vector<SNDFILE*> *queue;
     SF_INFO info;
     float maxFileLength;
+    float *buf;
 } playData;
 
 typedef struct{
-    revmodel* reverb;
-    PitchShift* autotune;
-    PitchShift* pitchShift;
+    recordData *rData;
+    int nChannels;
+    revmodel *reverb;
+    PitchShift *autotune;
+    PitchShift *pitchShift;
+    float *buf;
 } passthroughData;
+
+typedef struct{
+    recordData *rData;
+    bool monitorMic;
+    float *inputBuffer;
+    bool monitorSamples;
+    float *playbackBuffer;
+    float *streamBuffer;
+} monitorData;
 
 int recordCallback(const void* inputBuffer, void* outputBuffer,
                    unsigned long framesPerBuffer,
@@ -51,4 +65,9 @@ int passthroughCallback(const void* inputBuffer, void* outputBuffer,
                         PaStreamCallbackFlags statusFlags,
                         void* data);
 
+int monitorCallback(const void* inputBuffer, void* outputBuffer,
+                        unsigned long framesPerBuffer,
+                        const PaStreamCallbackTimeInfo* timeInfo,
+                        PaStreamCallbackFlags statusFlags,
+                        void* data);
 

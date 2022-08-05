@@ -9,8 +9,7 @@ public:
     Player(device outputDevice,
            int sampleRate,
            int framesPerBuffer,
-           std::string dir,
-           int maxLiveSamples = 5);
+           std::string dir);
 
     //~Player() { done(); }
 

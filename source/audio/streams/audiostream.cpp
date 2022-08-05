@@ -30,7 +30,6 @@ AudioStream::AudioStream(
 AudioStream::~AudioStream()
 {
     while(!initialSetup){};
-    fprintf(stdout, "audio stream shut down\n"); fflush(stdout);
     done();
 }
 

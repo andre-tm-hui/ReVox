@@ -2,13 +2,12 @@
 
 /* The player object, dedicated to loading a file and playing it to a specified output device. */
 
-Player::Player(device outputDevice, int sampleRate, int framesPerBuffer, std::string dir, int maxLiveSamples)
+Player::Player(device outputDevice, int sampleRate, int framesPerBuffer, std::string dir)
     : AudioStream({-1, -1}, outputDevice, sampleRate, framesPerBuffer, dir)
 {
     initialSetup = false;
-    this->maxLiveSamples = maxLiveSamples;
-    data.maxFileLength = 10;
     data.files = new std::map<SNDFILE*, int>();
+    data.queue = new std::vector<SNDFILE*>();
 
     // written files are set to always have 2 channels
     SF_INFO info;
@@ -55,13 +54,13 @@ void Player::Play(int keycode)
      * toggle between playing clips over each other and stopping the previous clip to play the next clip (maxLiveSamples = 1?)
      */
     SNDFILE* file = sf_open(FILE_NAME.c_str(), SFM_READ, &data.info);
-    if (data.info.samplerate != this->sampleRate)
-    {
-        //resample
+    if ((int)data.files->size() >= maxLiveSamples) {
+        sf_close((*data.queue)[0]);
+        (*data.files).erase((*data.queue)[0]);
+        (*data.queue).erase((*data.queue).begin());
     }
-    if ((int)data.files->size() < maxLiveSamples) {
-        (*data.files)[file] = 0;
-    }
+    (*data.files)[file] = 0;
+    (*data.queue).push_back(file);
 }
 
 /* Utility function to check if a file corresponding to the keycode exists */

@@ -26,6 +26,8 @@ AudioManager::AudioManager()
         {
             std::ifstream settingsFile (appdata + dirName + "settings.json");
             if (!settingsFile.fail()) settingsFile >> settings;
+            settings["virtualInputDevice"] = defVInput;
+            settings["virtualOutputDevice"] = defVOutput;
 
             std::ifstream soundboardBindsFile(appdata + dirName + "soundboard.json");
             if (!soundboardBindsFile.fail()) soundboardBindsFile >> soundboardHotkeys;
@@ -36,10 +38,6 @@ AudioManager::AudioManager()
     }
 
     // start the portaudio stream objects
-    inputDeviceRecorder = new Recorder(     GetDeviceByIndex(settings["virtualOutputDevice"]),
-                                            settings["sampleRate"].get<int>(),
-                                            settings["framesPerBuffer"].get<int>(),
-                                            std::string(appdata_c) + dirName);
     loopbackRecorder    = new Recorder(     GetDeviceByIndex(settings["loopbackDevice"]),
                                             settings["sampleRate"].get<int>(),
                                             settings["framesPerBuffer"].get<int>(),
@@ -48,16 +46,19 @@ AudioManager::AudioManager()
                                             settings["sampleRate"].get<int>(),
                                             settings["framesPerBuffer"].get<int>(),
                                             std::string(appdata_c) + dirName);
-    monitor             = new Player(       GetDeviceByIndex(settings["outputDevice"]),
+    /*monitor             = new Player(       GetDeviceByIndex(settings["outputDevice"]),
                                             settings["sampleRate"].get<int>(),
                                             settings["framesPerBuffer"].get<int>(),
-                                            std::string(appdata_c) + dirName);
+                                            std::string(appdata_c) + dirName);*/
     passthrough         = new Passthrough(  GetDeviceByIndex(settings["inputDevice"]),
                                             GetDeviceByIndex(settings["virtualInputDevice"]),
                                             settings["sampleRate"].get<int>(),
-                                            settings["framesPerBuffer"].get<int>());
+                                            settings["framesPerBuffer"].get<int>(),
+                                            std::string(appdata_c) + dirName);
 
-    //WaitForReady();
+    WaitForReady();
+    player->maxLiveSamples = settings["maxNumberOfSounds"];
+    player->data.maxFileLength = settings["maxFileLength"];
 }
 
 AudioManager::~AudioManager()
@@ -73,10 +74,8 @@ void AudioManager::SetCheckboxes(std::map<std::string, QCheckBox*> *checkboxes)
 
 void AudioManager::WaitForReady()
 {
-    while (!inputDeviceRecorder->initialSetup ||
-           !loopbackRecorder->initialSetup ||
+    while (!loopbackRecorder->initialSetup ||
            !player->initialSetup ||
-           !monitor->initialSetup ||
            !passthrough->initialSetup) { /*std::cout << "waiting" << std::endl;*/ }
 }
 
@@ -139,10 +138,12 @@ void AudioManager::GetDeviceSettings()
             if (deviceName.find("CABLE Input") != std::string::npos)
             {
                 settings["virtualInputDevice"] = deviceList[deviceName];
+                defVInput = deviceList[deviceName];
             }
             else if (deviceName.find("CABLE Output") != std::string::npos)
             {
                 settings["virtualOutputDevice"] = deviceList[deviceName];
+                defVOutput = deviceList[deviceName];
             }
         }
     }
@@ -213,16 +214,6 @@ void AudioManager::GetDeviceSettings()
 }
 
 /* Reset functions for portaudio objects, called when corresponding devices are changed in the GUI */
-void AudioManager::ResetInputRecorder()
-{
-    delete inputDeviceRecorder;
-    inputDeviceRecorder = new Recorder(GetDeviceByIndex(settings["virtualOutputDevice"]),
-                                       settings["sampleRate"].get<int>(),
-                                       settings["framesPerBuffer"].get<int>(),
-                                       appdata + dirName);
-    SaveSettings();
-}
-
 void AudioManager::ResetLoopbackRecorder()
 {
     delete loopbackRecorder;
@@ -245,11 +236,11 @@ void AudioManager::ResetPlayer()
 
 void AudioManager::ResetMonitor()
 {
-    delete monitor;
+    /*delete monitor;
     monitor = new Player(GetDeviceByIndex(settings["outputDevice"]),
                          settings["sampleRate"].get<int>(),
                          settings["framesPerBuffer"].get<int>(),
-                         appdata + dirName);
+                         appdata + dirName);*/
     SaveSettings();
 }
 
@@ -259,24 +250,22 @@ void AudioManager::ResetPassthrough()
     passthrough = new Passthrough(GetDeviceByIndex(settings["inputDevice"]),
                                   GetDeviceByIndex(settings["virtualInputDevice"]),
                                   settings["sampleRate"].get<int>(),
-                                  settings["framesPerBuffer"].get<int>());
+                                  settings["framesPerBuffer"].get<int>(),
+                                  appdata + dirName);
     SaveSettings();
 }
 
-void AudioManager::Reset(int input, int output, int loopback, int vInput, int vOutput)
+void AudioManager::Reset(int input, int output, int loopback)
 {
     Pa_Terminate();
     Pa_Initialize();
     settings["inputDevice"] = input;
     settings["outputDevice"] = output;
     settings["loopbackDevice"] = loopback;
-    settings["virtualInputDevice"] = vInput;
-    settings["virtualOutputDevice"] = vOutput;
 
-    ResetInputRecorder();
     ResetLoopbackRecorder();
     ResetPlayer();
-    ResetMonitor();
+    //ResetMonitor();
     ResetPassthrough();
 
     WaitForReady();
@@ -421,4 +410,44 @@ void AudioManager::OverrideSound(std::string fname, int keycode)
         std::filesystem::remove(path);
     }
     std::filesystem::copy(fname, path);
+
+    SF_INFO info;
+    SNDFILE* infile = sf_open(path.c_str(), SFM_READ, &info);
+    if (info.samplerate != settings["sampleRate"])
+    {
+        sf_count_t count;
+        SF_INFO infoR = info;
+        infoR.samplerate = settings["sampleRate"];
+        SNDFILE* outfile = sf_open((appdata + dirName + "samples/" + std::to_string(keycode) + "r.mp3").c_str(), SFM_WRITE, &infoR);
+        double ratio = (double)settings["sampleRate"] / (double)info.samplerate;
+
+        int err;
+        SRC_STATE* src = src_new(SRC_SINC_FASTEST, info.channels, &err);
+        SRC_DATA *dat = new SRC_DATA();
+        float *in = new float[1024], *out = new float[(int)(512 * ratio) * 2 + 2];
+        dat->data_in = in;
+        dat->data_out = out;
+        dat->input_frames = 1024 / info.channels;
+        dat->output_frames = (int)((512 * ratio)) + 1;
+        dat->src_ratio = ratio;
+
+        while (1)
+        {
+            count = sf_read_float(infile, in, 1024);
+            if (count == 0) break;
+            src_process(src, dat);
+            sf_write_float(outfile, out, dat->output_frames_gen * 2);
+            if (count < 1024) break;
+        }
+
+        sf_close(infile);
+        sf_close(outfile);
+        src_delete(src);
+        delete[] in;
+        delete[] out;
+        delete dat;
+
+        std::filesystem::remove(path.c_str());
+        std::filesystem::rename((appdata + dirName + "samples/" + std::to_string(keycode) + "r.mp3").c_str(), path.c_str());
+    }
 }
