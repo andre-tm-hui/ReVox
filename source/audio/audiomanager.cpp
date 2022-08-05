@@ -38,27 +38,7 @@ AudioManager::AudioManager()
     }
 
     // start the portaudio stream objects
-    loopbackRecorder    = new Recorder(     GetDeviceByIndex(settings["loopbackDevice"]),
-                                            settings["sampleRate"].get<int>(),
-                                            settings["framesPerBuffer"].get<int>(),
-                                            std::string(appdata_c) + dirName, "l");
-    player              = new Player(       GetDeviceByIndex(settings["virtualInputDevice"]),
-                                            settings["sampleRate"].get<int>(),
-                                            settings["framesPerBuffer"].get<int>(),
-                                            std::string(appdata_c) + dirName);
-    /*monitor             = new Player(       GetDeviceByIndex(settings["outputDevice"]),
-                                            settings["sampleRate"].get<int>(),
-                                            settings["framesPerBuffer"].get<int>(),
-                                            std::string(appdata_c) + dirName);*/
-    passthrough         = new Passthrough(  GetDeviceByIndex(settings["inputDevice"]),
-                                            GetDeviceByIndex(settings["virtualInputDevice"]),
-                                            settings["sampleRate"].get<int>(),
-                                            settings["framesPerBuffer"].get<int>(),
-                                            std::string(appdata_c) + dirName);
-
-    WaitForReady();
-    player->maxLiveSamples = settings["maxNumberOfSounds"];
-    player->data.maxFileLength = settings["maxFileLength"];
+    SetupStreams();
 }
 
 AudioManager::~AudioManager()
@@ -74,9 +54,11 @@ void AudioManager::SetCheckboxes(std::map<std::string, QCheckBox*> *checkboxes)
 
 void AudioManager::WaitForReady()
 {
-    while (!loopbackRecorder->initialSetup ||
+    while (!monitor->initialSetup ||
            !player->initialSetup ||
-           !passthrough->initialSetup) { /*std::cout << "waiting" << std::endl;*/ }
+           !passthrough->initialSetup ||
+           !cleanOutput->initialSetup ||
+           !noiseGen->initialSetup) {}
 }
 
 void AudioManager::GetDeviceSettings()
@@ -85,7 +67,7 @@ void AudioManager::GetDeviceSettings()
 
     // instantiate devices to default values
     settings["inputDevice"] = Pa_GetDefaultInputDevice();
-    settings["outputDevice"] = Pa_GetDefaultOutputDevice();
+    settings["streamOutputDevice"] = Pa_GetDefaultOutputDevice();
 
     // get all available audio APIs on the system
     for (int i = 0; i < Pa_GetHostApiCount(); i++)
@@ -104,46 +86,31 @@ void AudioManager::GetDeviceSettings()
             if (deviceName.find("[Loopback]") != std::string::npos)
             {
                 loopbackDevices[deviceName] = {Pa_HostApiDeviceIndexToDeviceIndex(apiMap["Windows WASAPI"], i), 1};
-                // for default device setup
-                if (deviceName.find(Pa_GetDeviceInfo(settings["outputDevice"])->name) != std::string::npos)
-                {
-                    settings["loopbackDevice"] = loopbackDevices[deviceName].id;
-                }
             }
             else
             {
                 // add the device to a list of devices if it's not a loopback
                 deviceList[deviceName] = Pa_HostApiDeviceIndexToDeviceIndex(apiMap["Windows WASAPI"], i);
-            }
-        }
-    }
 
-    // if MME is available, iterate through all MME devices. MME is standard for Windows machines, and raises the least issues with portaudio streams
-    if (apiMap.find("MME") != apiMap.end())
-    {
-        for (int i = 0; i < Pa_GetHostApiInfo(apiMap["MME"])->deviceCount; i++)
-        {
-            std::string deviceName = Pa_GetDeviceInfo(Pa_HostApiDeviceIndexToDeviceIndex(apiMap["MME"], i))->name;
-            // MME device names are limited to 32 characters, so we try to find a WASAPI device with a similar name, and change the device ID
-            for (auto const& [name, id] : deviceList)
-            {
-                if (name.find(deviceName) != std::string::npos)
+                // set the default virtual input device - assumes the user is using VB-Audio's Virtual Cable https://vb-audio.com/Cable/
+                if (deviceName.find("CABLE Input") != std::string::npos)
                 {
-                    deviceName = name;
-                    break;
+                    settings["virtualInputDevice"] = deviceList[deviceName];
+                    defVInput = deviceList[deviceName];
                 }
-            }
-            deviceList[deviceName] = Pa_HostApiDeviceIndexToDeviceIndex(apiMap["MME"], i);
-            // set the default virtual input device - assumes the user is using VB-Audio's Virtual Cable https://vb-audio.com/Cable/
-            if (deviceName.find("CABLE Input") != std::string::npos)
-            {
-                settings["virtualInputDevice"] = deviceList[deviceName];
-                defVInput = deviceList[deviceName];
-            }
-            else if (deviceName.find("CABLE Output") != std::string::npos)
-            {
-                settings["virtualOutputDevice"] = deviceList[deviceName];
-                defVOutput = deviceList[deviceName];
+                else if (deviceName.find("CABLE Output") != std::string::npos)
+                {
+                    settings["virtualOutputDevice"] = deviceList[deviceName];
+                    defVOutput = deviceList[deviceName];
+                }
+                else if (deviceName.find(Pa_GetDeviceInfo(Pa_GetDefaultInputDevice())->name) != std::string::npos)
+                {
+                    settings["inputDevice"] = deviceList[deviceName];
+                }
+                else if (deviceName.find(Pa_GetDeviceInfo(Pa_GetDefaultOutputDevice())->name) != std::string::npos)
+                {
+                    settings["streamOutputDevice"] = deviceList[deviceName];
+                }
             }
         }
     }
@@ -160,16 +127,18 @@ void AudioManager::GetDeviceSettings()
         // check if this device is an input or output device
         device deviceSettings;
         params.device = id;
+        params.hostApiSpecificStreamInfo = NULL;
+        params.sampleFormat = PA_SAMPLE_TYPE;
         params.channelCount = 1;
         params.suggestedLatency = Pa_GetDeviceInfo(id)->defaultLowInputLatency;
         deviceSettings.id = id;
         deviceSettings.nChannels = params.channelCount;
 
         // assumes most modern devices support at least a 44100Hz sample rate
-        err = Pa_IsFormatSupported(&params, NULL, 44100);
+        err = Pa_IsFormatSupported(&params, NULL, 48000);
         if (err != 0)
         {
-            err = Pa_IsFormatSupported(NULL, &params, 44100);
+            err = Pa_IsFormatSupported(NULL, &params, 48000);
             if (err == 0)
             {
                 isInput = false;
@@ -186,89 +155,106 @@ void AudioManager::GetDeviceSettings()
         while (true)
         {
             params.channelCount++;
-            err = Pa_IsFormatSupported(isInput ? &params : NULL, isInput ? NULL : &params, 44100);
+            err = Pa_IsFormatSupported(isInput ? &params : NULL, isInput ? NULL : &params, 48000);
             // capped at 16 to avoid anomalous audio devices with 1000+ channels from slowing down init time
-            if (err != 0 || params.channelCount > 16)
+            if (err != 0 || params.channelCount > 2)
             {
                 break;
             }
         }
+
         if (isInput)
         {
             inputDevices[name].nChannels = params.channelCount - 1;
-            //fprintf(stdout, "Input Device: %s with %d channels\n", name.c_str(), inputDevices[name].nChannels); fflush(stdout);
         }
         else
         {
             outputDevices[name].nChannels = params.channelCount - 1;
-            //fprintf(stdout, "Output Device: %s with %d channels\n", name.c_str(), outputDevices[name].nChannels); fflush(stdout);
 
             // assume that the loopback devices shares the same number of channels as it's corresponding output device
             if (loopbackDevices.find(name + " [Loopback]") != loopbackDevices.end())
             {
                 loopbackDevices[name + " [Loopback]"].nChannels = params.channelCount - 1;
-                //fprintf(stdout, "Output Device: %s [Loopback] with %d channels\n", name.c_str(), loopbackDevices[name + " [Loopback]"].nChannels); fflush(stdout);
+            }
+
+            if (name.find("CABLE") == std::string::npos &&
+                settings["outputDevice"].get<int>() == -1 &&
+                outputDevices[name].id != settings["streamOutputDevice"].get<int>())
+            {
+                settings["outputDevice"] = outputDevices[name].id;
             }
         }
     }
 }
 
+int AudioManager::GetCorrespondingLoopbackDevice(int i)
+{
+    std::string dName = Pa_GetDeviceInfo(i)->name;
+    if (dName.find("[Loopback]") != std::string::npos) return i;
+    for (auto const& [name, id] : loopbackDevices)
+    {
+        if (name.find(dName) != std::string::npos) return id.id;
+    }
+    return -1;
+}
+
 /* Reset functions for portaudio objects, called when corresponding devices are changed in the GUI */
-void AudioManager::ResetLoopbackRecorder()
-{
-    delete loopbackRecorder;
-    loopbackRecorder = new Recorder(GetDeviceByIndex(settings["loopbackDevice"]),
-                                    settings["sampleRate"].get<int>(),
-                                    settings["framesPerBuffer"].get<int>(),
-                                    appdata + dirName, "l");
-    SaveSettings();
-}
-
-void AudioManager::ResetPlayer()
-{
-    delete player;
-    player = new Player(GetDeviceByIndex(settings["virtualInputDevice"]),
-                        settings["sampleRate"].get<int>(),
-                        settings["framesPerBuffer"].get<int>(),
-                        appdata + dirName);
-    SaveSettings();
-}
-
-void AudioManager::ResetMonitor()
-{
-    /*delete monitor;
-    monitor = new Player(GetDeviceByIndex(settings["outputDevice"]),
-                         settings["sampleRate"].get<int>(),
-                         settings["framesPerBuffer"].get<int>(),
-                         appdata + dirName);*/
-    SaveSettings();
-}
-
-void AudioManager::ResetPassthrough()
-{
-    delete passthrough;
-    passthrough = new Passthrough(GetDeviceByIndex(settings["inputDevice"]),
-                                  GetDeviceByIndex(settings["virtualInputDevice"]),
-                                  settings["sampleRate"].get<int>(),
-                                  settings["framesPerBuffer"].get<int>(),
-                                  appdata + dirName);
-    SaveSettings();
-}
-
-void AudioManager::Reset(int input, int output, int loopback)
+void AudioManager::Reset(int input, int output, int stream)
 {
     Pa_Terminate();
     Pa_Initialize();
     settings["inputDevice"] = input;
     settings["outputDevice"] = output;
-    settings["loopbackDevice"] = loopback;
+    std::string dName = Pa_GetDeviceInfo(stream)->name;
+    for (auto const& [name, id] : deviceList)
+    {
+        if (dName.find(name) != std::string::npos) { settings["streamOutputDevice"] = id; break; }
+    }
 
-    ResetLoopbackRecorder();
-    ResetPlayer();
-    //ResetMonitor();
-    ResetPassthrough();
+    delete passthrough;
+    delete player;
+    delete monitor;
+    delete cleanOutput;
+    delete noiseGen;
+
+    SetupStreams();
 
     WaitForReady();
+
+    SaveSettings();
+}
+
+void AudioManager::SetupStreams()
+{
+    inputBuffer = new float[settings["framesPerBuffer"].get<int>() * 2 * 3];
+    playbackBuffer = new float[settings["framesPerBuffer"].get<int>() * 2 * 3];
+
+    int loopbackdevice = GetCorrespondingLoopbackDevice(settings["streamOutputDevice"].get<int>());
+    noiseGen = new NoiseGenerator(GetDeviceByIndex(settings["streamOutputDevice"].get<int>()), settings["sampleRate"].get<int>());
+    monitor             = new Monitor(      GetDeviceByIndex(loopbackdevice),
+                                            GetDeviceByIndex(settings["outputDevice"].get<int>()),
+                                            settings["sampleRate"].get<int>(),
+                                            settings["framesPerBuffer"].get<int>(),
+                                            appdata + dirName,
+                                            inputBuffer, playbackBuffer);
+    player              = new Player(       GetDeviceByIndex(settings["virtualInputDevice"]),
+                                            settings["sampleRate"].get<int>(),
+                                            settings["framesPerBuffer"].get<int>(),
+                                            appdata + dirName,
+                                            playbackBuffer);
+    passthrough         = new Passthrough(  GetDeviceByIndex(settings["inputDevice"]),
+                                            GetDeviceByIndex(settings["virtualInputDevice"]),
+                                            settings["sampleRate"].get<int>(),
+                                            settings["framesPerBuffer"].get<int>(),
+                                            appdata + dirName,
+                                            inputBuffer);
+    cleanOutput         = new CleanOutput(  GetDeviceByIndex(loopbackdevice),
+                                            GetDeviceByIndex(settings["outputDevice"].get<int>()),
+                                            settings["sampleRate"].get<int>(),
+                                            1);
+
+    player->maxLiveSamples = settings["maxNumberOfSounds"];
+    player->data.maxFileLength = settings["maxFileLength"];
 }
 
 /* Configuration save functions */

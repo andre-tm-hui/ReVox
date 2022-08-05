@@ -2,31 +2,35 @@
 
 /* The passthrough stream object, writes audio from the input device directly to the output device. */
 
-Passthrough::Passthrough(device inputDevice, device outputDevice, int sampleRate, int framesPerBuffer, std::string dir)
+Passthrough::Passthrough(device inputDevice, device outputDevice, int sampleRate, int framesPerBuffer, std::string dir, float *inputBuffer)
     : AudioStream(inputDevice, outputDevice, sampleRate, framesPerBuffer, dir)
 {
     initialSetup = false;
 
+    this->data.buf = inputBuffer;
+
     // start a stream on creation of this object, since audio from the default input should always be written to the virtual cable input
     this->err = Pa_OpenStream(
                 &this->stream,
-                &inputParameters,
-                &outputParameters,
+                input ? &this->inputParameters : NULL,
+                output ? &this->outputParameters : NULL,
                 this->sampleRate,
                 this->framesPerBuffer,
                 paClipOff,
-                passthroughCallback,
+                input && output ? passthroughCallback : NULL,
                 &this->data
                 );
     streamSetup = true;
     if (this->err != paNoError)
     {
+        std::cout<<Pa_GetErrorText(this->err)<<std::endl;
         done(); return;
     }
 
     this->err = Pa_StartStream(this->stream);
     if (this->err != paNoError)
     {
+        std::cout<<Pa_GetErrorText(this->err)<<std::endl;
         done(); return;
     }
 

@@ -2,10 +2,13 @@
 
 /* The player object, dedicated to loading a file and playing it to a specified output device. */
 
-Player::Player(device outputDevice, int sampleRate, int framesPerBuffer, std::string dir)
+Player::Player(device outputDevice, int sampleRate, int framesPerBuffer, std::string dir, float *playbackBuffer)
     : AudioStream({-1, -1}, outputDevice, sampleRate, framesPerBuffer, dir)
 {
     initialSetup = false;
+
+    data.buf = playbackBuffer;
+
     data.files = new std::map<SNDFILE*, int>();
     data.queue = new std::vector<SNDFILE*>();
 
@@ -19,15 +22,16 @@ Player::Player(device outputDevice, int sampleRate, int framesPerBuffer, std::st
     err = Pa_OpenStream(
                 &stream,
                 NULL,
-                &outputParameters,
+                output ? &this->outputParameters : NULL,
                 this->sampleRate,
                 this->framesPerBuffer,
                 paClipOff,
-                playCallback,
+                output ? playCallback : NULL,
                 &this->data
                 );
     if (err != paNoError)
     {
+        std::cout<<Pa_GetErrorText(this->err)<<std::endl;
         done(); return;
     }
     streamSetup = true;
@@ -35,6 +39,7 @@ Player::Player(device outputDevice, int sampleRate, int framesPerBuffer, std::st
     this->err = Pa_StartStream(this->stream);
     if (this->err != paNoError)
     {
+        std::cout<<Pa_GetErrorText(this->err)<<std::endl;
         done();
     }
     initialSetup = true;

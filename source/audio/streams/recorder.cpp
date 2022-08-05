@@ -54,12 +54,14 @@ void Recorder::Record(int keycode, bool padAudio, bool deleteFiles)
                     &this->data
                     );
         if (this->err != paNoError) {
+            std::cout<<Pa_GetErrorText(this->err)<<std::endl;
             done(); return;
         }
         streamSetup = true;
 
         this->err = Pa_StartStream(stream);
         if (err != paNoError) {
+            std::cout<<Pa_GetErrorText(this->err)<<std::endl;
             done(); return;
         }
 

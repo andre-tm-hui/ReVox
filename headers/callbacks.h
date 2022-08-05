@@ -40,18 +40,11 @@ typedef struct{
 
 typedef struct{
     recordData *rData;
-    bool monitorMic;
+    float monitorMic;
     float *inputBuffer;
-    bool monitorSamples;
+    float monitorSamples;
     float *playbackBuffer;
-    float *streamBuffer;
 } monitorData;
-
-int recordCallback(const void* inputBuffer, void* outputBuffer,
-                   unsigned long framesPerBuffer,
-                   const PaStreamCallbackTimeInfo* timeInfo,
-                   PaStreamCallbackFlags statusFlags,
-                   void* data);
 
 int playCallback(const void* inputBuffer, void* outputBuffer,
                  unsigned long framesPerBuffer,
@@ -71,3 +64,15 @@ int monitorCallback(const void* inputBuffer, void* outputBuffer,
                         PaStreamCallbackFlags statusFlags,
                         void* data);
 
+int streamCallback(const void* inputBuffer, void* outputBuffer,
+                        unsigned long framesPerBuffer,
+                        const PaStreamCallbackTimeInfo* timeInfo,
+                        PaStreamCallbackFlags statusFlags,
+                        void* data);
+
+
+int noiseCallback(const void* inputBuffer, void* outputBuffer,
+                        unsigned long framesPerBuffer,
+                        const PaStreamCallbackTimeInfo* timeInfo,
+                        PaStreamCallbackFlags statusFlags,
+                        void* data);

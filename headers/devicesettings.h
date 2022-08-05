@@ -13,18 +13,14 @@ typedef struct
     std::map<int, QString> inputDevices;
     int outputIdx;
     std::map<int, QString> outputDevices;
-    int loopbackIdx;
-    std::map<int, QString> loopbackDevices;
-    int vInputIdx;
-    std::map<int, QString> vInputDevices;
-    int vOutputIdx;
-    std::map<int, QString> vOutputDevices;
+    int streamIdx;
+    std::map<int, QString> streamDevices;
 
     int sampleRate;
     int bufferSize;
 } device_data;
 
-enum deviceType {input, output, loopback, vInput, vOutput };
+enum deviceType {input, output, stream };
 
 namespace Ui {
 class DeviceSettings;

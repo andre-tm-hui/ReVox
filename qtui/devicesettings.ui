@@ -132,10 +132,10 @@ QComboBox::drop-down {background:#303030; border:0px; outline:0px;}</string>
     </rect>
    </property>
    <property name="text">
-    <string>Loopback Device</string>
+    <string>Stream Output Device</string>
    </property>
   </widget>
-  <widget class="QComboBox" name="loopback">
+  <widget class="QComboBox" name="stream">
    <property name="geometry">
     <rect>
      <x>30</x>

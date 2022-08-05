@@ -35,7 +35,7 @@ public:
 
     //callbackData data = {};
 
-    bool initialSetup = false;
+    bool initialSetup = false, input = false, output = false;
 };
 
 #endif // AUDIOSTREAM_H

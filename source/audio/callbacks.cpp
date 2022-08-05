@@ -1,49 +1,5 @@
 #include <callbacks.h>
 
-int recordCallback(const void* inputBuffer, void* outputBuffer,
-                          unsigned long framesPerBuffer,
-                          const PaStreamCallbackTimeInfo* timeInfo,
-                          PaStreamCallbackFlags statusFlags,
-                          void* data)
-{
-    // create and assign some variables
-    float* in = (float*)inputBuffer;
-    recordData* p_data = (recordData*)data;
-    //p_data->inUse = true;
-
-    if (p_data->file != nullptr)
-    {
-        // check if we want to pad this audio source
-        if (p_data->pad)
-        {
-            // create a buffer of 0s
-            float* tempBuffer = new float[framesPerBuffer * p_data->info.channels];
-            memset(tempBuffer, 0, sizeof(float) * framesPerBuffer * p_data->info.channels);
-
-            // create some variables to track how much padding we've added
-            float timePadded = 0;
-            float currentTime = (float)(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count());
-            /* p_data holds a timestamp of the last time audio was actually written to file.
-             * We find the amount of time that has elapsed since then, offset it by 1 buffer time-length,
-             * and pad with 0s until the amount of time padded is equal or greater than the elapsed time. */
-            while (timePadded < currentTime - p_data->timeStamp - (1000 * framesPerBuffer / p_data->info.samplerate))
-            {
-                timePadded += 1000 * framesPerBuffer / p_data->info.samplerate;
-                sf_write_float(p_data->file, tempBuffer, framesPerBuffer * p_data->info.channels);
-            }
-
-            // clean up memory
-            delete[] tempBuffer;
-            // update the time stamp
-            p_data->timeStamp = currentTime;
-        }
-        // write the most recent buffer to file
-        sf_write_float(p_data->file, in, framesPerBuffer * p_data->info.channels);
-    }
-    //p_data->inUse = false;
-    return paContinue;
-}
-
 int playCallback(const void* inputBuffer, void* outputBuffer,
                  unsigned long framesPerBuffer,
                  const PaStreamCallbackTimeInfo* timeInfo,
@@ -84,7 +40,7 @@ int playCallback(const void* inputBuffer, void* outputBuffer,
 
     // unassign the memory allocation for the read buffer
     delete[] read;
-    //memcpy(p_data->buf, out, sizeof(float) * framesPerBuffer * 2);
+    memcpy(p_data->buf, out, sizeof(float) * framesPerBuffer * 2);
     return paContinue;
 }
 
@@ -128,7 +84,7 @@ int passthroughCallback(const void* inputBuffer, void* outputBuffer,
         sf_write_float(p_data->rData->file, out, framesPerBuffer * p_data->rData->info.channels);
     }
 
-    //memcpy(p_data->buf, out, sizeof(float) * framesPerBuffer * 2);
+    memcpy(p_data->buf, out, sizeof(float) * framesPerBuffer * 2);
     return paContinue;
 }
 
@@ -140,31 +96,52 @@ int monitorCallback(const void* inputBuffer, void* outputBuffer,
     void* data)
 {
     // set some variables
-    monitorData *c_data = (monitorData*) c_data;
+    monitorData *c_data = (monitorData*) data;
     float* in = (float*)inputBuffer;
     float* out = (float*)outputBuffer;
 
     // record if flag is set
-    if (c_data->rData->inUse)
+    if (c_data->rData->inUse && c_data->rData->file != nullptr)
     {
         sf_write_float(c_data->rData->file, out, framesPerBuffer * c_data->rData->info.channels);
     }
 
     // copy the input (loopback) to a shared buffer, going to another stream
-    memcpy(c_data->streamBuffer, in, sizeof(float) * framesPerBuffer * 2);
     memset(out, 0, sizeof(float) * framesPerBuffer * 2);
 
-    // copy the sample playback buffer if monitoring is enabled
-    if (c_data->monitorSamples) memcpy(out, c_data->playbackBuffer, sizeof(float) * framesPerBuffer * 2);
-
-    // copy the mic input buffer if monitoring is enabled
-    if (c_data->monitorMic)
+    // add the monitoring streams, multiplied by their volume
+    for (int i = 0; i < framesPerBuffer * 2; i++)
     {
-        for (int i = 0; i < framesPerBuffer * 2; i++)
-        {
-            out[i] += c_data->inputBuffer[i];
-        }
+        out[i] += c_data->playbackBuffer[i] * c_data->monitorSamples;
+        out[i] += c_data->inputBuffer[i] * c_data->monitorMic;
     }
 
+    return paContinue;
+}
+
+int streamCallback(const void* inputBuffer, void* outputBuffer,
+    unsigned long framesPerBuffer,
+    const PaStreamCallbackTimeInfo* timeInfo,
+    PaStreamCallbackFlags statusFlags,
+    void* data)
+{
+    float *in = (float*) inputBuffer;
+    float *out = (float*) outputBuffer;
+    memcpy(out, in, sizeof(float) * framesPerBuffer * 2);
+    return paContinue;
+}
+
+int noiseCallback(const void* inputBuffer, void* outputBuffer,
+    unsigned long framesPerBuffer,
+    const PaStreamCallbackTimeInfo* timeInfo,
+    PaStreamCallbackFlags statusFlags,
+    void* data)
+{
+    float *out = (float*) outputBuffer;
+    for (int i = 0; i < framesPerBuffer; i++)
+    {
+        out[2*i] = i % 2 == 0 ? 0.0000001f : -0.0000001f;
+        out[2*i+1] = i % 2 == 0 ? 0.0000001f : -0.0000001f;
+    }
     return paContinue;
 }

@@ -56,7 +56,7 @@ LRESULT CALLBACK KeyboardListener::KeyboardEvent(int nCode, WPARAM wParam, LPARA
                             else
                             {
                                 if (bindSettings["recordInput"]) audioManager->passthrough->Record(p->vkCode);
-                                if (bindSettings["recordLoopback"]) audioManager->loopbackRecorder->Record(p->vkCode, bindSettings["syncStreams"], !bindSettings["recordInput"]);
+                                if (bindSettings["recordLoopback"]) audioManager->monitor->Record(p->vkCode);
                                 audioManager->recording = true;
                             }
                         }
@@ -76,8 +76,8 @@ LRESULT CALLBACK KeyboardListener::KeyboardEvent(int nCode, WPARAM wParam, LPARA
                             if (bindSettings["recordInput"]) audioManager->passthrough->Stop(p->vkCode);
                             if (bindSettings["recordLoopback"])
                             {
-                                audioManager->loopbackRecorder->Stop(p->vkCode);
-                                audioManager->loopbackRecorder->Merge(p->vkCode);
+                                audioManager->monitor->Stop(p->vkCode);
+                                audioManager->monitor->Merge(p->vkCode);
                             }
                             audioManager->recording = false;
                         }
@@ -90,7 +90,7 @@ LRESULT CALLBACK KeyboardListener::KeyboardEvent(int nCode, WPARAM wParam, LPARA
                         if (!audioManager->recording)
                         {
                             if (bindSettings["recordInput"]) audioManager->passthrough->Record(p->vkCode);
-                            if (bindSettings["recordLoopback"]) audioManager->loopbackRecorder->Record(p->vkCode, bindSettings["syncStreams"], !bindSettings["recordInput"]);
+                            if (bindSettings["recordLoopback"]) audioManager->monitor->Record(p->vkCode);
                             audioManager->recording = true;
                         }
                     }
@@ -104,8 +104,8 @@ LRESULT CALLBACK KeyboardListener::KeyboardEvent(int nCode, WPARAM wParam, LPARA
                             if (bindSettings["recordInput"]) audioManager->passthrough->Stop(p->vkCode);
                             if (bindSettings["recordLoopback"])
                             {
-                                audioManager->loopbackRecorder->Stop(p->vkCode);
-                                audioManager->loopbackRecorder->Merge(p->vkCode);
+                                audioManager->monitor->Stop(p->vkCode);
+                                audioManager->monitor->Merge(p->vkCode);
                             }
                             audioManager->recording = false;
                         }

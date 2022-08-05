@@ -9,7 +9,8 @@ public:
     Player(device outputDevice,
            int sampleRate,
            int framesPerBuffer,
-           std::string dir);
+           std::string dir,
+           float *playbackBuffer);
 
     //~Player() { done(); }
 

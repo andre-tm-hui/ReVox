@@ -6,25 +6,26 @@ Monitor::Monitor(device inputDevice,
                  int framesPerBuffer,
                  std::string dir,
                  float *inputBuffer,
-                 float *playbackBuffer,
-                 float *streamBuffer) : AudioStream(inputDevice, outputDevice, sampleRate, framesPerBuffer, dir)
+                 float *playbackBuffer) : AudioStream(inputDevice, outputDevice, sampleRate, framesPerBuffer, dir)
 {
     initialSetup = false;
-    data.inputBuffer = inputBuffer;
-    data.playbackBuffer = playbackBuffer;
-    data.streamBuffer = streamBuffer;
-    data.rData = new recordData();
-    data.rData->info = {};
+    this->data.inputBuffer = inputBuffer;
+    this->data.playbackBuffer = playbackBuffer;
+    this->data.rData = new recordData();
+    this->data.rData->info = {};
+    this->data.rData->inUse = false;
+    this->data.monitorMic = 0.f;
+    this->data.monitorSamples = 0.f;
 
     // open and start the stream to record from
     this->err = Pa_OpenStream(
                 &this->stream,
-                &this->inputParameters,
-                &this->outputParameters,
+                input ? &this->inputParameters : NULL,
+                output ? &this->outputParameters : NULL,
                 this->sampleRate,
                 this->framesPerBuffer,
                 paClipOff,
-                monitorCallback,
+                input && output ? monitorCallback : NULL,
                 &this->data
                 );
     if (this->err != paNoError) {

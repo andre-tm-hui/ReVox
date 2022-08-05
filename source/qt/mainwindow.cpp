@@ -31,44 +31,15 @@ MainWindow::MainWindow(QWidget *parent)
     this->setWindowIcon(QIcon(":/icons/icon.png"));
     connect(trayIcon, &QSystemTrayIcon::activated, this, &MainWindow::iconActivated);
 
-    d_data = new device_data;
+    d_data = new device_data();
     d_data->inputDevices = std::map<int, QString>();
     d_data->inputIdx = 0;
     d_data->outputDevices = std::map<int, QString>();
     d_data->outputIdx = 0;
-    d_data->loopbackDevices = std::map<int, QString>();
-    d_data->loopbackIdx = 0;
-    d_data->vInputDevices = std::map<int, QString>();
-    d_data->vInputIdx = 0;
-    d_data->vOutputDevices = std::map<int, QString>();
-    d_data->vOutputIdx = 0;
+    d_data->streamDevices = std::map<int, QString>();
+    d_data->streamIdx = 0;
 
     int currentDevice = 0;
-    for (auto const& [dName, i] : audioManager->deviceList)
-    {
-        if (dName.find("VB-Audio") != std::string::npos)
-        {
-            if (dName.find("Input") != std::string::npos)
-            {
-                d_data->vInputDevices[i] = QString::fromStdString(dName);
-
-                if (dName.find(Pa_GetDeviceInfo(audioManager->settings["virtualInputDevice"])->name) != std::string::npos)
-                {
-                    d_data->vInputIdx = i;
-                }
-            }
-            else if (dName.find("Output") != std::string::npos)
-            {
-                d_data->vOutputDevices[i] = QString::fromStdString(dName);
-                if (dName.find(Pa_GetDeviceInfo(audioManager->settings["virtualOutputDevice"])->name) != std::string::npos)
-                {
-                    d_data->vOutputIdx = i;
-                }
-            }
-        }
-    }
-
-    currentDevice = 0;
     for (auto const& [dName, i] : audioManager->inputDevices)
     {
         d_data->inputDevices[i.id] = QString::fromStdString(dName);
@@ -93,10 +64,10 @@ MainWindow::MainWindow(QWidget *parent)
     currentDevice = 0;
     for (auto const& [dName, i] : audioManager->loopbackDevices)
     {
-        d_data->loopbackDevices[i.id] = QString::fromStdString(dName);
-        if (dName.find(Pa_GetDeviceInfo(audioManager->settings["loopbackDevice"])->name) != std::string::npos)
+        d_data->streamDevices[i.id] = QString::fromStdString(dName);
+        if (dName.find(Pa_GetDeviceInfo(audioManager->settings["streamOutputDevice"])->name) != std::string::npos)
         {
-            d_data->loopbackIdx = i.id;
+            d_data->streamIdx = i.id;
         }
 
         currentDevice++;

@@ -12,7 +12,7 @@ DeviceSettings::DeviceSettings(device_data *d_data, AudioManager *audioManager, 
 
     setDevices(input);
     setDevices(output);
-    setDevices(loopback);
+    setDevices(stream);
     connect(&mapper, SIGNAL(mappedInt(int)), this, SLOT(onChange(int)));
     connect(ui->buttonBox, SIGNAL(accepted()), this, SLOT(apply()));
 }
@@ -38,11 +38,11 @@ void DeviceSettings::getDevice(deviceType type)
         t_idx = &t_output;
         qcb = ui->output;
         break;
-    case loopback:
-        devices = &d_data->loopbackDevices;
-        idx = &d_data->loopbackIdx;
+    case stream:
+        devices = &d_data->streamDevices;
+        idx = &d_data->streamIdx;
         t_idx = &t_loopback;
-        qcb = ui->loopback;
+        qcb = ui->stream;
         break;
     default:
         return;
@@ -57,7 +57,15 @@ void DeviceSettings::setDevices(deviceType type)
     int i = 0;
     for (auto const& [id, dName] : *devices)
     {
-        qcb->addItem(dName);
+        if (type == stream)
+        {
+            qcb->addItem(dName.left(dName.length()-11));
+        }
+        else
+        {
+            qcb->addItem(dName);
+        }
+
         if (id == *idx)
         {
             qcb->setCurrentIndex(i);
@@ -90,8 +98,8 @@ void DeviceSettings::apply()
 {
     d_data->inputIdx = t_input;
     d_data->outputIdx = t_output;
-    d_data->loopbackIdx = t_loopback;
+    d_data->streamIdx = t_loopback;
 
-    audioManager->Reset(d_data->inputIdx, d_data->outputIdx, d_data->loopbackIdx);
+    audioManager->Reset(d_data->inputIdx, d_data->outputIdx, d_data->streamIdx);
 }
 

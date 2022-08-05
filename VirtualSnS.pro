@@ -9,10 +9,12 @@ CONFIG += c++20
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    hardtunesettings.cpp \
-    pitchsettings.cpp \
-    reverbsettings.cpp \
+    source/qt/hardtunesettings.cpp \
+    source/qt/pitchsettings.cpp \
+    source/qt/reverbsettings.cpp \
+    source/audio/streams/cleanoutput.cpp \
     source/audio/streams/monitor.cpp \
+    source/audio/streams/noisegenerator.cpp \
     source/qt/devicesettings.cpp \
     source/audio/dsp/comb.cpp \
     source/audio/audiomanager.cpp \
@@ -29,12 +31,12 @@ SOURCES += \
     source/qt/mainwindow.cpp \
     source/audio/streams/passthrough.cpp \
     source/audio/streams/player.cpp \
-    source/audio/streams/recorder.cpp \
     source/qt/rc/hotkeyitem.cpp \
     source/qt/rc/keypresseater.cpp
 
 HEADERS += \
-    hardtunesettings.h \
+    headers/hardtunesettings.h \
+    headers/cleanoutput.h \
     headers/devicesettings.h \
     headers/allpass.h \
     headers/audiomanager.h \
@@ -49,11 +51,11 @@ HEADERS += \
     headers/keypresseater.h \
     headers/mainwindow.h \
     headers/monitor.h \
+    headers/noisegenerator.h \
     headers/passthrough.h \
     headers/pitchshift.h \
     headers/player.h \
     headers/pvdat.h \
-    headers/recorder.h \
     headers/revmodel.h \
     headers/revtuning.h \
     headers/stft.h \
@@ -100,18 +102,18 @@ HEADERS += \
     nlohmann/ordered_map.hpp \
     nlohmann/thirdparty/hedley/hedley.hpp \
     nlohmann/thirdparty/hedley/hedley_undef.hpp \
-    pitchsettings.h \
-    reverbsettings.h
+    headers/pitchsettings.h \
+    headers/reverbsettings.h
 
 INCLUDEPATH += headers
 
 FORMS += \
-    hardtunesettings.ui \
-    pitchsettings.ui \
+    qtui/hardtunesettings.ui \
+    qtui/pitchsettings.ui \
     qtui/devicesettings.ui \
     qtui/keybindsettings.ui \
     qtui/mainwindow.ui \
-    reverbsettings.ui
+    qtui/reverbsettings.ui
 
 TRANSLATIONS += \
     VirtualSnS_en_001.ts

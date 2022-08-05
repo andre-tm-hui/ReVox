@@ -3,7 +3,9 @@
 
 #include "passthrough.h"
 #include "player.h"
-#include "recorder.h"
+#include "monitor.h"
+#include "cleanoutput.h"
+#include "noisegenerator.h"
 #include <QCheckBox>
 #include <nlohmann/json.hpp>
 #include <samplerate.h>
@@ -36,11 +38,7 @@ public:
     std::map<std::string, device> outputDevices;
     std::map<std::string, device> loopbackDevices;
 
-    void ResetLoopbackRecorder();
-    void ResetPassthrough();
-    void ResetPlayer();
-    void ResetMonitor();
-    void Reset(int input, int output, int loopback);
+    void Reset(int input, int output, int stream);
 
     void Rebind(int keycode);
     void SetNewBind(int keycode, bool isSoundboard);
@@ -55,9 +53,11 @@ public:
 
     void WaitForReady();
 
-    Recorder *loopbackRecorder;
     Passthrough *passthrough;
-    Player *player, *monitor;
+    Player *player;
+    Monitor *monitor;
+    CleanOutput *cleanOutput;
+    NoiseGenerator *noiseGen;
     json soundboardHotkeys;
     json voiceFXHotkeys;
 
@@ -66,13 +66,12 @@ public:
     json settings = R"(
         {
             "inputDevice": 0,
-            "outputDevice": 0,
-            "streamOutputDevice": -1,
-            "loopbackDevice": 0,
+            "outputDevice": -1,
+            "streamOutputDevice": 0,
             "virtualInputDevice": 0,
             "virtualOutputDevice": 0,
             "sampleRate": 48000,
-            "framesPerBuffer": 1024,
+            "framesPerBuffer": 2048,
             "maxNumberOfSounds": 3,
             "maxFileLength": 5
         }
@@ -87,9 +86,11 @@ private:
     std::string dirName = "/Virtual SoundTool/";
 
     void SaveSettings();
+    void SetupStreams();
 
     device GetDeviceByIndex(int i);
     void GetDeviceSettings();
+    int GetCorrespondingLoopbackDevice(int i);
 
     json baseSoundboardHotkey = R"(
         {
@@ -109,7 +110,7 @@ private:
         }
         )"_json;
 
-    float *inputBuffer, *playbackBuffer, *streamBuffer;
+    float *inputBuffer, *playbackBuffer;
 };
 
 #endif // AUDIOMANAGER_H

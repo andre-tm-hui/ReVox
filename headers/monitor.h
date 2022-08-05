@@ -12,8 +12,7 @@ public:
             int framesPerBuffer,
             std::string dir,
             float *inputBuffer,
-            float *playbackBuffer,
-            float *streamBuffer);
+            float *playbackBuffer);
 
     void Record(int keycode);
     void Stop(int keycode);

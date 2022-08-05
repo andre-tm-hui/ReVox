@@ -13,7 +13,8 @@ public:
                 device outputDevice,
                 int sampleRate,
                 int framesPerBuffer,
-                std::string dir);
+                std::string dir,
+                float *inputBuffer);
 
     ~Passthrough()
     {
