@@ -27,6 +27,14 @@ typedef struct{
     float dry;
 } keybind;
 
+typedef struct{
+    int input;
+    int output;
+    int streamOut;
+    int vInput;
+    int vOutput;
+} deviceIDs;
+
 class AudioManager
 {
 public:
@@ -44,12 +52,15 @@ public:
     void SetNewBind(int keycode, bool isSoundboard);
     void RemoveBind(int keycode);
     void SaveBinds();
+    void SaveSettings();
     void SetCheckboxes(std::map<std::string, QCheckBox*> *checkboxes);
     void OverrideConfig(std::string keycode);
     void OverrideSound(std::string fname, int keycode);
 
     void SetNumberOfSounds(int n) { settings["maxNumberOfSounds"] = n; player->maxLiveSamples = n; }
     void SetPlaybackLength(int n) { settings["maxFileLength"] = n; player->data.maxFileLength = n; }
+    void SetSampleMonitor(int n) { monitor->data.monitorSamples = (float)n / 99.f; settings["monitorSamples"] = n; SaveSettings(); }
+    void SetMicMonitor(int n) { monitor->data.monitorMic = (float)n / 99.f; settings["monitorMic"] = n; SaveSettings(); }
 
     void WaitForReady();
 
@@ -65,29 +76,41 @@ public:
 
     json settings = R"(
         {
-            "inputDevice": 0,
-            "outputDevice": -1,
-            "streamOutputDevice": 0,
-            "virtualInputDevice": 0,
-            "virtualOutputDevice": 0,
+            "inputDevice": "",
+            "outputDevice": "",
+            "streamOutputDevice": "",
+            "virtualInputDevice": "",
+            "virtualOutputDevice": "",
             "sampleRate": 48000,
             "framesPerBuffer": 2048,
             "maxNumberOfSounds": 3,
-            "maxFileLength": 5
+            "maxFileLength": 5,
+            "monitorSamples": 0,
+            "monitorMic": 0
         }
         )"_json;
 
 private:
     std::map<std::string, QCheckBox*> *checkboxes;
     int sampleRate, framesPerBuffer, defVInput, defVOutput;
+    deviceIDs ids = {-1, -1, -1, -1, -1};
     int rebindAt = -1;
 
     std::string appdata;
     std::string dirName = "/Virtual SoundTool/";
 
-    void SaveSettings();
-    void SetupStreams();
 
+    void SetupStreams();
+    static void ShutdownStreams(Passthrough *passthrough,
+                                Player *player,
+                                Monitor *monitor,
+                                CleanOutput *cleanOutput,
+                                NoiseGenerator *noiseGen);
+    static void CheckForDeviceChanges(Passthrough *passthrough,
+                                      Player *player,
+                                      Monitor *monitor,
+                                      CleanOutput *cleanOutput,
+                                      NoiseGenerator *noiseGen);
     device GetDeviceByIndex(int i);
     void GetDeviceSettings();
     int GetCorrespondingLoopbackDevice(int i);
@@ -96,8 +119,7 @@ private:
         {
             "label": "",
             "recordInput": true,
-            "recordLoopback": true,
-            "syncStreams": true
+            "recordLoopback": true
         }
         )"_json;
 

@@ -31,7 +31,7 @@ class DeviceSettings : public QDialog
     Q_OBJECT
 
 public:
-    explicit DeviceSettings(device_data *d_data, AudioManager *audioManager,  QWidget *parent = nullptr);
+    explicit DeviceSettings(device_data *d_data, AudioManager *audioManager, std::map<std::string, QCheckBox*> *checkboxes, QWidget *parent = nullptr);
     ~DeviceSettings();
 
 private slots:
@@ -46,9 +46,10 @@ private:
     Ui::DeviceSettings *ui;
     device_data *d_data;
     AudioManager *audioManager;
+    std::map<std::string, QCheckBox*> *checkboxes;
 
     std::map<int, QString> *devices;
-    int *idx, *t_idx, t_input, t_output, t_loopback, t_vInput, t_vOutput;
+    int *idx, *t_idx, t_input, t_output, t_streamOutput;
     QComboBox *qcb;
 
     deviceType selectedType;

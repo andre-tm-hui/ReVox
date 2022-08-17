@@ -43,7 +43,7 @@ MainWindow::MainWindow(QWidget *parent)
     for (auto const& [dName, i] : audioManager->inputDevices)
     {
         d_data->inputDevices[i.id] = QString::fromStdString(dName);
-        if (dName.find(Pa_GetDeviceInfo(audioManager->settings["inputDevice"])->name) != std::string::npos)
+        if (dName.find(audioManager->settings["inputDevice"]) != std::string::npos)
         {
             d_data->inputIdx = i.id;
         }
@@ -54,7 +54,7 @@ MainWindow::MainWindow(QWidget *parent)
     for (auto const& [dName, i] : audioManager->outputDevices)
     {
         d_data->outputDevices[i.id] = QString::fromStdString(dName);
-        if (dName.find(Pa_GetDeviceInfo(audioManager->settings["outputDevice"])->name) != std::string::npos)
+        if (dName.find(audioManager->settings["outputDevice"]) != std::string::npos)
         {
             d_data->outputIdx = i.id;
         }
@@ -65,7 +65,7 @@ MainWindow::MainWindow(QWidget *parent)
     for (auto const& [dName, i] : audioManager->loopbackDevices)
     {
         d_data->streamDevices[i.id] = QString::fromStdString(dName);
-        if (dName.find(Pa_GetDeviceInfo(audioManager->settings["streamOutputDevice"])->name) != std::string::npos)
+        if (dName.find(audioManager->settings["streamOutputDevice"]) != std::string::npos)
         {
             d_data->streamIdx = i.id;
         }
@@ -124,6 +124,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->maxOverlappingSounds->setValue(audioManager->settings["maxNumberOfSounds"].get<int>());
     ui->maxPlaybackLength->setValue(audioManager->settings["maxFileLength"].get<int>());
 
+    ui->horizontalSlider->setValue(audioManager->settings["monitorSamples"].get<int>());
+    ui->horizontalSlider_2->setValue(audioManager->settings["monitorMic"].get<int>());
+
+    devices = new QMediaDevices();
+    connect(devices, SIGNAL(audioInputsChanged()), this, SLOT(devicesChanged()));
+    connect(devices, SIGNAL(audioOutputsChanged()), this, SLOT(devicesChanged()));
+
     setup = true;
 }
 
@@ -171,7 +178,7 @@ void MainWindow::removeBind(int type)
 
 void MainWindow::openDeviceSetup()
 {
-    DeviceSettings popup (d_data, audioManager);
+    DeviceSettings popup (d_data, audioManager, &checkboxes);
     popup.setModal(true);
     popup.exec();
 }
@@ -271,3 +278,20 @@ void MainWindow::on_maxOverlappingSounds_valueChanged(int arg1)
     audioManager->SetNumberOfSounds(arg1);
 }
 
+
+void MainWindow::on_horizontalSlider_valueChanged(int value)
+{
+    audioManager->SetSampleMonitor(value);
+}
+
+
+void MainWindow::on_horizontalSlider_2_valueChanged(int value)
+{
+    audioManager->SetMicMonitor(value);
+}
+
+void MainWindow::devicesChanged()
+{
+    audioManager->Reset(-1, -1, -1);
+    std::cout<<"device changed"<<std::endl;
+}

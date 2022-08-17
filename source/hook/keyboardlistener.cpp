@@ -45,25 +45,22 @@ LRESULT CALLBACK KeyboardListener::KeyboardEvent(int nCode, WPARAM wParam, LPARA
                     {
                         if (!audioManager->recording) {
                             // check if button has a recorded file, otherwise, start recording
-                            if (audioManager->player->CanPlay(p->vkCode))
+                            if (audioManager->player != nullptr && audioManager->player->CanPlay(p->vkCode))
                             {
-                                std::cout<<"plyaer playing"<<std::endl;
                                 audioManager->player->Play(p->vkCode);
-                                //std::cout<<"monitor playing"<<std::endl;
-                                //audioManager->monitor->Play(p->vkCode);
                             }
                             // if not, start recording
                             else
                             {
-                                if (bindSettings["recordInput"]) audioManager->passthrough->Record(p->vkCode);
-                                if (bindSettings["recordLoopback"]) audioManager->monitor->Record(p->vkCode);
+                                if (bindSettings["recordInput"] && audioManager->passthrough != nullptr) audioManager->passthrough->Record(p->vkCode);
+                                if (bindSettings["recordLoopback"] && audioManager->monitor != nullptr) audioManager->monitor->Record(p->vkCode);
                                 audioManager->recording = true;
                             }
                         }
                     }
                     else
                     {
-                        audioManager->passthrough->SetFX(audioManager->voiceFXHotkeys[std::to_string(p->vkCode)]);
+                        if (audioManager->passthrough != nullptr)audioManager->passthrough->SetFX(audioManager->voiceFXHotkeys[std::to_string(p->vkCode)]);
                     }
 
                     break;
@@ -73,8 +70,8 @@ LRESULT CALLBACK KeyboardListener::KeyboardEvent(int nCode, WPARAM wParam, LPARA
                         // stop recording when button is released
                         if (audioManager->recording)
                         {
-                            if (bindSettings["recordInput"]) audioManager->passthrough->Stop(p->vkCode);
-                            if (bindSettings["recordLoopback"])
+                            if (bindSettings["recordInput"] && audioManager->passthrough != nullptr) audioManager->passthrough->Stop(p->vkCode);
+                            if (bindSettings["recordLoopback"] && audioManager->monitor != nullptr)
                             {
                                 audioManager->monitor->Stop(p->vkCode);
                                 audioManager->monitor->Merge(p->vkCode);
@@ -89,8 +86,8 @@ LRESULT CALLBACK KeyboardListener::KeyboardEvent(int nCode, WPARAM wParam, LPARA
                         // secondary record button - used to record over already existing clips
                         if (!audioManager->recording)
                         {
-                            if (bindSettings["recordInput"]) audioManager->passthrough->Record(p->vkCode);
-                            if (bindSettings["recordLoopback"]) audioManager->monitor->Record(p->vkCode);
+                            if (bindSettings["recordInput"] && audioManager->passthrough != nullptr) audioManager->passthrough->Record(p->vkCode);
+                            if (bindSettings["recordLoopback"] && audioManager->monitor != nullptr) audioManager->monitor->Record(p->vkCode);
                             audioManager->recording = true;
                         }
                     }
@@ -101,8 +98,8 @@ LRESULT CALLBACK KeyboardListener::KeyboardEvent(int nCode, WPARAM wParam, LPARA
                         // stop recording when button is released
                         if (audioManager->recording)
                         {
-                            if (bindSettings["recordInput"]) audioManager->passthrough->Stop(p->vkCode);
-                            if (bindSettings["recordLoopback"])
+                            if (bindSettings["recordInput"] && audioManager->passthrough != nullptr) audioManager->passthrough->Stop(p->vkCode);
+                            if (bindSettings["recordLoopback"] && audioManager->monitor != nullptr)
                             {
                                 audioManager->monitor->Stop(p->vkCode);
                                 audioManager->monitor->Merge(p->vkCode);

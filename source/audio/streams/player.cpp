@@ -54,15 +54,12 @@ void Player::Play(int keycode)
         return;
     }
     // open the file and add it to the queue
-    /* TODO:
-     * dynamic changing of maxLiveSamples and maxFileLength
-     * toggle between playing clips over each other and stopping the previous clip to play the next clip (maxLiveSamples = 1?)
-     */
     SNDFILE* file = sf_open(FILE_NAME.c_str(), SFM_READ, &data.info);
     if ((int)data.files->size() >= maxLiveSamples) {
-        sf_close((*data.queue)[0]);
-        (*data.files).erase((*data.queue)[0]);
+        SNDFILE* erase = (*data.queue)[0];
+        (*data.files).erase(erase);
         (*data.queue).erase((*data.queue).begin());
+        if (erase != nullptr) sf_close(erase);
     }
     (*data.files)[file] = 0;
     (*data.queue).push_back(file);

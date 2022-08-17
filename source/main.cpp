@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "audiomanager.h"
 #include "singleapplication.h"
+#include "devicelistener.h"
+#include "mmdeviceapi.h"
 
 #include <QApplication>
 #include <QComboBox>

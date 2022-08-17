@@ -1,7 +1,7 @@
 #include "devicesettings.h"
 #include "ui_devicesettings.h"
 
-DeviceSettings::DeviceSettings(device_data *d_data, AudioManager *audioManager, QWidget *parent) :
+DeviceSettings::DeviceSettings(device_data *d_data, AudioManager *audioManager, std::map<std::string, QCheckBox*> *checkboxes, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::DeviceSettings)
 {
@@ -9,6 +9,7 @@ DeviceSettings::DeviceSettings(device_data *d_data, AudioManager *audioManager, 
 
     this->d_data = d_data;
     this->audioManager = audioManager;
+    this->checkboxes = checkboxes;
 
     setDevices(input);
     setDevices(output);
@@ -19,6 +20,7 @@ DeviceSettings::DeviceSettings(device_data *d_data, AudioManager *audioManager, 
 
 DeviceSettings::~DeviceSettings()
 {
+    audioManager->SetCheckboxes(this->checkboxes);
     delete ui;
 }
 
@@ -41,7 +43,7 @@ void DeviceSettings::getDevice(deviceType type)
     case stream:
         devices = &d_data->streamDevices;
         idx = &d_data->streamIdx;
-        t_idx = &t_loopback;
+        t_idx = &t_streamOutput;
         qcb = ui->stream;
         break;
     default:
@@ -79,13 +81,14 @@ void DeviceSettings::setDevices(deviceType type)
 
 void DeviceSettings::onChange(int type)
 {
+    std::cout<<"change"<<std::endl;
     getDevice((deviceType)type);
 
     if (devices == nullptr) return;
 
     for (auto const& [id, dName] : *devices)
     {
-        if (QString::compare(qcb->currentText(), dName) == 0)
+        if (dName.contains(qcb->currentText()))
         {
             *t_idx = id;
             break;
@@ -98,7 +101,7 @@ void DeviceSettings::apply()
 {
     d_data->inputIdx = t_input;
     d_data->outputIdx = t_output;
-    d_data->streamIdx = t_loopback;
+    d_data->streamIdx = t_streamOutput;
 
     audioManager->Reset(d_data->inputIdx, d_data->outputIdx, d_data->streamIdx);
 }

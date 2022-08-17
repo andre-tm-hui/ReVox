@@ -5,6 +5,7 @@
 #include <QListWidget>
 #include <QHBoxLayout>
 #include <QSystemTrayIcon>
+#include <QMediaDevices>
 #include <reverbsettings.h>
 #include <hardtunesettings.h>
 #include <pitchsettings.h>
@@ -35,6 +36,7 @@ public:
     static KeyboardListener* keyboardListener;
 
     void setVisible(bool visible) override;
+    std::map<std::string, QCheckBox*> checkboxes = {};
 
 protected:
     bool event(QEvent *event) override;
@@ -60,11 +62,17 @@ private slots:
 
     void on_maxOverlappingSounds_valueChanged(int arg1);
 
+    void on_horizontalSlider_valueChanged(int value);
+
+    void on_horizontalSlider_2_valueChanged(int value);
+
+    void devicesChanged();
+
 private:
     Ui::MainWindow *ui;
 
     static std::map<QString, int> keycodeMap;
-    std::map<std::string, QCheckBox*> checkboxes = {};
+
     QListWidget *keybinds;
     bool setup = false;
 
@@ -85,5 +93,7 @@ private:
     device_data *d_data;
 
     KeyPressEater *keyPressEater;
+
+    QMediaDevices *devices;
 };
 #endif // MAINWINDOW_H

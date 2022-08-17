@@ -25,6 +25,10 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background: #202020;
+color: #FFFFFF;</string>
+  </property>
   <widget class="QDial" name="mix">
    <property name="geometry">
     <rect>

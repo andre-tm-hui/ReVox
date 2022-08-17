@@ -21,8 +21,6 @@ public:
 private slots:
     void on_buttonBox_accepted();
 
-    void on_recordLoopback_stateChanged(int arg1);
-
     void openFile();
 
 private:

@@ -5,8 +5,6 @@ AudioManager::AudioManager()
     // initialize portaudio for the entire app
     Pa_Initialize();
 
-    GetDeviceSettings();
-
     // get the %appdata% location - all Windows machines should pass the appdata_c check
     char* appdata_c = std::getenv("APPDATA");
     if (appdata_c)
@@ -26,8 +24,6 @@ AudioManager::AudioManager()
         {
             std::ifstream settingsFile (appdata + dirName + "settings.json");
             if (!settingsFile.fail()) settingsFile >> settings;
-            settings["virtualInputDevice"] = defVInput;
-            settings["virtualOutputDevice"] = defVOutput;
 
             std::ifstream soundboardBindsFile(appdata + dirName + "soundboard.json");
             if (!soundboardBindsFile.fail()) soundboardBindsFile >> soundboardHotkeys;
@@ -36,6 +32,8 @@ AudioManager::AudioManager()
             if (!voiceFXBindsFile.fail()) voiceFXBindsFile >> voiceFXHotkeys;
         }
     }
+
+    GetDeviceSettings();
 
     // start the portaudio stream objects
     SetupStreams();
@@ -66,8 +64,8 @@ void AudioManager::GetDeviceSettings()
     std::map<std::string, int> apiMap;
 
     // instantiate devices to default values
-    settings["inputDevice"] = Pa_GetDefaultInputDevice();
-    settings["streamOutputDevice"] = Pa_GetDefaultOutputDevice();
+    settings["inputDevice"] = settings["inputDevice"] == "" ? Pa_GetDeviceInfo(Pa_GetDefaultInputDevice())->name : settings["inputDevice"];
+    settings["streamOutputDevice"] = settings["streamOutputDevice"] == "" ? Pa_GetDeviceInfo(Pa_GetDefaultOutputDevice())->name : settings["streamOutputDevice"];
 
     // get all available audio APIs on the system
     for (int i = 0; i < Pa_GetHostApiCount(); i++)
@@ -95,21 +93,21 @@ void AudioManager::GetDeviceSettings()
                 // set the default virtual input device - assumes the user is using VB-Audio's Virtual Cable https://vb-audio.com/Cable/
                 if (deviceName.find("CABLE Input") != std::string::npos)
                 {
-                    settings["virtualInputDevice"] = deviceList[deviceName];
-                    defVInput = deviceList[deviceName];
+                    settings["virtualInputDevice"] = Pa_GetDeviceInfo(deviceList[deviceName])->name;
+                    ids.vInput = deviceList[deviceName];
                 }
                 else if (deviceName.find("CABLE Output") != std::string::npos)
                 {
-                    settings["virtualOutputDevice"] = deviceList[deviceName];
-                    defVOutput = deviceList[deviceName];
+                    settings["virtualOutputDevice"] = Pa_GetDeviceInfo(deviceList[deviceName])->name;
+                    ids.vOutput = deviceList[deviceName];
                 }
-                else if (deviceName.find(Pa_GetDeviceInfo(Pa_GetDefaultInputDevice())->name) != std::string::npos)
+                else if (deviceName.find(settings["inputDevice"]) != std::string::npos)
                 {
-                    settings["inputDevice"] = deviceList[deviceName];
+                    ids.input = deviceList[deviceName];
                 }
-                else if (deviceName.find(Pa_GetDeviceInfo(Pa_GetDefaultOutputDevice())->name) != std::string::npos)
+                else if (deviceName.find(settings["streamOutputDevice"]) != std::string::npos)
                 {
-                    settings["streamOutputDevice"] = deviceList[deviceName];
+                    ids.streamOut = deviceList[deviceName];
                 }
             }
         }
@@ -177,11 +175,18 @@ void AudioManager::GetDeviceSettings()
                 loopbackDevices[name + " [Loopback]"].nChannels = params.channelCount - 1;
             }
 
-            if (name.find("CABLE") == std::string::npos &&
-                settings["outputDevice"].get<int>() == -1 &&
-                outputDevices[name].id != settings["streamOutputDevice"].get<int>())
+            if (settings["outputDevice"] != "")
             {
-                settings["outputDevice"] = outputDevices[name].id;
+                if (name.find(settings["outputDevice"]) != std::string::npos)
+                {
+                    ids.output = outputDevices[name].id;
+                }
+            } else {
+                if (name.find("CABLE") == std::string::npos && outputDevices[name].id != ids.streamOut)
+                {
+                    settings["outputDevice"] = name;
+                    ids.output = outputDevices[name].id;
+                }
             }
         }
     }
@@ -201,14 +206,22 @@ int AudioManager::GetCorrespondingLoopbackDevice(int i)
 /* Reset functions for portaudio objects, called when corresponding devices are changed in the GUI */
 void AudioManager::Reset(int input, int output, int stream)
 {
-    Pa_Terminate();
-    Pa_Initialize();
-    settings["inputDevice"] = input;
-    settings["outputDevice"] = output;
-    std::string dName = Pa_GetDeviceInfo(stream)->name;
-    for (auto const& [name, id] : deviceList)
+    //ids.input = input;
+    //ids.output = output;
+    settings["inputDevice"] = input != -1 ? Pa_GetDeviceInfo(input)->name : settings["inputDevice"];
+    settings["outputDevice"] = output != -1 ? Pa_GetDeviceInfo(output)->name : settings["outputDevice"];
+    if (stream >= 0)
     {
-        if (dName.find(name) != std::string::npos) { settings["streamOutputDevice"] = id; break; }
+        std::string dName = Pa_GetDeviceInfo(stream)->name;
+        for (auto const& [name, id] : deviceList)
+        {
+            if (dName.find(name) != std::string::npos && dName.find("[Loopback]") == std::string::npos)
+            {
+                //ids.streamOut = stream;
+                settings["streamOutputDevice"] = Pa_GetDeviceInfo(stream)->name;
+                break;
+            }
+        }
     }
 
     delete passthrough;
@@ -217,11 +230,16 @@ void AudioManager::Reset(int input, int output, int stream)
     delete cleanOutput;
     delete noiseGen;
 
+    Pa_Terminate();
+    Pa_Initialize();
+
+    GetDeviceSettings();
+
     SetupStreams();
 
     WaitForReady();
 
-    SaveSettings();
+    if (input != -1 || output != -1 || stream != -1) { SaveSettings(); }
 }
 
 void AudioManager::SetupStreams()
@@ -229,32 +247,60 @@ void AudioManager::SetupStreams()
     inputBuffer = new float[settings["framesPerBuffer"].get<int>() * 2 * 3];
     playbackBuffer = new float[settings["framesPerBuffer"].get<int>() * 2 * 3];
 
-    int loopbackdevice = GetCorrespondingLoopbackDevice(settings["streamOutputDevice"].get<int>());
-    noiseGen = new NoiseGenerator(GetDeviceByIndex(settings["streamOutputDevice"].get<int>()), settings["sampleRate"].get<int>());
+    int loopbackdevice = GetCorrespondingLoopbackDevice(ids.streamOut);
+    noiseGen = new NoiseGenerator(GetDeviceByIndex(ids.streamOut), settings["sampleRate"].get<int>());
     monitor             = new Monitor(      GetDeviceByIndex(loopbackdevice),
-                                            GetDeviceByIndex(settings["outputDevice"].get<int>()),
+                                            GetDeviceByIndex(ids.output),
                                             settings["sampleRate"].get<int>(),
                                             settings["framesPerBuffer"].get<int>(),
                                             appdata + dirName,
                                             inputBuffer, playbackBuffer);
-    player              = new Player(       GetDeviceByIndex(settings["virtualInputDevice"]),
+    player              = new Player(       GetDeviceByIndex(ids.vInput),
                                             settings["sampleRate"].get<int>(),
                                             settings["framesPerBuffer"].get<int>(),
                                             appdata + dirName,
                                             playbackBuffer);
-    passthrough         = new Passthrough(  GetDeviceByIndex(settings["inputDevice"]),
-                                            GetDeviceByIndex(settings["virtualInputDevice"]),
+    passthrough         = new Passthrough(  GetDeviceByIndex(ids.input),
+                                            GetDeviceByIndex(ids.vInput),
                                             settings["sampleRate"].get<int>(),
                                             settings["framesPerBuffer"].get<int>(),
                                             appdata + dirName,
                                             inputBuffer);
     cleanOutput         = new CleanOutput(  GetDeviceByIndex(loopbackdevice),
-                                            GetDeviceByIndex(settings["outputDevice"].get<int>()),
+                                            GetDeviceByIndex(ids.output),
                                             settings["sampleRate"].get<int>(),
                                             1);
 
     player->maxLiveSamples = settings["maxNumberOfSounds"];
     player->data.maxFileLength = settings["maxFileLength"];
+
+    SetSampleMonitor(settings["monitorSamples"].get<int>());
+    SetMicMonitor(settings["monitorMic"].get<int>());
+}
+
+void AudioManager::ShutdownStreams(Passthrough *passthrough,
+                                   Player *player,
+                                   Monitor *monitor,
+                                   CleanOutput *cleanOutput,
+                                   NoiseGenerator *noiseGen)
+{
+    delete noiseGen;
+    delete monitor;
+    delete player;
+    delete passthrough;
+    delete cleanOutput;
+}
+
+void AudioManager::CheckForDeviceChanges(Passthrough *passthrough,
+                                         Player *player,
+                                         Monitor *monitor,
+                                         CleanOutput *cleanOutput,
+                                         NoiseGenerator *noiseGen)
+{
+    while (true)
+    {
+
+    }
 }
 
 /* Configuration save functions */

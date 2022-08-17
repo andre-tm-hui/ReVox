@@ -13,15 +13,6 @@ KeybindSettings::KeybindSettings(int keycode, json *settings, AudioManager *audi
     this->audioManager = audioManager;
     ui->recordInput->setCheckState((*settings)["recordInput"] ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
     ui->recordLoopback->setCheckState((*settings)["recordLoopback"] ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
-    ui->padAudio->setCheckState((*settings)["syncStreams"] ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
-    if (ui->recordLoopback->checkState() == Qt::CheckState::Checked)
-    {
-        ui->padAudio->setEnabled(true);
-    }
-    else
-    {
-        ui->padAudio->setEnabled(false);
-    }
 
     connect(ui->browse, SIGNAL(clicked()), this, SLOT(openFile()));
 }
@@ -40,24 +31,8 @@ void KeybindSettings::on_buttonBox_accepted()
 {
     (*settings)["recordInput"] = ui->recordInput->isChecked();
     (*settings)["recordLoopback"] = ui->recordLoopback->isChecked();
-    (*settings)["syncStreams"] = ui->padAudio->isChecked();
     audioManager->SaveBinds();
 }
-
-
-void KeybindSettings::on_recordLoopback_stateChanged(int arg1)
-{
-    if (arg1 == Qt::CheckState::Checked)
-    {
-        ui->padAudio->setEnabled(true);
-    }
-    else
-    {
-        ui->padAudio->setEnabled(false);
-    }
-}
-
-
 
 
 void KeybindSettings::openFile()

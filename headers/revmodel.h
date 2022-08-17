@@ -46,7 +46,7 @@ private:
     float	dry;
     float	width;
     float	mode;
-    bool    enabled;
+    bool    enabled = false;
 
     bool err = false;
 

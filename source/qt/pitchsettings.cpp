@@ -8,6 +8,9 @@ PitchSettings::PitchSettings(PitchShift *pitchshift, QWidget *parent) :
     this->pitchshift = pitchshift;
     ui->setupUi(this);
 
+    int offset = (int)(12 * log(pitchshift->getPitchscale()) / log(2));
+    ui->dial->setValue(offset);
+
     connect(ui->dial, SIGNAL(valueChanged(int)), this, SLOT(onChange(int)));
 }
 

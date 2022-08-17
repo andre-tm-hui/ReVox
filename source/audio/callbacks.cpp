@@ -14,28 +14,31 @@ int playCallback(const void* inputBuffer, void* outputBuffer,
 
     // clear the output buffer first
     memset(out, 0, sizeof(float) * framesPerBuffer * 2);
+    std::vector<SNDFILE*> toDelete = {};
     // iterate through every file
     for (auto const& [file, timeAlive] : *p_data->files) {
-        // files are available if timeAlive > -1
-        if (timeAlive != -1) {
-            // read the frames to a temporary read buffer
-            num_read = sf_read_float(file, read, framesPerBuffer * 2);
-            // add the read buffer to the aggregate read buffer
-            for (int i = 0; i < num_read; i++) {
-                *(out + i) += *(read + i);
-            }
-
-            // close the file if EOF is reached, or if the clip is too long, and remove the file from the map
-            if (num_read < framesPerBuffer || timeAlive > p_data->maxFileLength * p_data->info.samplerate) {
-                sf_close(file);
-                (*p_data->files)[file] = -1;
-                p_data->files->erase(file);
-            }
-            else {
-                // keep track of how much of the file has been read
-                (*p_data->files)[file] += framesPerBuffer;
-            }
+        // read the frames to a temporary read buffer
+        num_read = sf_read_float(file, read, framesPerBuffer * 2);
+        // add the read buffer to the aggregate read buffer
+        for (int i = 0; i < num_read; i++) {
+            *(out + i) += *(read + i);
         }
+
+        // close the file if EOF is reached, or if the clip is too long, and remove the file from the map
+        if (num_read < framesPerBuffer || timeAlive > p_data->maxFileLength * p_data->info.samplerate) {
+            p_data->queue->erase(std::find(p_data->queue->begin(), p_data->queue->end(), file));
+            sf_close(file);
+            toDelete.push_back(file);
+        }
+        else {
+            // keep track of how much of the file has been read
+            (*p_data->files)[file] += framesPerBuffer;
+        }
+    }
+
+    for (auto& file : toDelete)
+    {
+        p_data->files->erase(file);
     }
 
     // unassign the memory allocation for the read buffer

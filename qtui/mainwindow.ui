@@ -41,16 +41,19 @@ color: #FFFFFF;</string>
       <x>20</x>
       <y>10</y>
       <width>171</width>
-      <height>31</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <family>Unispace</family>
-      <pointsize>14</pointsize>
+      <pointsize>16</pointsize>
       <italic>false</italic>
       <bold>true</bold>
      </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background: transparent;</string>
     </property>
     <property name="text">
      <string>SOUNDBOARD</string>
@@ -60,7 +63,7 @@ color: #FFFFFF;</string>
     <property name="geometry">
      <rect>
       <x>312</x>
-      <y>350</y>
+      <y>345</y>
       <width>20</width>
       <height>20</height>
      </rect>
@@ -90,7 +93,7 @@ line-height: 20px;</string>
     <property name="geometry">
      <rect>
       <x>331</x>
-      <y>350</y>
+      <y>345</y>
       <width>20</width>
       <height>20</height>
      </rect>
@@ -215,6 +218,7 @@ QCheckBox::indicator::unchecked {image: url(:/icons/FXOff.png); width: 12px; hei
       </property>
       <property name="font">
        <font>
+        <family>Segoe UI</family>
         <pointsize>10</pointsize>
        </font>
       </property>
@@ -306,6 +310,7 @@ QCheckBox::indicator::unchecked {image: url(:/icons/FXOff.png); width: 12px; hei
       </property>
       <property name="font">
        <font>
+        <family>Segoe UI</family>
         <pointsize>10</pointsize>
        </font>
       </property>
@@ -397,6 +402,7 @@ QCheckBox::indicator::unchecked {image: url(:/icons/FXOff.png); width: 12px; hei
       </property>
       <property name="font">
        <font>
+        <family>Segoe UI</family>
         <pointsize>10</pointsize>
        </font>
       </property>
@@ -510,7 +516,7 @@ QListWidget::item { margin: 4px; }</string>
     <property name="geometry">
      <rect>
       <x>662</x>
-      <y>350</y>
+      <y>345</y>
       <width>20</width>
       <height>20</height>
      </rect>
@@ -540,7 +546,7 @@ line-height: 20px;</string>
     <property name="geometry">
      <rect>
       <x>681</x>
-      <y>350</y>
+      <y>345</y>
       <width>20</width>
       <height>20</height>
      </rect>
@@ -568,16 +574,19 @@ background-color: #303030;</string>
       <x>370</x>
       <y>10</y>
       <width>171</width>
-      <height>31</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <family>Unispace</family>
-      <pointsize>14</pointsize>
+      <pointsize>16</pointsize>
       <italic>false</italic>
       <bold>true</bold>
      </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background: transparent;</string>
     </property>
     <property name="text">
      <string>VOICE FX</string>
@@ -641,6 +650,162 @@ QSpinBox::down-button{background: #303030; border: 1px solid #202020;}
     <property name="value">
      <number>3</number>
     </property>
+   </widget>
+   <widget class="QLabel" name="label_7">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>374</y>
+      <width>96</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Unispace</family>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border: 1px solid #006060;</string>
+    </property>
+    <property name="text">
+     <string>MONITOR    AUDIO</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_2">
+    <property name="geometry">
+     <rect>
+      <x>475</x>
+      <y>374</y>
+      <width>225</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QGroupBox {border: 1px solid #006060;}</string>
+    </property>
+    <property name="title">
+     <string/>
+    </property>
+    <widget class="QLabel" name="label_10">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>26</y>
+       <width>71</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: transparent;</string>
+     </property>
+     <property name="text">
+      <string>Voice:</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QSlider" name="horizontalSlider">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>5</y>
+       <width>111</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QSlider::groove:horizontal {
+    height: 2px; 
+    background: #404040;
+    margin: 2px 0;
+}
+
+QSlider::handle:horizontal {
+    background: #303030;
+    width: 6px;
+    margin: -6px 0;
+    border-radius: 0px;
+}
+
+QSlider::handle:horizontal:hover{
+	background: #606060;
+}
+
+QSlider::sub-page:horizontal{
+	background: #00C0C0;
+	height: 4px;
+}</string>
+     </property>
+     <property name="value">
+      <number>50</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_9">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>4</y>
+       <width>71</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: transparent;</string>
+     </property>
+     <property name="text">
+      <string>Soundboard:</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QSlider" name="horizontalSlider_2">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>27</y>
+       <width>111</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QSlider::groove:horizontal {
+    height: 2px; 
+    background: #404040;
+    margin: 2px 0;
+}
+
+QSlider::handle:horizontal {
+    background: #303030;
+    width: 6px;
+    margin: -6px 0;
+    border-radius: 0px;
+}
+
+QSlider::handle:horizontal:hover{
+	background: #606060;
+}
+
+QSlider::sub-page:horizontal{
+	background: #00C0C0;
+	height: 4px;
+}</string>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
