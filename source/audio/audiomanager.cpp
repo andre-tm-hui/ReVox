@@ -62,6 +62,10 @@ void AudioManager::WaitForReady()
 void AudioManager::GetDeviceSettings()
 {
     std::map<std::string, int> apiMap;
+    deviceList = {};
+    inputDevices = {};
+    outputDevices = {};
+    loopbackDevices = {};
 
     // instantiate devices to default values
     settings["inputDevice"] = settings["inputDevice"] == "" ? Pa_GetDeviceInfo(Pa_GetDefaultInputDevice())->name : settings["inputDevice"];

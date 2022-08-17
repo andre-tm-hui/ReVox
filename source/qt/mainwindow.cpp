@@ -31,48 +31,6 @@ MainWindow::MainWindow(QWidget *parent)
     this->setWindowIcon(QIcon(":/icons/icon.png"));
     connect(trayIcon, &QSystemTrayIcon::activated, this, &MainWindow::iconActivated);
 
-    d_data = new device_data();
-    d_data->inputDevices = std::map<int, QString>();
-    d_data->inputIdx = 0;
-    d_data->outputDevices = std::map<int, QString>();
-    d_data->outputIdx = 0;
-    d_data->streamDevices = std::map<int, QString>();
-    d_data->streamIdx = 0;
-
-    int currentDevice = 0;
-    for (auto const& [dName, i] : audioManager->inputDevices)
-    {
-        d_data->inputDevices[i.id] = QString::fromStdString(dName);
-        if (dName.find(audioManager->settings["inputDevice"]) != std::string::npos)
-        {
-            d_data->inputIdx = i.id;
-        }
-        currentDevice++;
-    }
-
-    currentDevice = 0;
-    for (auto const& [dName, i] : audioManager->outputDevices)
-    {
-        d_data->outputDevices[i.id] = QString::fromStdString(dName);
-        if (dName.find(audioManager->settings["outputDevice"]) != std::string::npos)
-        {
-            d_data->outputIdx = i.id;
-        }
-        currentDevice++;
-    }
-
-    currentDevice = 0;
-    for (auto const& [dName, i] : audioManager->loopbackDevices)
-    {
-        d_data->streamDevices[i.id] = QString::fromStdString(dName);
-        if (dName.find(audioManager->settings["streamOutputDevice"]) != std::string::npos)
-        {
-            d_data->streamIdx = i.id;
-        }
-
-        currentDevice++;
-    }
-
     for (auto& [keybind, settings] : audioManager->soundboardHotkeys.items())
     {
         QString qKeybind = vkCodenames[std::stoi(keybind)];
@@ -84,6 +42,8 @@ MainWindow::MainWindow(QWidget *parent)
         QString qKeybind = vkCodenames[std::stoi(keybind)];
         addBind(1, std::stoi(keybind), QString::fromStdString(settings["label"].get<std::string>()));
     }
+
+    GetDeviceList();
 
     connect(&mapper_add, SIGNAL(mappedInt(int)), this, SLOT(addBind(int)));
     connect(ui->addBind, SIGNAL(clicked()), &mapper_add, SLOT(map()));
@@ -293,5 +253,50 @@ void MainWindow::on_horizontalSlider_2_valueChanged(int value)
 void MainWindow::devicesChanged()
 {
     audioManager->Reset(-1, -1, -1);
-    std::cout<<"device changed"<<std::endl;
+    GetDeviceList();
+}
+
+void MainWindow::GetDeviceList()
+{
+    d_data = new device_data();
+    d_data->inputDevices = std::map<int, QString>();
+    d_data->inputIdx = 0;
+    d_data->outputDevices = std::map<int, QString>();
+    d_data->outputIdx = 0;
+    d_data->streamDevices = std::map<int, QString>();
+    d_data->streamIdx = 0;
+
+    int currentDevice = 0;
+    for (auto const& [dName, i] : audioManager->inputDevices)
+    {
+        d_data->inputDevices[i.id] = QString::fromStdString(dName);
+        if (dName.find(audioManager->settings["inputDevice"]) != std::string::npos)
+        {
+            d_data->inputIdx = i.id;
+        }
+        currentDevice++;
+    }
+
+    currentDevice = 0;
+    for (auto const& [dName, i] : audioManager->outputDevices)
+    {
+        d_data->outputDevices[i.id] = QString::fromStdString(dName);
+        if (dName.find(audioManager->settings["outputDevice"]) != std::string::npos)
+        {
+            d_data->outputIdx = i.id;
+        }
+        currentDevice++;
+    }
+
+    currentDevice = 0;
+    for (auto const& [dName, i] : audioManager->loopbackDevices)
+    {
+        d_data->streamDevices[i.id] = QString::fromStdString(dName);
+        if (dName.find(audioManager->settings["streamOutputDevice"]) != std::string::npos)
+        {
+            d_data->streamIdx = i.id;
+        }
+
+        currentDevice++;
+    }
 }

@@ -89,6 +89,7 @@ private:
     QSignalMapper mapper_add, mapper_remove, mapper_fx;
 
     static QString GetKeyName(int keybind);
+    void GetDeviceList();
 
     device_data *d_data;
 
