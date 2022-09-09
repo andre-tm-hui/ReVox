@@ -109,6 +109,7 @@ HEADERS += \
 INCLUDEPATH += headers
 
 FORMS += \
+    mainwindow2.ui \
     qtui/hardtunesettings.ui \
     qtui/pitchsettings.ui \
     qtui/devicesettings.ui \

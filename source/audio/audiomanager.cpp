@@ -62,6 +62,7 @@ void AudioManager::WaitForReady()
 void AudioManager::GetDeviceSettings()
 {
     std::map<std::string, int> apiMap;
+    ids = {-1, -1, -1, -1, -1};
     deviceList = {};
     inputDevices = {};
     outputDevices = {};
@@ -116,6 +117,9 @@ void AudioManager::GetDeviceSettings()
             }
         }
     }
+
+    if (ids.input == -1) { ids.input = Pa_GetDefaultInputDevice(); settings["inputDevice"] = Pa_GetDeviceInfo(ids.input)->name; }
+    if (ids.streamOut == -1) { ids.streamOut = Pa_GetDefaultOutputDevice(); settings["streamOutputDevice"] = Pa_GetDeviceInfo(ids.streamOut)->name; }
 
     // start gathering the capabilities of each audio device
     PaStreamParameters params;
@@ -214,14 +218,16 @@ void AudioManager::Reset(int input, int output, int stream)
     //ids.output = output;
     settings["inputDevice"] = input != -1 ? Pa_GetDeviceInfo(input)->name : settings["inputDevice"];
     settings["outputDevice"] = output != -1 ? Pa_GetDeviceInfo(output)->name : settings["outputDevice"];
+    std::cout<<stream<<std::endl;
     if (stream >= 0)
     {
         std::string dName = Pa_GetDeviceInfo(stream)->name;
+        std::cout<<dName<<std::endl;
         for (auto const& [name, id] : deviceList)
         {
             if (dName.find(name) != std::string::npos && dName.find("[Loopback]") == std::string::npos)
             {
-                //ids.streamOut = stream;
+                std::cout<<"found"<<std::endl;//ids.streamOut = stream;
                 settings["streamOutputDevice"] = Pa_GetDeviceInfo(stream)->name;
                 break;
             }
@@ -248,6 +254,7 @@ void AudioManager::Reset(int input, int output, int stream)
 
 void AudioManager::SetupStreams()
 {
+    if (settings["outputDevice"] == settings["streamOutputDevice"]) return;
     inputBuffer = new float[settings["framesPerBuffer"].get<int>() * 2 * 3];
     playbackBuffer = new float[settings["framesPerBuffer"].get<int>() * 2 * 3];
 

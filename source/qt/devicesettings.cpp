@@ -59,14 +59,7 @@ void DeviceSettings::setDevices(deviceType type)
     int i = 0;
     for (auto const& [id, dName] : *devices)
     {
-        if (type == stream)
-        {
-            qcb->addItem(dName.left(dName.length()-11));
-        }
-        else
-        {
-            qcb->addItem(dName);
-        }
+        qcb->addItem(dName);
 
         if (id == *idx)
         {
@@ -81,14 +74,14 @@ void DeviceSettings::setDevices(deviceType type)
 
 void DeviceSettings::onChange(int type)
 {
-    std::cout<<"change"<<std::endl;
     getDevice((deviceType)type);
 
     if (devices == nullptr) return;
 
     for (auto const& [id, dName] : *devices)
     {
-        if (dName.contains(qcb->currentText()))
+        std::cout<<dName.toStdString()<<std::endl;
+        if (dName.contains(qcb->currentText()) && !dName.contains(QString("[Loopback]")))
         {
             *t_idx = id;
             break;

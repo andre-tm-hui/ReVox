@@ -285,18 +285,29 @@ void MainWindow::GetDeviceList()
         {
             d_data->outputIdx = i.id;
         }
+
+        if (audioManager->loopbackDevices.contains(dName + " [Loopback]"))
+        {
+            d_data->streamDevices[i.id] = QString::fromStdString(dName);
+            if (dName.find(audioManager->settings["streamOutputDevice"]) != std::string::npos)
+            {
+                d_data->streamIdx = i.id;
+            }
+        }
+
+
         currentDevice++;
     }
 
-    currentDevice = 0;
+    /*currentDevice = 0;
     for (auto const& [dName, i] : audioManager->loopbackDevices)
     {
-        d_data->streamDevices[i.id] = QString::fromStdString(dName);
+        d_data->streamDevices[i.id] = QString::fromStdString(dName).left(dName.length()-11);
         if (dName.find(audioManager->settings["streamOutputDevice"]) != std::string::npos)
         {
             d_data->streamIdx = i.id;
         }
 
         currentDevice++;
-    }
+    }*/
 }
