@@ -1,8 +1,6 @@
 #ifndef CALLBACKS_H
 #define CALLBACKS_H
 
-#endif // CALLBACKS_H
-
 #include <string.h>
 #include <iostream>
 #include <chrono>
@@ -22,7 +20,9 @@ typedef struct{
 } recordData;
 
 typedef struct{
-    std::map<SNDFILE*, int> *files;
+    //std::map<int, std::vector<SNDFILE*>> files;
+    std::map<SNDFILE*, int> timers;
+    //std::map<SNDFILE*, int> *files;
     std::vector<SNDFILE*> *queue;
     SF_INFO info;
     float maxFileLength;
@@ -76,3 +76,5 @@ int noiseCallback(const void* inputBuffer, void* outputBuffer,
                         const PaStreamCallbackTimeInfo* timeInfo,
                         PaStreamCallbackFlags statusFlags,
                         void* data);
+
+#endif // CALLBACKS_H

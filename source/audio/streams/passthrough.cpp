@@ -48,7 +48,10 @@ Passthrough::Passthrough(device inputDevice, device outputDevice, int sampleRate
 void Passthrough::SetFX(json settings)
 {
     data.reverb->setEnabled(settings["reverb"]["enabled"].get<bool>());
-    (*checkboxes)["reverb"]->setCheckState(data.reverb->getEnabled() ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
+    if (data.reverb->getEnabled())
+        hud->AddActiveEffect("Reverb");
+    else
+        hud->RemoveActiveEffect("Reverb");
     data.reverb->setwet(settings["reverb"]["mix"].get<float>());
     data.reverb->setdry(1.f - settings["reverb"]["mix"].get<float>());
     data.reverb->setdamp(settings["reverb"]["damp"].get<float>());
@@ -56,12 +59,18 @@ void Passthrough::SetFX(json settings)
     data.reverb->setwidth(settings["reverb"]["width"].get<float>());
 
     data.pitchShift->setAutotune(settings["autotune"]["enabled"].get<bool>());
-    (*checkboxes)["autotune"]->setCheckState(data.pitchShift->getAutotune() ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
     //data.ps.setSpeed(settings["autotune"]["speed"].get<float>();
+    if (data.pitchShift->getAutotune())
+        hud->AddActiveEffect("Autotune");
+    else
+        hud->RemoveActiveEffect("Autotune");
 
     data.pitchShift->setPitchshift(settings["pitch"]["enabled"].get<bool>());
-    (*checkboxes)["pitchshift"]->setCheckState(data.pitchShift->getPitchshift() ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
     data.pitchShift->setPitchscale(settings["pitch"]["pitch"].get<float>());
+    if (data.pitchShift->getPitchshift())
+        hud->AddActiveEffect("Pitch Shift");
+    else
+        hud->RemoveActiveEffect("Pitch Shiift");
 }
 
 
@@ -89,7 +98,7 @@ void Passthrough::Record(int keycode)
     }
 }
 
-void Passthrough::Stop(int keycode)
+void Passthrough::Stop()
 {
     // only call if currently recording
     if (recording) {

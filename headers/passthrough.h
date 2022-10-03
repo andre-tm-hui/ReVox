@@ -1,9 +1,10 @@
 #ifndef PASSTHROUGH_H
 #define PASSTHROUGH_H
 
-#include <QCheckBox>
 #include "audiostream.h"
 #include "nlohmann/json.hpp"
+#include <hud.h>
+
 using namespace nlohmann;
 
 class Passthrough : public AudioStream
@@ -23,15 +24,15 @@ public:
     }
 
     void Record(int keycode);
-    void Stop(int keycode);
+    void Stop();
 
     void SetFX(json settings);
-
-    std::map<std::string, QCheckBox*> *checkboxes;
 
     passthroughData data = {};
 
     bool recording = false;
+
+    HUD *hud;
 };
 
 #endif // PASSTHROUGH_H

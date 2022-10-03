@@ -14,33 +14,41 @@ int playCallback(const void* inputBuffer, void* outputBuffer,
 
     // clear the output buffer first
     memset(out, 0, sizeof(float) * framesPerBuffer * 2);
-    std::vector<SNDFILE*> toDelete = {};
+
     // iterate through every file
-    for (auto const& [file, timeAlive] : *p_data->files) {
-        // read the frames to a temporary read buffer
-        num_read = sf_read_float(file, read, framesPerBuffer * 2);
-        // add the read buffer to the aggregate read buffer
-        for (int i = 0; i < num_read; i++) {
-            *(out + i) += *(read + i);
-        }
-
-        // close the file if EOF is reached, or if the clip is too long, and remove the file from the map
-        if (num_read < framesPerBuffer || timeAlive > p_data->maxFileLength * p_data->info.samplerate) {
-            p_data->queue->erase(std::find(p_data->queue->begin(), p_data->queue->end(), file));
-            sf_close(file);
-            toDelete.push_back(file);
-        }
-        else {
-            // keep track of how much of the file has been read
-            (*p_data->files)[file] += framesPerBuffer;
-        }
-    }
-
-    for (auto& file : toDelete)
+    for (auto it = p_data->timers.begin(); it != p_data->timers.end();)
     {
-        p_data->files->erase(file);
-    }
+        SNDFILE* file = it->first;
+        int timeLeft = it->second;
 
+        if (timeLeft <= 0)
+        {
+            sf_close(file);
+            it = p_data->timers.erase(it);
+        }
+        else
+        {
+            // read the frames to a temporary read buffer
+            num_read = sf_read_float(file, read, framesPerBuffer * 2);
+            // add the read buffer to the aggregate read buffer
+            for (int i = 0; i < num_read; i++) {
+                *(out + i) += *(read + i);
+            }
+
+            p_data->timers[file] -= framesPerBuffer;
+
+            // close the file if EOF is reached
+            if (num_read < framesPerBuffer)
+            {
+                sf_close(file);
+                it = p_data->timers.erase(it);
+            }
+            else
+            {
+                ++it;
+            }
+        }
+    }
     // unassign the memory allocation for the read buffer
     delete[] read;
     memcpy(p_data->buf, out, sizeof(float) * framesPerBuffer * 2);
@@ -82,7 +90,7 @@ int passthroughCallback(const void* inputBuffer, void* outputBuffer,
     }
 
     delete[] mono;
-    if (p_data->rData->inUse)
+    if (p_data->rData->inUse && p_data->rData->file != nullptr)
     {
         sf_write_float(p_data->rData->file, out, framesPerBuffer * p_data->rData->info.channels);
     }
@@ -106,7 +114,7 @@ int monitorCallback(const void* inputBuffer, void* outputBuffer,
     // record if flag is set
     if (c_data->rData->inUse && c_data->rData->file != nullptr)
     {
-        sf_write_float(c_data->rData->file, out, framesPerBuffer * c_data->rData->info.channels);
+        sf_write_float(c_data->rData->file, in, framesPerBuffer * c_data->rData->info.channels);
     }
 
     // copy the input (loopback) to a shared buffer, going to another stream

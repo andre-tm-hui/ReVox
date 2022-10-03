@@ -1,14 +1,13 @@
 #include "mainwindow.h"
 
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
-    connect(ui->actionDevice_Setup, SIGNAL(triggered()), SLOT(openDeviceSetup()));
-
-    keybinds = ui->keybindList;
+    setWindowFlags(Qt::FramelessWindowHint | Qt::Window);
 
     restoreAction = new QAction(tr("&Open"), this);
     connect(restoreAction, &QAction::triggered, this, &QWidget::showNormal);
@@ -16,8 +15,12 @@ MainWindow::MainWindow(QWidget *parent)
     quitAction = new QAction(tr("&Quit"), this);
     connect(quitAction, &QAction::triggered, qApp, &QCoreApplication::quit);
 
+    resetAction = new QAction(tr("&Reset Audio"), this);
+    connect(resetAction, SIGNAL(triggered()), this, SLOT(resetAudio()));
+
     trayIconMenu = new QMenu(this);
     trayIconMenu->addAction(restoreAction);
+    trayIconMenu->addAction(resetAction);
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(quitAction);
 
@@ -31,71 +34,66 @@ MainWindow::MainWindow(QWidget *parent)
     this->setWindowIcon(QIcon(":/icons/icon.png"));
     connect(trayIcon, &QSystemTrayIcon::activated, this, &MainWindow::iconActivated);
 
-    for (auto& [keybind, settings] : audioManager->soundboardHotkeys.items())
-    {
-        QString qKeybind = vkCodenames[std::stoi(keybind)];
-        addBind(0, std::stoi(keybind), QString::fromStdString(settings["label"].get<std::string>()));
-    }
-
-    for (auto& [keybind, settings] : audioManager->voiceFXHotkeys.items())
-    {
-        QString qKeybind = vkCodenames[std::stoi(keybind)];
-        addBind(1, std::stoi(keybind), QString::fromStdString(settings["label"].get<std::string>()));
-    }
-
-    GetDeviceList();
-
-    connect(&mapper_add, SIGNAL(mappedInt(int)), this, SLOT(addBind(int)));
-    connect(ui->addBind, SIGNAL(clicked()), &mapper_add, SLOT(map()));
-    mapper_add.setMapping(ui->addBind, 0);
-    connect(ui->addBind_2, SIGNAL(clicked()), &mapper_add, SLOT(map()));
-    mapper_add.setMapping(ui->addBind_2, 1);
-
-    connect(&mapper_remove, SIGNAL(mappedInt(int)), this, SLOT(removeBind(int)));
-    connect(ui->removeBind, SIGNAL(clicked()), &mapper_remove, SLOT(map()));
-    mapper_remove.setMapping(ui->removeBind, 0);
-    connect(ui->removeBind_2, SIGNAL(clicked()), &mapper_remove, SLOT(map()));
-    mapper_remove.setMapping(ui->removeBind_2, 1);
-
-    connect(ui->state, SIGNAL(stateChanged(int)), this, SLOT(toggleReverb(int)));
-    connect(ui->state_2, SIGNAL(stateChanged(int)), this, SLOT(toggleAutotune(int)));
-    connect(ui->state_4, SIGNAL(stateChanged(int)), this, SLOT(togglePitchshift(int)));
-
-    connect(&mapper_fx, SIGNAL(mappedInt(int)), this, SLOT(openFXSettings(int)));
-    connect(ui->settings, SIGNAL(clicked()), &mapper_fx, SLOT(map()));
-    mapper_fx.setMapping(ui->settings, 0);
-    connect(ui->settings_2, SIGNAL(clicked()), &mapper_fx, SLOT(map()));
-    mapper_fx.setMapping(ui->settings_2, 1);
-    connect(ui->settings_4, SIGNAL(clicked()), &mapper_fx, SLOT(map()));
-    mapper_fx.setMapping(ui->settings_4, 2);
-
-
-    checkboxes["reverb"] = ui->state;
-    checkboxes["autotune"] = ui->state_2;
-    checkboxes["pitchshift"] = ui->state_4;
-    audioManager->SetCheckboxes(&checkboxes);
-
     keyPressEater = new KeyPressEater(this);
-    ui->keybindList->installEventFilter(keyPressEater);
-    ui->fxToggleList->installEventFilter(keyPressEater);
-    ui->addBind->installEventFilter(keyPressEater);
-    ui->addBind_2->installEventFilter(keyPressEater);
+    connect(&mapper_menu, SIGNAL(mappedInt(int)), this, SLOT(openMenu(int)));
 
-    ui->maxOverlappingSounds->setValue(audioManager->settings["maxNumberOfSounds"].get<int>());
-    ui->maxPlaybackLength->setValue(audioManager->settings["maxFileLength"].get<int>());
+    hud = new HUD(&audioManager->passthrough->data);
+    hud->SetPosition(audioManager->settings["hudPosition"]);
+    audioManager->SetHUD(hud);
 
-    ui->horizontalSlider->setValue(audioManager->settings["monitorSamples"].get<int>());
-    ui->horizontalSlider_2->setValue(audioManager->settings["monitorMic"].get<int>());
+    soundboardMenu = new SoundboardMenu(&audioManager->soundboardHotkeys,
+                                                        audioManager,
+                                                        keyboardListener,
+                                                        this);
+    soundboardMenu->move(80, 31);
+    activeMenu = soundboardMenu;
+    connect(ui->soundboardButton, SIGNAL(clicked()), &mapper_menu, SLOT(map()));
+    mapper_menu.setMapping(ui->soundboardButton, 0);
 
+    fxMenu = new FXMenu(&audioManager->voiceFXHotkeys,
+                                audioManager,
+                                keyboardListener,
+                                hud,
+                                this);
+
+    fxMenu->move(80, 31);
+    fxMenu->setVisible(false);
+    fxMenu->setEnabled(false);
+    connect(ui->fxButton, SIGNAL(clicked()), &mapper_menu, SLOT(map()));
+    mapper_menu.setMapping(ui->fxButton, 1);
+
+    settingsMenu = new SettingsMenu(audioManager, hud, this);
+
+    settingsMenu->move(80, 31);
+    settingsMenu->setVisible(false);
+    settingsMenu->setEnabled(false);
+    connect(ui->settingsButton, SIGNAL(clicked()), &mapper_menu, SLOT(map()));
+    mapper_menu.setMapping(ui->settingsButton, -1);
+    settingsMenu->SetDevices(audioManager->outputDevices, audioManager->GetCurrentOutputDevice());
+
+
+    // Setup device monitor - checks for changes in connected devices and resets the software if changes occur
     devices = new QMediaDevices();
     connect(devices, SIGNAL(audioInputsChanged()), this, SLOT(devicesChanged()));
     connect(devices, SIGNAL(audioOutputsChanged()), this, SLOT(devicesChanged()));
+
+    alive = true;
+    t = std::thread(CheckForFXUpdates, &fxHotkey, fxMenu);
+    t.detach();
+
+    audioManager->fxHotkey = &fxHotkey;
+    audioManager->SetWaveform(soundboardMenu->GetWaveform());
+
+    titleBar = new TitleBar(this);
+    connect(titleBar, SIGNAL(windowMoved(QMouseEvent*,int,int)), this, SLOT(moveWindow(QMouseEvent*,int,int)));
 
     setup = true;
 }
 
 MainWindow::~MainWindow()
 {
+    alive = false;
+    t.join();
     delete ui;
 }
 
@@ -103,46 +101,7 @@ KeyboardListener* MainWindow::keyboardListener = new KeyboardListener();
 AudioManager* KeyboardListener::audioManager = new AudioManager();
 AudioManager* MainWindow::audioManager = KeyboardListener::audioManager;
 std::map<QString, int> MainWindow::keycodeMap = {};
-
-
-void MainWindow::addBind(int type, int keybind, QString label)
-{
-    QListWidget *list = type == 0 ? ui->keybindList : ui->fxToggleList;
-    //std::cout << "adding bind" << std::endl;
-    //QListWidget *list = keybinds;
-    HotkeyItem *item = new HotkeyItem(
-                type == 0,
-                label == "" ? "Bind " + QString::number(list->count() + 1) : label,
-                list->width(),
-                keybind,
-                audioManager,
-                keyboardListener
-                );
-    QListWidgetItem *orig = new QListWidgetItem();
-    orig->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable);
-    list->addItem(orig);
-    list->setItemWidget(orig, item);
-    orig->setSizeHint(QSize(0, 32));
-
-    list->scrollToBottom();
-}
-
-void MainWindow::removeBind(int type)
-{
-    QListWidget *list = type == 0 ? ui->keybindList : ui->fxToggleList;
-    HotkeyItem *item = qobject_cast<HotkeyItem *>(list->itemWidget(list->currentItem()));
-    audioManager->RemoveBind(item->cb.keycode);
-    list->removeItemWidget(list->currentItem());
-    delete list->currentItem();
-}
-
-void MainWindow::openDeviceSetup()
-{
-    DeviceSettings popup (d_data, audioManager, &checkboxes);
-    popup.setModal(true);
-    popup.exec();
-}
-
+std::atomic<bool> MainWindow::alive = true;
 
 bool MainWindow::event(QEvent *event)
 {
@@ -153,16 +112,31 @@ bool MainWindow::event(QEvent *event)
         {
             this->hide();
             event->ignore();
+            audioManager->passthrough->SetFX(audioManager->GetFXOff());
+            fxMenu->DisableTabWidget();
+            soundboardMenu->DisableSettings();
         }
         break;
     case QEvent::Close:
         this->hide();
         event->ignore();
+        audioManager->passthrough->SetFX(audioManager->GetFXOff());
+        fxMenu->DisableTabWidget();
+        soundboardMenu->DisableSettings();
         break;
     default:
         return QMainWindow::event(event);
     }
     return true;
+}
+
+void MainWindow::close()
+{
+    this->hide();
+    //event->ignore();
+    audioManager->passthrough->SetFX(audioManager->GetFXOff());
+    fxMenu->DisableTabWidget();
+    soundboardMenu->DisableSettings();
 }
 
 void MainWindow::setVisible(bool visible)
@@ -179,135 +153,95 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
         this->audioManager->WaitForReady();
         this->show();
         this->setWindowState(Qt::WindowState::WindowActive);
+        this->resize(960, 540);
+        this->repaint();
         break;
     default:
         ;
     }
 }
 
-void MainWindow::toggleReverb(int state)
+void MainWindow::devicesChanged()
 {
-    audioManager->passthrough->data.reverb->setEnabled(state == 0 ? false : true);
+    audioManager->Reset(true);
+    settingsMenu->SetDevices(audioManager->outputDevices, audioManager->GetCurrentOutputDevice());
 }
 
-void MainWindow::toggleAutotune(int state)
+void MainWindow::openMenu(int menu)
 {
-    audioManager->passthrough->data.pitchShift->setAutotune(state == 0 ? false : true);
-}
-
-void MainWindow::togglePitchshift(int state)
-{
-    audioManager->passthrough->data.pitchShift->setPitchshift(state == 0 ? false : true);
-}
-
-void MainWindow::openFXSettings(int type)
-{
-    switch (type)
+    switch ((Menu)menu)
     {
-    case 0: {// reverb
-        ReverbSettings rv(audioManager->passthrough->data.reverb);
-        rv.setModal(true);
-        rv.exec();
+    case settings:
+        nextMenu = settingsMenu;
+        ui->soundboardButton->setEnabled(true);
+        ui->fxButton->setEnabled(true);
+        ui->settingsButton->setEnabled(false);
+        //ui->voiceButton->setEnabled(true);
         break;
-    }
-    case 1: {
-        HardtuneSettings ht(audioManager->passthrough->data.pitchShift);
-        ht.setModal(true);
-        ht.exec();
+    case soundboard:
+        nextMenu = soundboardMenu;
+        ui->soundboardButton->setEnabled(false);
+        ui->fxButton->setEnabled(true);
+        ui->settingsButton->setEnabled(true);
+        //ui->voiceButton->setEnabled(true);
+        //ui->soundboardMenu->show();
         break;
-    }
-    case 2: {
-        PitchSettings pt(audioManager->passthrough->data.pitchShift);
-        pt.setModal(true);
-        pt.exec();
+    case fx:
+        //ui->fxMenu->show();
+        nextMenu = fxMenu;
+        ui->soundboardButton->setEnabled(true);
+        ui->fxButton->setEnabled(false);
+        ui->settingsButton->setEnabled(true);
+        //ui->voiceButton->setEnabled(true);
         break;
-    }
+    case voice:
+        //ui->voiceMenu->show();
+        ui->soundboardButton->setEnabled(false);
+        ui->fxButton->setEnabled(true);
+        ui->settingsButton->setEnabled(true);
+        //ui->voiceButton->setEnabled(true);
+        break;
     default:
         break;
     }
+    QPropertyAnimation *a = fade(this, activeMenu, false, 200);
+
+    connect(a, SIGNAL(finished()), this, SLOT(fadeInMenu()));
 }
 
-void MainWindow::on_maxPlaybackLength_valueChanged(int arg1)
+void MainWindow::fadeInMenu()
 {
-    audioManager->SetPlaybackLength(arg1);
+    nextMenu->setVisible(true);
+    nextMenu->setEnabled(true);
+    QPropertyAnimation *a = fade(this, nextMenu, true, 200);
+    activeMenu->hide();
+    activeMenu->setEnabled(false);
+    activeMenu = nextMenu;
+}
+
+void MainWindow::resetAudio()
+{
+    audioManager->Reset();
 }
 
 
-void MainWindow::on_maxOverlappingSounds_valueChanged(int arg1)
+void MainWindow::CheckForFXUpdates(int *hotkey, FXMenu *fxMenu)
 {
-    audioManager->SetNumberOfSounds(arg1);
-}
+    int prevHotkey = *hotkey;
 
-
-void MainWindow::on_horizontalSlider_valueChanged(int value)
-{
-    audioManager->SetSampleMonitor(value);
-}
-
-
-void MainWindow::on_horizontalSlider_2_valueChanged(int value)
-{
-    audioManager->SetMicMonitor(value);
-}
-
-void MainWindow::devicesChanged()
-{
-    audioManager->Reset(-1, -1, -1);
-    GetDeviceList();
-}
-
-void MainWindow::GetDeviceList()
-{
-    d_data = new device_data();
-    d_data->inputDevices = std::map<int, QString>();
-    d_data->inputIdx = 0;
-    d_data->outputDevices = std::map<int, QString>();
-    d_data->outputIdx = 0;
-    d_data->streamDevices = std::map<int, QString>();
-    d_data->streamIdx = 0;
-
-    int currentDevice = 0;
-    for (auto const& [dName, i] : audioManager->inputDevices)
+    while (alive)
     {
-        d_data->inputDevices[i.id] = QString::fromStdString(dName);
-        if (dName.find(audioManager->settings["inputDevice"]) != std::string::npos)
+        if (*hotkey != prevHotkey)
         {
-            d_data->inputIdx = i.id;
+            fxMenu->OnHotkeyToggle(*hotkey);
         }
-        currentDevice++;
+        prevHotkey = *hotkey;
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
+}
 
-    currentDevice = 0;
-    for (auto const& [dName, i] : audioManager->outputDevices)
-    {
-        d_data->outputDevices[i.id] = QString::fromStdString(dName);
-        if (dName.find(audioManager->settings["outputDevice"]) != std::string::npos)
-        {
-            d_data->outputIdx = i.id;
-        }
-
-        if (audioManager->loopbackDevices.contains(dName + " [Loopback]"))
-        {
-            d_data->streamDevices[i.id] = QString::fromStdString(dName);
-            if (dName.find(audioManager->settings["streamOutputDevice"]) != std::string::npos)
-            {
-                d_data->streamIdx = i.id;
-            }
-        }
-
-
-        currentDevice++;
-    }
-
-    /*currentDevice = 0;
-    for (auto const& [dName, i] : audioManager->loopbackDevices)
-    {
-        d_data->streamDevices[i.id] = QString::fromStdString(dName).left(dName.length()-11);
-        if (dName.find(audioManager->settings["streamOutputDevice"]) != std::string::npos)
-        {
-            d_data->streamIdx = i.id;
-        }
-
-        currentDevice++;
-    }*/
+void MainWindow::moveWindow(QMouseEvent *event, int x, int y)
+{
+    move(event->globalPosition().x() - x,
+         event->globalPosition().y() - y);
 }

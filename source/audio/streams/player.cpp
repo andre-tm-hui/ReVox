@@ -9,7 +9,8 @@ Player::Player(device outputDevice, int sampleRate, int framesPerBuffer, std::st
 
     data.buf = playbackBuffer;
 
-    data.files = new std::map<SNDFILE*, int>();
+    files = {};
+    data.timers = {};
     data.queue = new std::vector<SNDFILE*>();
 
     // written files are set to always have 2 channels
@@ -45,7 +46,7 @@ Player::Player(device outputDevice, int sampleRate, int framesPerBuffer, std::st
     initialSetup = true;
 }
 
-void Player::Play(int keycode)
+void Player::Play(int keycode, json settings)
 {
     // check if a file corresponding to the keycode exists
     std::string FILE_NAME = dir + "/samples/" + std::to_string(keycode) + ".mp3";
@@ -53,16 +54,34 @@ void Player::Play(int keycode)
     {
         return;
     }
+
+    if (files.find(keycode) == files.end())
+    {
+        files[keycode] = {};
+    }
+
+    if (files[keycode].size() >= settings["maxCopies"])
+    {
+        // Cleanup first item of data.files[keycode]
+        SNDFILE* clear = files[keycode].front();
+        files[keycode].pop();
+        if (data.timers.contains(clear))
+        {
+            data.timers[clear] = -1;
+        }
+    }
+
     // open the file and add it to the queue
     SNDFILE* file = sf_open(FILE_NAME.c_str(), SFM_READ, &data.info);
-    if ((int)data.files->size() >= maxLiveSamples) {
-        SNDFILE* erase = (*data.queue)[0];
-        (*data.files).erase(erase);
-        (*data.queue).erase((*data.queue).begin());
-        if (erase != nullptr) sf_close(erase);
+    if (settings["endAt"] == -1) settings["endAt"] = data.info.frames;
+    float *temp = new float[2];
+    for (int i = 0; i < settings["startAt"]; i++)
+    {
+        sf_read_float(file, temp, 2);
     }
-    (*data.files)[file] = 0;
-    (*data.queue).push_back(file);
+    delete[] temp;
+    files[keycode].push(file);
+    data.timers[file] = settings["endAt"].get<int>() - settings["startAt"].get<int>();
 }
 
 /* Utility function to check if a file corresponding to the keycode exists */
@@ -70,6 +89,16 @@ bool Player::CanPlay(int keycode)
 {
     std::string FILE_NAME = dir + "samples/" + std::to_string(keycode) + ".mp3";
     return std::filesystem::exists(FILE_NAME.c_str());
+}
+
+void Player::StopAll()
+{
+    for (auto const& [file, time] : data.timers)
+    {
+        sf_close(file);
+    }
+    data.timers = {};
+    files = {};
 }
 
 /* Utility function to rename a file if the keybind is being rebinded */

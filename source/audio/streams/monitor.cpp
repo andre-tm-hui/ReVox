@@ -52,7 +52,7 @@ void Monitor::Record(int keycode)
 
         // set the sndfile info to be a .mp3 file
         this->data.rData->info.samplerate = this->sampleRate;
-        this->data.rData->info.channels = this->inputParameters.channelCount;
+        this->data.rData->info.channels = 2;
         this->data.rData->info.format = SF_FORMAT_MPEG | SF_FORMAT_MPEG_LAYER_III;
 
         // open the file
@@ -63,13 +63,12 @@ void Monitor::Record(int keycode)
         }
         this->data.rData->inUse = true;
 
-        this->data.rData->timeStamp = (float)(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count());
-
         recording = true;
+        this->keycode = keycode;
     }
 }
 
-void Monitor::Stop(int keycode)
+void Monitor::Stop()
 {
     // only call if currently recording
     if (recording) {
@@ -80,11 +79,19 @@ void Monitor::Stop(int keycode)
         sf_close(data.rData->file);
 
         recording = false;
+
+        Merge();
     }
 }
 
-void Monitor::Merge(int keycode)
+void Monitor::Merge()
 {
+    if (!std::filesystem::exists((dir + "samples/" + std::to_string(keycode) + ".mp3").c_str()))
+    {
+        std::filesystem::rename((dir + "samples/" + std::to_string(keycode) + "m.mp3").c_str(),
+                                (dir + "samples/" + std::to_string(keycode) + ".mp3").c_str());
+        return;
+    }
     // load both recorded files, add them together and output to a new file
     SNDFILE *fileA, *fileB, *fileOut;
     float bufferA[1024], bufferB[1024], bufferOut[1024];

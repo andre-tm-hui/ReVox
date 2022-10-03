@@ -21,17 +21,17 @@ public:
 
     void repitch(float *buf);
 
-    void setAutotune(bool enabled) { this->autotune = enabled; }
-    bool getAutotune() { return this->autotune; }
+    void setAutotune(bool enabled);
+    bool getAutotune();
 
-    void setPitchshift(bool enabled) { this->pitchshift = enabled; }
-    bool getPitchshift() { return this->pitchshift; }
+    void setPitchshift(bool enabled);
+    bool getPitchshift();
 
-    void setPitchscale(float scale) { this->pitchscale = scale; }
-    float getPitchscale() { return this->pitchscale; }
+    void setPitchscale(float scale);
+    float getPitchscale();
 
     void setNotes(std::vector<bool> notes);
-    std::vector<bool> getNotes() { std::vector<bool> notes(std::begin(validNotes), std::end(validNotes)); return notes; }
+    std::vector<bool> getNotes();
 
 private:
     void add(float *buf);

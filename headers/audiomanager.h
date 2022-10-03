@@ -6,33 +6,18 @@
 #include "monitor.h"
 #include "cleanoutput.h"
 #include "noisegenerator.h"
-#include <QCheckBox>
+#include <QWidget>
 #include <nlohmann/json.hpp>
 #include <samplerate.h>
+#include <waveformviewer.h>
+
 using namespace nlohmann;
-
-// struct containing all settings related to a keybind
-typedef struct{
-    int type;
-    bool recordInput;
-    bool recordLoopback;
-    bool padAudio;
-
-    int fxType;
-
-    float roomsize;
-    float damp;
-    float width;
-    float wet;
-    float dry;
-} keybind;
 
 typedef struct{
     int input;
     int output;
     int streamOut;
     int vInput;
-    int vOutput;
 } deviceIDs;
 
 class AudioManager
@@ -46,21 +31,37 @@ public:
     std::map<std::string, device> outputDevices;
     std::map<std::string, device> loopbackDevices;
 
-    void Reset(int input, int output, int stream);
+    void Record(int keycode);
+    void StopRecording();
+    void Play(int keycode, bool recordFallback = true);
+
+    void Reset(bool devicesChanged = false);
 
     void Rebind(int keycode);
     void SetNewBind(int keycode, bool isSoundboard);
     void RemoveBind(int keycode);
     void SaveBinds();
     void SaveSettings();
-    void SetCheckboxes(std::map<std::string, QCheckBox*> *checkboxes);
-    void OverrideConfig(std::string keycode);
+    void SetHUD(HUD *hud);
+    void SetWaveform(WaveformViewer *wv) { this->wv = wv; }
+    void ResetWaveform() { this->wv->SetAudioClip(); }
+    //void SetCheckboxes(std::map<std::string, QCheckBox*> *checkboxes);
     void OverrideSound(std::string fname, int keycode);
 
     void SetNumberOfSounds(int n) { settings["maxNumberOfSounds"] = n; player->maxLiveSamples = n; }
     void SetPlaybackLength(int n) { settings["maxFileLength"] = n; player->data.maxFileLength = n; }
-    void SetSampleMonitor(int n) { monitor->data.monitorSamples = (float)n / 99.f; settings["monitorSamples"] = n; SaveSettings(); }
-    void SetMicMonitor(int n) { monitor->data.monitorMic = (float)n / 99.f; settings["monitorMic"] = n; SaveSettings(); }
+    void SetSampleMonitor(int n) { monitor->data.monitorSamples = (float)n / 100.f; settings["monitorSamples"] = n; SaveSettings(); }
+    void SetMicMonitor(int n) { monitor->data.monitorMic = (float)n / 100.f; settings["monitorMic"] = n; SaveSettings(); }
+
+    int GetCurrentOutputDevice() { return ids.output; }
+    void SetCurrentOutputDevice(int id) { ids.output = id; settings["outputDevice"] = Pa_GetDeviceInfo(ids.output)->name; Reset(); }
+    json GetFXOff() { return baseFXHotkey; }
+    json* GetFXOffPointer() { return &baseFXHotkey; }
+
+    std::string GetAudioPath(int keycode)
+    {
+        return appdata + dirName + "samples/" + std::to_string(keycode) + ".mp3";
+    }
 
     void WaitForReady();
 
@@ -71,29 +72,28 @@ public:
     NoiseGenerator *noiseGen;
     json soundboardHotkeys;
     json voiceFXHotkeys;
+    QWidget *fxMenu;
 
     bool recording = false;
 
     json settings = R"(
         {
-            "inputDevice": "",
             "outputDevice": "",
-            "streamOutputDevice": "",
-            "virtualInputDevice": "",
-            "virtualOutputDevice": "",
             "sampleRate": 48000,
             "framesPerBuffer": 2048,
-            "maxNumberOfSounds": 3,
-            "maxFileLength": 5,
+            "hudPosition": 2,
+            "monitorMic": 0,
             "monitorSamples": 0,
-            "monitorMic": 0
+            "startWithWindows": false
         }
         )"_json;
 
+    int *fxHotkey;
+
 private:
-    std::map<std::string, QCheckBox*> *checkboxes;
+    //std::map<std::string, QCheckBox*> *checkboxes;
     int sampleRate, framesPerBuffer, defVInput, defVOutput;
-    deviceIDs ids = {-1, -1, -1, -1, -1};
+    deviceIDs ids = {-1, -1, -1, -1};
     int rebindAt = -1;
 
     std::string appdata;
@@ -106,20 +106,20 @@ private:
                                 Monitor *monitor,
                                 CleanOutput *cleanOutput,
                                 NoiseGenerator *noiseGen);
-    static void CheckForDeviceChanges(Passthrough *passthrough,
-                                      Player *player,
-                                      Monitor *monitor,
-                                      CleanOutput *cleanOutput,
-                                      NoiseGenerator *noiseGen);
+
     device GetDeviceByIndex(int i);
     void GetDeviceSettings();
+    int GetChannels(int id, bool isInput);
     int GetCorrespondingLoopbackDevice(int i);
 
     json baseSoundboardHotkey = R"(
         {
             "label": "",
             "recordInput": true,
-            "recordLoopback": true
+            "recordLoopback": true,
+            "startAt": 0,
+            "endAt": -1,
+            "maxCopies": 1
         }
         )"_json;
 
@@ -133,6 +133,9 @@ private:
         )"_json;
 
     float *inputBuffer, *playbackBuffer;
+
+    HUD *hud;
+    WaveformViewer *wv;
 };
 
 #endif // AUDIOMANAGER_H
