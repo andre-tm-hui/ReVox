@@ -18,7 +18,7 @@ TitleBar::~TitleBar()
 
 void TitleBar::openHelp()
 {
-    QDesktopServices::openUrl(QUrl("https://github.com/andre-tm-hui/VirtualSnS"));
+    QDesktopServices::openUrl(QUrl("https://github.com/andre-tm-hui/VirtualSnS/wiki"));
 }
 
 void TitleBar::mousePressEvent(QMouseEvent *event) {
