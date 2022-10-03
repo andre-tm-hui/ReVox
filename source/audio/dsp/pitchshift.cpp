@@ -14,6 +14,17 @@ PitchShift::PitchShift(int bufSize, int sampleRate)
     lastMarker = (float)bufSize+1.f;
 }
 
+void PitchShift::setAutotune(bool enabled) { this->autotune = enabled; }
+bool PitchShift::getAutotune() { return this->autotune; }
+
+void PitchShift::setPitchshift(bool enabled) { this->pitchshift = enabled; }
+bool PitchShift::getPitchshift() { return this->pitchshift; }
+
+void PitchShift::setPitchscale(float scale) { this->pitchscale = scale; }
+float PitchShift::getPitchscale() { return this->pitchscale; }
+
+std::vector<bool> PitchShift::getNotes() { std::vector<bool> notes(std::begin(validNotes), std::end(validNotes)); return notes; }
+
 void PitchShift::setNotes(std::vector<bool> notes)
 {
     for (int i = 0; i < 12; i++) validNotes[i] = notes[i];

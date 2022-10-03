@@ -4,11 +4,10 @@
 #include <QWidget>
 #include <QToolButton>
 #include <QPushButton>
-#include <QTextEdit>
+#include <QLineEdit>
 #include <audiomanager.h>
 #include <keyboardlistener.h>
 #include <thread>
-#include <keybindsettings.h>
 #include <vkcodenames.h>
 
 typedef struct {
@@ -31,37 +30,25 @@ public:
         this->cb.audioManager = audioManager;
         this->cb.keyboardListener = keyboardListener;
 
-        this->setFixedSize(width - 8, 40);
         this->hotkey = new QPushButton(this);
         this->cb.button = this->hotkey;
-        this->settings = new QToolButton(this);
-        this->label = new QTextEdit(label, this);
+        this->label = new QLineEdit(label, this);
 
-        this->label->move(QPoint(0, 0));
-        this->label->setFixedSize(QSize(6 * width / 16, 24));
-        this->label->setAlignment(Qt::AlignCenter);
-        this->label->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
-        this->label->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
-        this->label->setStyleSheet("border: 0px; background-color: #303030; color: #FFFFFF;");
-        connect(this->label, SIGNAL(textChanged()), this, SLOT(labelChanged()));
+        this->label->move(QPoint(10, 3));
+        this->label->setFixedSize(QSize(10 * width / 16, 30));
 
-        this->hotkey->move(QPoint((7 * width / 16), 0));
-        this->hotkey->setFixedSize(QSize(6 * width / 16, 24));
-        this->hotkey->setStyleSheet("border: 0px; background-color: #303030; color: #FFFFFF;");
+        //this->label->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
+        //this->label->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
+        this->label->setStyleSheet("border-radius: 2px; background-color: #303030; color: #FFFFFF;");
+        this->label->setAlignment(Qt::AlignVCenter);
+        this->label->setTextMargins(10, 0, 10, 0);
+        connect(this->label, SIGNAL(textChanged(QString)), this, SLOT(labelChanged()));
+
+        this->hotkey->move(QPoint((12 * width / 16), 3));
+        this->hotkey->setFixedSize(QSize(4 * width / 16 - 10, 30));
+        this->hotkey->setStyleSheet("QPushButton {border-radius: 2px; background-color: #303030; color: #FFFFFF;}"
+                                    "QPushButton:hover {background-color: #404040;}");
         connect(this->hotkey, SIGNAL(clicked()), this, SLOT(rebind()));
-
-        this->settings->move(QPoint(width - 48, 0));
-        this->settings->setFixedSize(QSize(24, 24));
-        this->settings->setIcon(isSoundboard ? QIcon(":/icons/settings.png") :  QIcon(":/icons/save.png"));
-        this->settings->setStyleSheet("border: 0px; background-color: transparent;");
-        if (isSoundboard)
-        {
-            connect(this->settings, SIGNAL(clicked()), this, SLOT(openSettings()));
-        }
-        else
-        {
-            connect(this->settings, SIGNAL(clicked()), this, SLOT(overrideConfig()));
-        }
 
         if (keycode < 0)
         {
@@ -74,14 +61,11 @@ public:
     }
 
     QPushButton *hotkey;
-    QToolButton *settings;
-    QTextEdit *label;
+    QLineEdit *label;
     cbData cb;
 
 private slots:
     void rebind();
-    void openSettings();
-    void overrideConfig();
     void labelChanged();
 
 

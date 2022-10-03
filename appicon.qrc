@@ -6,5 +6,23 @@
         <file>icons/settings.png</file>
         <file>icons/save.png</file>
         <file>icons/slider.png</file>
+        <file>icons/fx.png</file>
+        <file>icons/soundboard.png</file>
+        <file>icons/add.png</file>
+        <file>icons/minus.png</file>
+        <file>icons/pause.png</file>
+        <file>icons/play.png</file>
+        <file>icons/stop.png</file>
+        <file>icons/marker.png</file>
+        <file>icons/marker2.png</file>
+        <file>icons/sliderGrooveOff.png</file>
+        <file>icons/sliderGrooveOn.png</file>
+        <file>icons/offSwitch.png</file>
+        <file>icons/onSwitch.png</file>
+        <file>icons/toggleOff.png</file>
+        <file>icons/toggleOn.png</file>
+        <file>icons/hud.png</file>
+        <file>icons/x.png</file>
+        <file>icons/drag.png</file>
     </qresource>
 </RCC>

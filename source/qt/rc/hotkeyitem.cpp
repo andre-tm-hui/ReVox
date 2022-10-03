@@ -12,34 +12,18 @@ void HotkeyItem::rebind()
     t.detach();
 }
 
-void HotkeyItem::openSettings()
-{
-    if (cb.isSoundboard)
-    {
-        KeybindSettings popup (cb.keycode, &cb.audioManager->soundboardHotkeys[std::to_string(cb.keycode)], cb.audioManager);
-        popup.setModal(true);
-        popup.exec();
-    }
-}
-
 void HotkeyItem::labelChanged()
 {
-    QTextCursor pos = this->label->textCursor();
-    if (this->label->toPlainText().contains('\n'))
+    int pos = this->label->cursorPosition();
+    if (this->label->text().length() > 18)
     {
-        this->label->setText(this->label->toPlainText().remove('\n'));
-        this->label->setAlignment(Qt::AlignCenter);
-        if (pos.position() > this->label->toPlainText().length()) pos.setPosition(this->label->toPlainText().length());
+        this->label->setText(this->label->text().left(18));
+        this->label->setAlignment(Qt::AlignVCenter);
     }
-    if (this->label->toPlainText().length() > 18)
-    {
-        this->label->setPlainText(this->label->toPlainText().left(18));
-        this->label->setAlignment(Qt::AlignCenter);
-    }
-    this->label->setTextCursor(pos);
+    this->label->setCursorPosition(pos);
     json *data = cb.isSoundboard ? &cb.audioManager->soundboardHotkeys[std::to_string(cb.keycode)] :
                                 &cb.audioManager->voiceFXHotkeys[std::to_string(cb.keycode)];
-    (*data)["label"] = this->label->toPlainText().toStdString();
+    (*data)["label"] = this->label->text().toStdString();
     cb.audioManager->SaveBinds();
 }
 
@@ -62,7 +46,3 @@ QString HotkeyItem::GetKeyName(int keybind)
     return vkCodenames[keybind];
 }
 
-void HotkeyItem::overrideConfig()
-{
-    cb.audioManager->OverrideConfig(std::to_string(cb.keycode));
-}

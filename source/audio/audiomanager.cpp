@@ -45,9 +45,37 @@ AudioManager::~AudioManager()
     SaveBinds();
 }
 
-void AudioManager::SetCheckboxes(std::map<std::string, QCheckBox*> *checkboxes)
+void AudioManager::Record(int keycode)
 {
-    passthrough->checkboxes = checkboxes;
+    if ((soundboardHotkeys[std::to_string(keycode)]["recordInput"] ||
+         soundboardHotkeys[std::to_string(keycode)]["recordLoopback"]) &&
+            std::filesystem::exists(appdata + dirName + "samples/" + std::to_string(keycode) + ".mp3"))
+        std::filesystem::remove(appdata + dirName + "samples/" + std::to_string(keycode) + ".mp3");
+
+    if (soundboardHotkeys[std::to_string(keycode)]["recordInput"] && passthrough != nullptr) passthrough->Record(keycode);
+    if (soundboardHotkeys[std::to_string(keycode)]["recordLoopback"] && monitor != nullptr) monitor->Record(keycode);
+
+    recording = true;
+}
+
+void AudioManager::StopRecording()
+{
+    if (passthrough != nullptr) passthrough->Stop();
+    if (monitor != nullptr) monitor->Stop();
+
+    recording = false;
+    wv->SetAudioClip();
+}
+
+void AudioManager::Play(int keycode, bool recordFallback)
+{
+    if (player != nullptr)
+    {
+        if (player->CanPlay(keycode))
+            player->Play(keycode, soundboardHotkeys[std::to_string(keycode)]);
+        else if (recordFallback)
+            Record(keycode);
+    }
 }
 
 void AudioManager::WaitForReady()
@@ -55,22 +83,19 @@ void AudioManager::WaitForReady()
     while (!monitor->initialSetup ||
            !player->initialSetup ||
            !passthrough->initialSetup ||
-           !cleanOutput->initialSetup ||
            !noiseGen->initialSetup) {}
+
+    if (cleanOutput != nullptr) while (!cleanOutput->initialSetup) {}
 }
 
 void AudioManager::GetDeviceSettings()
 {
     std::map<std::string, int> apiMap;
-    ids = {-1, -1, -1, -1, -1};
+    ids = {-1, -1, -1, -1};
     deviceList = {};
     inputDevices = {};
     outputDevices = {};
     loopbackDevices = {};
-
-    // instantiate devices to default values
-    settings["inputDevice"] = settings["inputDevice"] == "" ? Pa_GetDeviceInfo(Pa_GetDefaultInputDevice())->name : settings["inputDevice"];
-    settings["streamOutputDevice"] = settings["streamOutputDevice"] == "" ? Pa_GetDeviceInfo(Pa_GetDefaultOutputDevice())->name : settings["streamOutputDevice"];
 
     // get all available audio APIs on the system
     for (int i = 0; i < Pa_GetHostApiCount(); i++)
@@ -88,7 +113,14 @@ void AudioManager::GetDeviceSettings()
             std::string deviceName = Pa_GetDeviceInfo(Pa_HostApiDeviceIndexToDeviceIndex(apiMap["Windows WASAPI"], i))->name;
             if (deviceName.find("[Loopback]") != std::string::npos)
             {
-                loopbackDevices[deviceName] = {Pa_HostApiDeviceIndexToDeviceIndex(apiMap["Windows WASAPI"], i), 1};
+                loopbackDevices[deviceName] = {Pa_HostApiDeviceIndexToDeviceIndex(apiMap["Windows WASAPI"], i), 2};
+                std::string outputDeviceName = deviceName.substr(0, deviceName.size()-11);
+                outputDevices[outputDeviceName] = {deviceList[outputDeviceName], GetChannels(deviceList[outputDeviceName], false)};
+                if (outputDeviceName.find(settings["outputDevice"]) != std::string::npos)
+                {
+                    ids.output = outputDevices[outputDeviceName].id;
+                    settings["outputDevice"] = outputDeviceName;
+                }
             }
             else
             {
@@ -98,106 +130,50 @@ void AudioManager::GetDeviceSettings()
                 // set the default virtual input device - assumes the user is using VB-Audio's Virtual Cable https://vb-audio.com/Cable/
                 if (deviceName.find("CABLE Input") != std::string::npos)
                 {
-                    settings["virtualInputDevice"] = Pa_GetDeviceInfo(deviceList[deviceName])->name;
                     ids.vInput = deviceList[deviceName];
                 }
-                else if (deviceName.find("CABLE Output") != std::string::npos)
-                {
-                    settings["virtualOutputDevice"] = Pa_GetDeviceInfo(deviceList[deviceName])->name;
-                    ids.vOutput = deviceList[deviceName];
-                }
-                else if (deviceName.find(settings["inputDevice"]) != std::string::npos)
+                else if (deviceName.find(Pa_GetDeviceInfo(Pa_GetDefaultInputDevice())->name) != std::string::npos)
                 {
                     ids.input = deviceList[deviceName];
                 }
-                else if (deviceName.find(settings["streamOutputDevice"]) != std::string::npos)
+                else if (deviceName.find(Pa_GetDeviceInfo(Pa_GetDefaultOutputDevice())->name) != std::string::npos)
                 {
                     ids.streamOut = deviceList[deviceName];
                 }
             }
         }
     }
+    else
+    {
+        //end execution
+    }
 
-    if (ids.input == -1) { ids.input = Pa_GetDefaultInputDevice(); settings["inputDevice"] = Pa_GetDeviceInfo(ids.input)->name; }
-    if (ids.streamOut == -1) { ids.streamOut = Pa_GetDefaultOutputDevice(); settings["streamOutputDevice"] = Pa_GetDeviceInfo(ids.streamOut)->name; }
+    for (auto const& [name, id] : deviceList)
+    {
+        if (outputDevices.find(name) == outputDevices.end() && loopbackDevices.find(name) == loopbackDevices.find(name))
+        {
+            inputDevices[name] = {id, GetChannels(id, true)};
+        }
+    }
 
-    // start gathering the capabilities of each audio device
+    if (ids.input == -1) ids.input = Pa_GetDefaultInputDevice();
+    if (ids.streamOut == -1) ids.streamOut = Pa_GetDefaultOutputDevice();
+    if (ids.output == -1) ids.output = Pa_GetDefaultOutputDevice();
+}
+
+int AudioManager::GetChannels(int id, bool isInput)
+{
     PaStreamParameters params;
     params.hostApiSpecificStreamInfo = NULL;
     params.sampleFormat = PA_SAMPLE_TYPE;
+    params.device = id;
+    params.hostApiSpecificStreamInfo = NULL;
+    params.sampleFormat = PA_SAMPLE_TYPE;
+    params.channelCount = 2;
+    params.suggestedLatency = Pa_GetDeviceInfo(id)->defaultLowInputLatency;
 
-    PaError err;
-    bool isInput = true;
-    for (auto const& [name, id] : deviceList)
-    {
-        // check if this device is an input or output device
-        device deviceSettings;
-        params.device = id;
-        params.hostApiSpecificStreamInfo = NULL;
-        params.sampleFormat = PA_SAMPLE_TYPE;
-        params.channelCount = 1;
-        params.suggestedLatency = Pa_GetDeviceInfo(id)->defaultLowInputLatency;
-        deviceSettings.id = id;
-        deviceSettings.nChannels = params.channelCount;
-
-        // assumes most modern devices support at least a 44100Hz sample rate
-        err = Pa_IsFormatSupported(&params, NULL, 48000);
-        if (err != 0)
-        {
-            err = Pa_IsFormatSupported(NULL, &params, 48000);
-            if (err == 0)
-            {
-                isInput = false;
-                outputDevices[name] = deviceSettings;
-            }
-        }
-        else
-        {
-            isInput = true;
-            inputDevices[name] = deviceSettings;
-        }
-
-        // check the maximum number of channels available on the device - needs to be done to avoid problems with incorrectly initialized portaudio streams
-        while (true)
-        {
-            params.channelCount++;
-            err = Pa_IsFormatSupported(isInput ? &params : NULL, isInput ? NULL : &params, 48000);
-            // capped at 16 to avoid anomalous audio devices with 1000+ channels from slowing down init time
-            if (err != 0 || params.channelCount > 2)
-            {
-                break;
-            }
-        }
-
-        if (isInput)
-        {
-            inputDevices[name].nChannels = params.channelCount - 1;
-        }
-        else
-        {
-            outputDevices[name].nChannels = params.channelCount - 1;
-
-            // assume that the loopback devices shares the same number of channels as it's corresponding output device
-            if (loopbackDevices.find(name + " [Loopback]") != loopbackDevices.end())
-            {
-                loopbackDevices[name + " [Loopback]"].nChannels = params.channelCount - 1;
-            }
-
-            if (settings["outputDevice"] != "")
-            {
-                if (name.find(settings["outputDevice"]) != std::string::npos)
-                {
-                    ids.output = outputDevices[name].id;
-                }
-            } else {
-                if (name.find("CABLE") == std::string::npos && outputDevices[name].id != ids.streamOut)
-                {
-                    settings["outputDevice"] = name;
-                    ids.output = outputDevices[name].id;
-                }
-            }
-        }
-    }
+    PaError err = Pa_IsFormatSupported(isInput ? &params : NULL, isInput ? NULL : &params, 48000);
+    return err != 0 ? 1 : 2;
 }
 
 int AudioManager::GetCorrespondingLoopbackDevice(int i)
@@ -212,28 +188,8 @@ int AudioManager::GetCorrespondingLoopbackDevice(int i)
 }
 
 /* Reset functions for portaudio objects, called when corresponding devices are changed in the GUI */
-void AudioManager::Reset(int input, int output, int stream)
+void AudioManager::Reset(bool devicesChanged)
 {
-    //ids.input = input;
-    //ids.output = output;
-    settings["inputDevice"] = input != -1 ? Pa_GetDeviceInfo(input)->name : settings["inputDevice"];
-    settings["outputDevice"] = output != -1 ? Pa_GetDeviceInfo(output)->name : settings["outputDevice"];
-    std::cout<<stream<<std::endl;
-    if (stream >= 0)
-    {
-        std::string dName = Pa_GetDeviceInfo(stream)->name;
-        std::cout<<dName<<std::endl;
-        for (auto const& [name, id] : deviceList)
-        {
-            if (dName.find(name) != std::string::npos && dName.find("[Loopback]") == std::string::npos)
-            {
-                std::cout<<"found"<<std::endl;//ids.streamOut = stream;
-                settings["streamOutputDevice"] = Pa_GetDeviceInfo(stream)->name;
-                break;
-            }
-        }
-    }
-
     delete passthrough;
     delete player;
     delete monitor;
@@ -249,12 +205,11 @@ void AudioManager::Reset(int input, int output, int stream)
 
     WaitForReady();
 
-    if (input != -1 || output != -1 || stream != -1) { SaveSettings(); }
+    if (!devicesChanged) { SaveSettings(); }
 }
 
 void AudioManager::SetupStreams()
 {
-    if (settings["outputDevice"] == settings["streamOutputDevice"]) return;
     inputBuffer = new float[settings["framesPerBuffer"].get<int>() * 2 * 3];
     playbackBuffer = new float[settings["framesPerBuffer"].get<int>() * 2 * 3];
 
@@ -277,16 +232,16 @@ void AudioManager::SetupStreams()
                                             settings["framesPerBuffer"].get<int>(),
                                             appdata + dirName,
                                             inputBuffer);
-    cleanOutput         = new CleanOutput(  GetDeviceByIndex(loopbackdevice),
+    if (ids.streamOut != ids.output)
+        cleanOutput     = new CleanOutput(  GetDeviceByIndex(loopbackdevice),
                                             GetDeviceByIndex(ids.output),
                                             settings["sampleRate"].get<int>(),
                                             1);
 
-    player->maxLiveSamples = settings["maxNumberOfSounds"];
-    player->data.maxFileLength = settings["maxFileLength"];
-
     SetSampleMonitor(settings["monitorSamples"].get<int>());
     SetMicMonitor(settings["monitorMic"].get<int>());
+
+    SetHUD(this->hud);
 }
 
 void AudioManager::ShutdownStreams(Passthrough *passthrough,
@@ -302,23 +257,17 @@ void AudioManager::ShutdownStreams(Passthrough *passthrough,
     delete cleanOutput;
 }
 
-void AudioManager::CheckForDeviceChanges(Passthrough *passthrough,
-                                         Player *player,
-                                         Monitor *monitor,
-                                         CleanOutput *cleanOutput,
-                                         NoiseGenerator *noiseGen)
-{
-    while (true)
-    {
-
-    }
-}
-
 /* Configuration save functions */
 void AudioManager::SaveSettings()
 {
     std::ofstream settingsFile(appdata + dirName + "settings.json");
     settingsFile << std::setw(4) << settings << std::endl;
+}
+
+void AudioManager::SetHUD(HUD *hud)
+{
+    this->hud = hud;
+    passthrough->hud = hud;
 }
 
 void AudioManager::SaveBinds()
@@ -361,22 +310,6 @@ void AudioManager::SetNewBind(int keycode, bool isSoundboard)
     else
     {
         (*obj)[std::to_string(keycode)] = entry;
-
-        if (!isSoundboard)
-        {
-            (*obj)[std::to_string(keycode)]["reverb"]["enabled"] = passthrough->data.reverb->getEnabled();
-            (*obj)[std::to_string(keycode)]["reverb"]["roomsize"] = passthrough->data.reverb->getroomsize();
-            (*obj)[std::to_string(keycode)]["reverb"]["mix"] = passthrough->data.reverb->getwet();
-            (*obj)[std::to_string(keycode)]["reverb"]["width"] = passthrough->data.reverb->getwidth();
-            (*obj)[std::to_string(keycode)]["reverb"]["damp"] = passthrough->data.reverb->getdamp();
-
-            (*obj)[std::to_string(keycode)]["autotune"]["enabled"] = passthrough->data.pitchShift->getAutotune();
-            (*obj)[std::to_string(keycode)]["autotune"]["speed"] = 1.f;//passthrough->data.autotune->getspeed();
-            (*obj)[std::to_string(keycode)]["autotune"]["notes"] = passthrough->data.pitchShift->getNotes();
-
-            (*obj)[std::to_string(keycode)]["pitch"]["enabled"] = passthrough->data.pitchShift->getPitchshift();
-            (*obj)[std::to_string(keycode)]["pitch"]["pitch"] = passthrough->data.pitchShift->getPitchscale();
-        }
     }
     SaveBinds();
 }
@@ -425,24 +358,6 @@ device AudioManager::GetDeviceByIndex(int i)
     }
 
     return {-1, -1};
-}
-
-void AudioManager::OverrideConfig(std::string keycode)
-{
-    voiceFXHotkeys[keycode]["reverb"]["enabled"] = passthrough->data.reverb->getEnabled();
-    voiceFXHotkeys[keycode]["reverb"]["roomsize"] = passthrough->data.reverb->getroomsize();
-    voiceFXHotkeys[keycode]["reverb"]["mix"] = passthrough->data.reverb->getwet();
-    voiceFXHotkeys[keycode]["reverb"]["width"] = passthrough->data.reverb->getwidth();
-    voiceFXHotkeys[keycode]["reverb"]["damp"] = passthrough->data.reverb->getdamp();
-
-    voiceFXHotkeys[keycode]["autotune"]["enabled"] = passthrough->data.pitchShift->getAutotune();
-    voiceFXHotkeys[keycode]["autotune"]["speed"] = 1.f;//passthrough->data.autotune->getspeed();
-    voiceFXHotkeys[keycode]["autotune"]["notes"] = passthrough->data.pitchShift->getNotes();
-
-    voiceFXHotkeys[keycode]["pitch"]["enabled"] = passthrough->data.pitchShift->getPitchshift();
-    voiceFXHotkeys[keycode]["pitch"]["pitch"] = passthrough->data.pitchShift->getPitchscale();
-
-    SaveBinds();
 }
 
 void AudioManager::OverrideSound(std::string fname, int keycode)

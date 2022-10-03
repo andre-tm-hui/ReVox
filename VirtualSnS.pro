@@ -10,13 +10,17 @@ CONFIG += c++20 \
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    source/qt/hardtunesettings.cpp \
-    source/qt/pitchsettings.cpp \
-    source/qt/reverbsettings.cpp \
+    autotunetab.cpp \
+    fxmenu.cpp \
+    hud.cpp \
+    pitchtab.cpp \
+    reverbtab.cpp \
+    settingsmenu.cpp \
+    soundboardmenu.cpp \
+    source/qt/rc/qttransitions.cpp \
     source/audio/streams/cleanoutput.cpp \
     source/audio/streams/monitor.cpp \
     source/audio/streams/noisegenerator.cpp \
-    source/qt/devicesettings.cpp \
     source/audio/dsp/comb.cpp \
     source/audio/audiomanager.cpp \
     source/audio/dsp/allpass.cpp \
@@ -26,19 +30,23 @@ SOURCES += \
     source/audio/dsp/stft.cpp \
     source/audio/streams/audiostream.cpp \
     source/audio/callbacks.cpp \
-    source/qt/keybindsettings.cpp \
     source/hook/keyboardlistener.cpp \
     source/main.cpp \
     source/qt/mainwindow.cpp \
     source/audio/streams/passthrough.cpp \
     source/audio/streams/player.cpp \
     source/qt/rc/hotkeyitem.cpp \
-    source/qt/rc/keypresseater.cpp
+    source/qt/rc/keypresseater.cpp \
+    source/qt/widgets/customdial.cpp \
+    source/qt/widgets/switch.cpp \
+    source/qt/widgets/waveformviewer.cpp \
+    titlebar.cpp
 
 HEADERS += \
-    headers/hardtunesettings.h \
+    autotunetab.h \
+    fxmenu.h \
     headers/cleanoutput.h \
-    headers/devicesettings.h \
+    headers/customdial.h \
     headers/allpass.h \
     headers/audiomanager.h \
     headers/audiostream.h \
@@ -47,7 +55,6 @@ HEADERS += \
     headers/denormals.h \
     headers/frequency.h \
     headers/hotkeyitem.h \
-    headers/keybindsettings.h \
     headers/keyboardlistener.h \
     headers/keypresseater.h \
     headers/mainwindow.h \
@@ -57,11 +64,16 @@ HEADERS += \
     headers/pitchshift.h \
     headers/player.h \
     headers/pvdat.h \
+    headers/qttransitions.h \
     headers/revmodel.h \
     headers/revtuning.h \
     headers/stft.h \
+    headers/style.h \
+    headers/switch.h \
     headers/vkcodenames.h \
+    headers/waveformviewer.h \
     headers/windowfunctions.h \
+    hud.h \
     nlohmann/adl_serializer.hpp \
     nlohmann/byte_container_with_subtype.hpp \
     nlohmann/detail/conversions/from_json.hpp \
@@ -103,19 +115,24 @@ HEADERS += \
     nlohmann/ordered_map.hpp \
     nlohmann/thirdparty/hedley/hedley.hpp \
     nlohmann/thirdparty/hedley/hedley_undef.hpp \
-    headers/pitchsettings.h \
-    headers/reverbsettings.h
+    pitchtab.h \
+    reverbtab.h \
+    settingsmenu.h \
+    soundboardmenu.h \
+    titlebar.h
 
 INCLUDEPATH += headers
 
 FORMS += \
-    mainwindow2.ui \
-    qtui/hardtunesettings.ui \
-    qtui/pitchsettings.ui \
-    qtui/devicesettings.ui \
-    qtui/keybindsettings.ui \
+    autotunetab.ui \
+    fxmenu.ui \
+    hud.ui \
+    pitchtab.ui \
     qtui/mainwindow.ui \
-    qtui/reverbsettings.ui
+    reverbtab.ui \
+    settingsmenu.ui \
+    soundboardmenu.ui \
+    titlebar.ui
 
 TRANSLATIONS += \
     VirtualSnS_en_001.ts
@@ -154,3 +171,6 @@ win32: LIBS += -L$$PWD/'../../C++ Libraries/libsamplerate-0.2.2-win64/lib/' -lsa
 
 INCLUDEPATH += $$PWD/'../../C++ Libraries/libsamplerate-0.2.2-win64/include'
 DEPENDPATH += $$PWD/'../../C++ Libraries/libsamplerate-0.2.2-win64/bin'
+
+
+LIBS += -lole32

@@ -15,10 +15,13 @@ public:
             float *playbackBuffer);
 
     void Record(int keycode);
-    void Stop(int keycode);
-    void Merge(int keycode);
+    void Stop();
+    void Merge();
 
     monitorData data;
+
+private:
+    int keycode;
     bool recording = false;
 };
 

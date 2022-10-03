@@ -3,6 +3,8 @@
 CleanOutput::CleanOutput(device inputDevice, device outputDevice, int sampleRate, int framesPerBuffer) : AudioStream(inputDevice, outputDevice, sampleRate, framesPerBuffer, "")
 {
     initialSetup = false;
+    std::cout<<inputParameters.channelCount<<std::endl;
+    std::cout<<outputParameters.channelCount<<std::endl;
     // open and start the stream to record from
     this->err = Pa_OpenStream(
                 &this->stream,

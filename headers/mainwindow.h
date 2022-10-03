@@ -2,23 +2,28 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QMouseEvent>
+#include <QMenu>
 #include <QListWidget>
 #include <QHBoxLayout>
 #include <QSystemTrayIcon>
 #include <QMediaDevices>
-#include <reverbsettings.h>
-#include <hardtunesettings.h>
-#include <pitchsettings.h>
+#include <QGraphicsOpacityEffect>
+#include <QPropertyAnimation>
 #include <hotkeyitem.h>
 #include <thread>
 #include "ui_mainwindow.h"
 #include "audiomanager.h"
 #include "keyboardlistener.h"
 #include "windows.h"
-#include "keybindsettings.h"
 #include "vkcodenames.h"
-#include "devicesettings.h"
 #include "keypresseater.h"
+#include <soundboardmenu.h>
+#include <fxmenu.h>
+#include <settingsmenu.h>
+#include <hud.h>
+#include <qttransitions.h>
+#include <titlebar.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -34,6 +39,7 @@ public:
 
     static AudioManager* audioManager;
     static KeyboardListener* keyboardListener;
+    static std::atomic<bool> alive;
 
     void setVisible(bool visible) override;
     std::map<std::string, QCheckBox*> checkboxes = {};
@@ -44,29 +50,17 @@ protected:
 private slots:
     void iconActivated(QSystemTrayIcon::ActivationReason reason);
 
-    void openDeviceSetup();
-
-    void addBind(int type, int keybind = -1, QString label = "");
-
-    void removeBind(int type);
-
-    void toggleReverb(int state);
-
-    void toggleAutotune(int state);
-
-    void togglePitchshift(int state);
-
-    void openFXSettings(int type);
-
-    void on_maxPlaybackLength_valueChanged(int arg1);
-
-    void on_maxOverlappingSounds_valueChanged(int arg1);
-
-    void on_horizontalSlider_valueChanged(int value);
-
-    void on_horizontalSlider_2_valueChanged(int value);
+    void close();
 
     void devicesChanged();
+
+    void openMenu(int menu);
+
+    void fadeInMenu();
+
+    void resetAudio();
+
+    void moveWindow(QMouseEvent *event, int x, int y);
 
 private:
     Ui::MainWindow *ui;
@@ -75,26 +69,46 @@ private:
 
     QListWidget *keybinds;
     bool setup = false;
+    bool dragging = false;
 
     static void WaitForKeyboardInput(QListWidgetItem* item);
+    static void CheckForFXUpdates(int *hotkey, FXMenu *fxMenu);
+    std::thread t;
 
     QAction *minimizeAction;
     QAction *maximizeAction;
     QAction *restoreAction;
+    QAction *resetAction;
     QAction *quitAction;
 
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
 
-    QSignalMapper mapper_add, mapper_remove, mapper_fx;
+    QSignalMapper mapper_add, mapper_remove, mapper_fx, mapper_menu;
 
     static QString GetKeyName(int keybind);
-    void GetDeviceList();
-
-    device_data *d_data;
 
     KeyPressEater *keyPressEater;
 
     QMediaDevices *devices;
+
+    enum Menu {
+        settings = -1,
+        soundboard = 0,
+        fx = 1,
+        voice = 2
+    };
+
+    QWidget *activeMenu, *nextMenu;
+    SoundboardMenu *soundboardMenu;
+    FXMenu *fxMenu;
+    SettingsMenu *settingsMenu;
+    HUD *hud;
+    TitleBar *titleBar;
+
+    int selectedSoundboardHotkey;
+    WaveformViewer *wv;
+
+    int fxHotkey = -1;
 };
 #endif // MAINWINDOW_H

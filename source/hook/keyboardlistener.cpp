@@ -44,23 +44,16 @@ LRESULT CALLBACK KeyboardListener::KeyboardEvent(int nCode, WPARAM wParam, LPARA
                     if (isSoundboard)
                     {
                         if (!audioManager->recording) {
-                            // check if button has a recorded file, otherwise, start recording
-                            if (audioManager->player != nullptr && audioManager->player->CanPlay(p->vkCode))
-                            {
-                                audioManager->player->Play(p->vkCode);
-                            }
-                            // if not, start recording
-                            else
-                            {
-                                if (bindSettings["recordInput"] && audioManager->passthrough != nullptr) audioManager->passthrough->Record(p->vkCode);
-                                if (bindSettings["recordLoopback"] && audioManager->monitor != nullptr) audioManager->monitor->Record(p->vkCode);
-                                audioManager->recording = true;
-                            }
+                            audioManager->Play(p->vkCode);
                         }
                     }
                     else
                     {
-                        if (audioManager->passthrough != nullptr)audioManager->passthrough->SetFX(audioManager->voiceFXHotkeys[std::to_string(p->vkCode)]);
+                        if (audioManager->passthrough != nullptr)
+                        {
+                            audioManager->passthrough->SetFX(audioManager->voiceFXHotkeys[std::to_string(p->vkCode)]);
+                            *(audioManager->fxHotkey) = p->vkCode;
+                        }
                     }
 
                     break;
@@ -70,13 +63,7 @@ LRESULT CALLBACK KeyboardListener::KeyboardEvent(int nCode, WPARAM wParam, LPARA
                         // stop recording when button is released
                         if (audioManager->recording)
                         {
-                            if (bindSettings["recordInput"] && audioManager->passthrough != nullptr) audioManager->passthrough->Stop(p->vkCode);
-                            if (bindSettings["recordLoopback"] && audioManager->monitor != nullptr)
-                            {
-                                audioManager->monitor->Stop(p->vkCode);
-                                audioManager->monitor->Merge(p->vkCode);
-                            }
-                            audioManager->recording = false;
+                            audioManager->StopRecording();
                         }
                     }
                     break;
@@ -86,9 +73,7 @@ LRESULT CALLBACK KeyboardListener::KeyboardEvent(int nCode, WPARAM wParam, LPARA
                         // secondary record button - used to record over already existing clips
                         if (!audioManager->recording)
                         {
-                            if (bindSettings["recordInput"] && audioManager->passthrough != nullptr) audioManager->passthrough->Record(p->vkCode);
-                            if (bindSettings["recordLoopback"] && audioManager->monitor != nullptr) audioManager->monitor->Record(p->vkCode);
-                            audioManager->recording = true;
+                            audioManager->Record(p->vkCode);
                         }
                     }
                     break;
@@ -98,13 +83,7 @@ LRESULT CALLBACK KeyboardListener::KeyboardEvent(int nCode, WPARAM wParam, LPARA
                         // stop recording when button is released
                         if (audioManager->recording)
                         {
-                            if (bindSettings["recordInput"] && audioManager->passthrough != nullptr) audioManager->passthrough->Stop(p->vkCode);
-                            if (bindSettings["recordLoopback"] && audioManager->monitor != nullptr)
-                            {
-                                audioManager->monitor->Stop(p->vkCode);
-                                audioManager->monitor->Merge(p->vkCode);
-                            }
-                            audioManager->recording = false;
+                            audioManager->StopRecording();
                         }
                     }
                     break;
