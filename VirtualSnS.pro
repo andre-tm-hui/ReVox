@@ -10,13 +10,13 @@ CONFIG += c++20 \
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    autotunetab.cpp \
-    fxmenu.cpp \
-    hud.cpp \
-    pitchtab.cpp \
-    reverbtab.cpp \
-    settingsmenu.cpp \
-    soundboardmenu.cpp \
+    source/qt/menus/voicefx/autotunetab.cpp \
+    source/qt/menus/fxmenu.cpp \
+    source/qt/hud.cpp \
+    source/qt/menus/voicefx/pitchtab.cpp \
+    source/qt/menus/voicefx/reverbtab.cpp \
+    source/qt/menus/settingsmenu.cpp \
+    source/qt/menus/soundboardmenu.cpp \
     source/qt/rc/qttransitions.cpp \
     source/audio/streams/cleanoutput.cpp \
     source/audio/streams/monitor.cpp \
@@ -40,11 +40,11 @@ SOURCES += \
     source/qt/widgets/customdial.cpp \
     source/qt/widgets/switch.cpp \
     source/qt/widgets/waveformviewer.cpp \
-    titlebar.cpp
+    source/qt/titlebar.cpp
 
 HEADERS += \
-    autotunetab.h \
-    fxmenu.h \
+    headers/autotunetab.h \
+    headers/fxmenu.h \
     headers/cleanoutput.h \
     headers/customdial.h \
     headers/allpass.h \
@@ -73,7 +73,7 @@ HEADERS += \
     headers/vkcodenames.h \
     headers/waveformviewer.h \
     headers/windowfunctions.h \
-    hud.h \
+    headers/hud.h \
     nlohmann/adl_serializer.hpp \
     nlohmann/byte_container_with_subtype.hpp \
     nlohmann/detail/conversions/from_json.hpp \
@@ -115,11 +115,11 @@ HEADERS += \
     nlohmann/ordered_map.hpp \
     nlohmann/thirdparty/hedley/hedley.hpp \
     nlohmann/thirdparty/hedley/hedley_undef.hpp \
-    pitchtab.h \
-    reverbtab.h \
-    settingsmenu.h \
-    soundboardmenu.h \
-    titlebar.h
+    headers/pitchtab.h \
+    headers/reverbtab.h \
+    headers/settingsmenu.h \
+    headers/soundboardmenu.h \
+    headers/titlebar.h
 
 INCLUDEPATH += headers
 
