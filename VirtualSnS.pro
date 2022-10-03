@@ -124,15 +124,15 @@ HEADERS += \
 INCLUDEPATH += headers
 
 FORMS += \
-    autotunetab.ui \
-    fxmenu.ui \
-    hud.ui \
-    pitchtab.ui \
+    qtui/autotunetab.ui \
+    qtui/fxmenu.ui \
+    qtui/hud.ui \
+    qtui/pitchtab.ui \
     qtui/mainwindow.ui \
-    reverbtab.ui \
-    settingsmenu.ui \
-    soundboardmenu.ui \
-    titlebar.ui
+    qtui/reverbtab.ui \
+    qtui/settingsmenu.ui \
+    qtui/soundboardmenu.ui \
+    qtui/titlebar.ui
 
 TRANSLATIONS += \
     VirtualSnS_en_001.ts
