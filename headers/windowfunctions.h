@@ -1,6 +1,8 @@
 #ifndef WINDOWFUNCTIONS_H
 #define WINDOWFUNCTIONS_H
 
+#define _USE_MATH_DEFINES
+#include <algorithm>
 #include <cmath>
 #include <vector>
 #include <stdio.h>

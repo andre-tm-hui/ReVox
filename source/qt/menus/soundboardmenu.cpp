@@ -124,6 +124,7 @@ void SoundboardMenu::addBind(int keybind, QString label)
     orig->setSizeHint(QSize(0, 36));
 
     ui->hotkeysList->scrollToBottom();
+    ui->hotkeysList->resize(ui->hotkeysList->width(), std::min(36 * ui->hotkeysList->count() + 2, 221));
 }
 
 void SoundboardMenu::removeBind()
@@ -133,6 +134,8 @@ void SoundboardMenu::removeBind()
     ui->hotkeysList->removeItemWidget(ui->hotkeysList->currentItem());
     delete ui->hotkeysList->currentItem();
     DisableSettings();
+
+    ui->hotkeysList->resize(ui->hotkeysList->width(), std::min(36 * ui->hotkeysList->count() + 2, 221));
 }
 
 void SoundboardMenu::setRecordMic()

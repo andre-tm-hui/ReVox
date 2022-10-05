@@ -120,6 +120,7 @@ void FXMenu::addBind(int keybind, QString label)
     orig->setSizeHint(QSize(0, 36));
 
     ui->hotkeysList->scrollToBottom();
+    ui->hotkeysList->resize(ui->hotkeysList->width(), std::min(36 * ui->hotkeysList->count() + 2, 221));
 }
 
 void FXMenu::removeBind()
@@ -129,6 +130,7 @@ void FXMenu::removeBind()
     ui->hotkeysList->removeItemWidget(ui->hotkeysList->currentItem());
     delete ui->hotkeysList->currentItem();
     DisableTabWidget();
+    ui->hotkeysList->resize(ui->hotkeysList->width(), std::min(36 * ui->hotkeysList->count() + 2, 221));
 }
 
 void FXMenu::onSliderChanged(int value)

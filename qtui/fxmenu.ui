@@ -144,6 +144,14 @@ QSlider::handle:vertical {
      <height>221</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">QGroupBox {
+	border: 1px solid #282828;
+	border-radius: 10px;
+	background: #282828;
+	outline: 0;
+}</string>
+   </property>
    <property name="title">
     <string/>
    </property>
@@ -153,7 +161,7 @@ QSlider::handle:vertical {
       <x>0</x>
       <y>0</y>
       <width>611</width>
-      <height>221</height>
+      <height>141</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -172,7 +180,17 @@ QListWidget::item:hover {
 QListWidget::item:selected {
 	background-color: #006060;
 	border-radius: 10px;
+}
+QListWidget::item:selected:!active {
+	background-color: #006060;
+	border-radius: 10px;
 }</string>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
     </property>
     <property name="editTriggers">
      <set>QAbstractItemView::NoEditTriggers</set>
@@ -214,7 +232,7 @@ QToolButton:pressed {
      <string>...</string>
     </property>
     <property name="icon">
-     <iconset resource="appicon.qrc">
+     <iconset resource="../appicon.qrc">
       <normaloff>:/icons/minus.png</normaloff>:/icons/minus.png</iconset>
     </property>
     <property name="iconSize">
@@ -257,7 +275,7 @@ QToolButton:pressed {
      <string>...</string>
     </property>
     <property name="icon">
-     <iconset resource="appicon.qrc">
+     <iconset resource="../appicon.qrc">
       <normaloff>:/icons/add.png</normaloff>:/icons/add.png</iconset>
     </property>
     <property name="iconSize">
@@ -324,7 +342,7 @@ QTabBar::tab:!selected {
 }</string>
     </property>
     <attribute name="icon">
-     <iconset resource="appicon.qrc">
+     <iconset resource="../appicon.qrc">
       <normaloff>:/icons/FXOff.png</normaloff>:/icons/FXOff.png</iconset>
     </attribute>
     <attribute name="title">
@@ -341,7 +359,7 @@ QTabBar::tab:!selected {
 }</string>
     </property>
     <attribute name="icon">
-     <iconset resource="appicon.qrc">
+     <iconset resource="../appicon.qrc">
       <normaloff>:/icons/FXOff.png</normaloff>:/icons/FXOff.png</iconset>
     </attribute>
     <attribute name="title">
@@ -358,7 +376,7 @@ QTabBar::tab:!selected {
 }</string>
     </property>
     <attribute name="icon">
-     <iconset resource="appicon.qrc">
+     <iconset resource="../appicon.qrc">
       <normaloff>:/icons/FXOff.png</normaloff>:/icons/FXOff.png</iconset>
     </attribute>
     <attribute name="title">
@@ -384,7 +402,7 @@ border-top-right-radius: 10px;</string>
   </widget>
  </widget>
  <resources>
-  <include location="appicon.qrc"/>
+  <include location="../appicon.qrc"/>
  </resources>
  <connections/>
 </ui>

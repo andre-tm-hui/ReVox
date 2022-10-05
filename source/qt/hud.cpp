@@ -10,6 +10,7 @@ HUD::HUD(passthroughData *data, QWidget *parent) :
 
     this->setWindowFlags(Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint|Qt::SubWindow|Qt::WindowTransparentForInput);
     this->setAttribute(Qt::WidgetAttribute::WA_TranslucentBackground, true);
+    this->setAttribute(Qt::WidgetAttribute::WA_ShowWithoutActivating, true);
 
     QScreen *screen = QGuiApplication::primaryScreen();
     int width = screen->geometry().width();
@@ -36,8 +37,6 @@ HUD::HUD(passthroughData *data, QWidget *parent) :
 
 HUD::~HUD()
 {
-    terminate = true;
-    t.join();
     delete ui;
 }
 
@@ -215,40 +214,5 @@ void HUD::populateList()
         default:
             return;
         }
-    }
-}
-
-void HUD::update(HUD* hud, passthroughData *data)
-{
-    while (!hud->terminate)
-    {
-        if (data->reverb->getEnabled())
-        {
-            hud->AddActiveEffect("Reverb");
-        }
-        else
-        {
-            hud->RemoveActiveEffect("Reverb");
-        }
-
-        if (data->pitchShift->getAutotune())
-        {
-            hud->AddActiveEffect("Autotune");
-        }
-        else
-        {
-            hud->RemoveActiveEffect("Autotune");
-        }
-
-        if (data->pitchShift->getPitchshift())
-        {
-            hud->AddActiveEffect("Pitch Shifter");
-        }
-        else
-        {
-            hud->RemoveActiveEffect("Shifter");
-        }
-
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 }

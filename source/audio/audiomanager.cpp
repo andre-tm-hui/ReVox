@@ -367,7 +367,33 @@ void AudioManager::OverrideSound(std::string fname, int keycode)
     {
         std::filesystem::remove(path);
     }
-    std::filesystem::copy(fname, path);
+
+    std::filesystem::path p = fname;
+    if (p.extension() == "mp3")
+    {
+        std::filesystem::copy(fname, path);
+    }
+    else
+    {
+        SF_INFO info_nonMp3, info_mp3;
+        SNDFILE* nonMp3 = sf_open(fname.c_str(), SFM_READ, &info_nonMp3);
+        info_mp3.samplerate = info_nonMp3.samplerate;
+        info_mp3.channels = info_nonMp3.channels;
+        info_mp3.format = SF_FORMAT_MPEG | SF_FORMAT_MPEG_LAYER_III;
+        SNDFILE* mp3 = sf_open(path.c_str(), SFM_WRITE, &info_mp3);
+
+        sf_count_t count;
+        float *in = new float[1024];
+        while (true)
+        {
+            count = sf_read_float(nonMp3, in, 1024);
+            sf_write_float(mp3, in, 1024);
+            if (count < 1024) break;
+        }
+
+        sf_close(nonMp3);
+        sf_close(mp3);
+    }
 
     SF_INFO info;
     SNDFILE* infile = sf_open(path.c_str(), SFM_READ, &info);

@@ -7,6 +7,31 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    // Setup device monitor - checks for changes in connected devices and resets the software if changes occur
+    devices = new QMediaDevices();
+    bool vCablesFound = false;
+    for (auto const& device : devices->audioInputs())
+    {
+        if (device.description().contains("VB-Audio Virtual Cable")) { vCablesFound = true; break; }
+    }
+    if (!vCablesFound)
+    {
+        ErrDialog *err = new ErrDialog(1);
+        err->show();
+        connect(err, SIGNAL(errQuit()), qApp, SLOT(quit()));
+        return;
+    }
+    if (devices->defaultAudioInput().description().contains("VB-Audio Virtual Cable") ||
+            devices->defaultAudioOutput().description().contains("VB-Audio Virtual Cable"))
+    {
+        ErrDialog *err = new ErrDialog(2);
+        err->show();
+        connect(err, SIGNAL(errQuit()), qApp, SLOT(quit()));
+        return;
+    }
+    connect(devices, SIGNAL(audioInputsChanged()), this, SLOT(devicesChanged()));
+    connect(devices, SIGNAL(audioOutputsChanged()), this, SLOT(devicesChanged()));
+
     setWindowFlags(Qt::FramelessWindowHint | Qt::Window);
 
     restoreAction = new QAction(tr("&Open"), this);
@@ -70,12 +95,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->settingsButton, SIGNAL(clicked()), &mapper_menu, SLOT(map()));
     mapper_menu.setMapping(ui->settingsButton, -1);
     settingsMenu->SetDevices(audioManager->outputDevices, audioManager->GetCurrentOutputDevice());
-
-
-    // Setup device monitor - checks for changes in connected devices and resets the software if changes occur
-    devices = new QMediaDevices();
-    connect(devices, SIGNAL(audioInputsChanged()), this, SLOT(devicesChanged()));
-    connect(devices, SIGNAL(audioOutputsChanged()), this, SLOT(devicesChanged()));
 
     alive = true;
     t = std::thread(CheckForFXUpdates, &fxHotkey, fxMenu);
@@ -236,7 +255,7 @@ void MainWindow::CheckForFXUpdates(int *hotkey, FXMenu *fxMenu)
             fxMenu->OnHotkeyToggle(*hotkey);
         }
         prevHotkey = *hotkey;
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        std::this_thread::sleep_for(std::chrono::milliseconds(300));
     }
 }
 

@@ -185,7 +185,7 @@ void PitchShift::addToBuffer(std::vector<float> window, float marker)
         for (int i = -window.size()/2, j = 0; i < -1+(int)window.size()/2; i++, j++)
         {
             pos = bufSize + marker + i;
-            if (pos >= 0 && pos < 3 * bufSize) outputs[(int)ceil(pos)] += lerp(window[j], window[j+1], fmod(ceil(pos), pos));
+            if (pos >= 0 && pos < 3 * bufSize) outputs[(int)ceil(pos)] += std::lerp(window[j], window[j+1], fmod(ceil(pos), pos));
         }
     }
 }
@@ -198,7 +198,7 @@ std::vector<std::vector<float>> PitchShift::getWindows(float *buf, float period,
         std::vector<float> window = {};
         for (int i = -period; i < period; i++)
         {
-            window.push_back(lerp(buf[(int)floor(marker+i)], buf[(int)ceil(marker+i)], fmod(marker+i, floor(marker+i))));
+            window.push_back(std::lerp(buf[(int)floor(marker+i)], buf[(int)ceil(marker+i)], fmod(marker+i, floor(marker+i))));
         }
         if (scale != 1.f) window = resample(window, scale);
         output.push_back(window);
@@ -231,7 +231,7 @@ std::vector<float> PitchShift::resample(std::vector<float> input, float scale)
     {
         float idx = (float)((int)input.size()-1) * (float)i / (float)(outputSize-1); // -1 to make sure the last of both arrays match
 
-        out.push_back(lerp(input[floor(idx)], input[ceil(idx)], idx - floor(idx)));
+        out.push_back(std::lerp(input[floor(idx)], input[ceil(idx)], idx - floor(idx)));
     }
 
     return out;

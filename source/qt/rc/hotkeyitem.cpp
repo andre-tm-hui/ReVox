@@ -6,7 +6,10 @@ void HotkeyItem::rebind()
     cb.keyboardListener->rebinding = true;
 
     hotkey->setText("Listening...");
+    this->hotkey->setStyleSheet("QPushButton {border-radius: 3px; background-color: #303030; color: #AA0000;}"
+                                "QPushButton:hover {background-color: #404040;}");
     hotkey->blockSignals(true);
+    this->setEnabled(false);
 
     std::thread t (WaitForKeyboardInput, &this->cb);
     t.detach();
@@ -36,7 +39,10 @@ void HotkeyItem::WaitForKeyboardInput(void *data)
     m_data->keycode = m_data->keyboardListener->rebindTo;
     QString qKeybind = vkCodenames[m_data->keycode];
     m_data->button->setText(qKeybind);
+    m_data->button->setStyleSheet("QPushButton {border-radius: 3px; background-color: #303030; color: #FFFFFF;}"
+                                  "QPushButton:hover {background-color: #404040;}");
     m_data->button->blockSignals(false);
+    m_data->hotkeyItem->setEnabled(true);
 
     m_data->audioManager->SetNewBind(m_data->keycode, m_data->isSoundboard);
 }

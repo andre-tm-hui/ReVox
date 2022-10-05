@@ -45,11 +45,8 @@ public:
     void SetHUD(HUD *hud);
     void SetWaveform(WaveformViewer *wv) { this->wv = wv; }
     void ResetWaveform() { this->wv->SetAudioClip(); }
-    //void SetCheckboxes(std::map<std::string, QCheckBox*> *checkboxes);
     void OverrideSound(std::string fname, int keycode);
 
-    void SetNumberOfSounds(int n) { settings["maxNumberOfSounds"] = n; player->maxLiveSamples = n; }
-    void SetPlaybackLength(int n) { settings["maxFileLength"] = n; player->data.maxFileLength = n; }
     void SetSampleMonitor(int n) { monitor->data.monitorSamples = (float)n / 100.f; settings["monitorSamples"] = n; SaveSettings(); }
     void SetMicMonitor(int n) { monitor->data.monitorMic = (float)n / 100.f; settings["monitorMic"] = n; SaveSettings(); }
 
@@ -97,7 +94,7 @@ private:
     int rebindAt = -1;
 
     std::string appdata;
-    std::string dirName = "/Virtual SoundTool/";
+    std::string dirName = "/ReVox/";
 
 
     void SetupStreams();

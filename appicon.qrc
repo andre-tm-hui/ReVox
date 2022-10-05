@@ -24,5 +24,7 @@
         <file>icons/hud.png</file>
         <file>icons/x.png</file>
         <file>icons/drag.png</file>
+        <file>icons/err.png</file>
+        <file>icons/edit.png</file>
     </qresource>
 </RCC>

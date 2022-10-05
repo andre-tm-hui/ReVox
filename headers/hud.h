@@ -27,11 +27,8 @@ public:
     void AddActiveEffect(QString fx);
     void RemoveActiveEffect(QString fx);
 
-    std::atomic<bool> terminate = false;
-
 private:
     void populateList();
-    static void update(HUD* hud, passthroughData *data);
 
     Ui::HUD *ui;
     passthroughData *data;
@@ -45,8 +42,6 @@ private:
     int itemHeight = 0;
     bool vertical = true;
     bool anchorTop = false;
-
-    std::thread t;
 };
 
 #endif // HUD_H

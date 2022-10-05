@@ -1,6 +1,8 @@
 #ifndef KEYBOARDLISTENER_H
 #define KEYBOARDLISTENER_H
 
+#pragma comment( lib, "user32" )
+
 #include "audiomanager.h"
 #include <condition_variable>
 #include <mutex>

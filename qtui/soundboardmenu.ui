@@ -151,7 +151,12 @@ QSlider::handle:vertical {
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true"/>
+    <string notr="true">QGroupBox {
+	border: 1px solid #282828;
+	border-radius: 10px;
+	background: #282828;
+	outline: 0;
+}</string>
    </property>
    <property name="title">
     <string/>
@@ -162,7 +167,7 @@ QSlider::handle:vertical {
       <x>0</x>
       <y>0</y>
       <width>611</width>
-      <height>221</height>
+      <height>161</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -181,7 +186,17 @@ QListWidget::item:hover {
 QListWidget::item:selected {
 	background-color: #006060;
 	border-radius: 10px;
+}
+QListWidget::item:selected:!focus {
+	background-color: #006060;
+	border-radius: 10px;
 }</string>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
     </property>
     <property name="editTriggers">
      <set>QAbstractItemView::NoEditTriggers</set>
@@ -223,7 +238,7 @@ QToolButton:pressed {
      <string>...</string>
     </property>
     <property name="icon">
-     <iconset resource="appicon.qrc">
+     <iconset resource="../appicon.qrc">
       <normaloff>:/icons/minus.png</normaloff>:/icons/minus.png</iconset>
     </property>
     <property name="iconSize">
@@ -265,7 +280,7 @@ QToolButton:pressed {
      <string>...</string>
     </property>
     <property name="icon">
-     <iconset resource="appicon.qrc">
+     <iconset resource="../appicon.qrc">
       <normaloff>:/icons/add.png</normaloff>:/icons/add.png</iconset>
     </property>
     <property name="iconSize">
@@ -547,7 +562,7 @@ QToolButton:pressed { background-color: #303030; }</string>
      <string>...</string>
     </property>
     <property name="icon">
-     <iconset resource="appicon.qrc">
+     <iconset resource="../appicon.qrc">
       <normaloff>:/icons/play.png</normaloff>:/icons/play.png</iconset>
     </property>
     <property name="iconSize">
@@ -578,7 +593,7 @@ QToolButton:pressed { background-color: #303030; }</string>
      <string>...</string>
     </property>
     <property name="icon">
-     <iconset resource="appicon.qrc">
+     <iconset resource="../appicon.qrc">
       <normaloff>:/icons/stop.png</normaloff>:/icons/stop.png</iconset>
     </property>
     <property name="iconSize">
@@ -619,7 +634,7 @@ background: rgba(0,0,0,100);</string>
   </widget>
  </widget>
  <resources>
-  <include location="appicon.qrc"/>
+  <include location="../appicon.qrc"/>
  </resources>
  <connections/>
 </ui>

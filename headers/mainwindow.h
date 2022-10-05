@@ -8,6 +8,7 @@
 #include <QHBoxLayout>
 #include <QSystemTrayIcon>
 #include <QMediaDevices>
+#include <QAudioDevice>
 #include <QGraphicsOpacityEffect>
 #include <QPropertyAnimation>
 #include <hotkeyitem.h>
@@ -24,6 +25,7 @@
 #include <hud.h>
 #include <qttransitions.h>
 #include <titlebar.h>
+#include <errdialog.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }

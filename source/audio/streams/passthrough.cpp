@@ -70,7 +70,7 @@ void Passthrough::SetFX(json settings)
     if (data.pitchShift->getPitchshift())
         hud->AddActiveEffect("Pitch Shift");
     else
-        hud->RemoveActiveEffect("Pitch Shiift");
+        hud->RemoveActiveEffect("Pitch Shift");
 }
 
 
