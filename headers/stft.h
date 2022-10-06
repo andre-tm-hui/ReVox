@@ -2,9 +2,9 @@
 #define STFT_H
 
 #include <fftw3.h>
-#include <windowfunctions.h>
 #include <cstring>
 #include <vector>
+#include <windowfunctions.h>
 
 class STFT
 {

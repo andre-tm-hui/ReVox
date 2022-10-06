@@ -116,7 +116,8 @@ private:
             "recordLoopback": true,
             "startAt": 0,
             "endAt": -1,
-            "maxCopies": 1
+            "maxCopies": 1,
+            "volume": 1.0
         }
         )"_json;
 

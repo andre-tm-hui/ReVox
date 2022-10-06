@@ -175,7 +175,7 @@ void HUD::RemoveActiveEffect(QString fx)
 
 void HUD::populateList()
 {
-    for (int i = 0; i < fxWidgets.size(); i++)
+    for (unsigned int i = 0; i < fxWidgets.size(); i++)
     {
         QLabel *label = fxWidgets[i];
         int xPos = 0;

@@ -62,7 +62,7 @@ fftwf_complex** STFT::stft(float *input)
 
 std::vector<float> STFT::istft(fftwf_complex **input, float timeScale)
 {
-    int outputSize = (int)ceil((float)bufSize * timeScale);
+    int outputSize = (int)std::ceil((float)bufSize * timeScale);
     // nframes = (size - frameSize) / hopSize
     float newHopSize = (float)(outputSize - frameSize) / (float)(nFrames - 1);
     //fprintf(stdout, "%d %f %f %d\n", outputSize, newHopSize, (float)nFrames, outputSize - frameSize); fflush(stdout);
@@ -94,7 +94,7 @@ std::vector<float> STFT::istft(fftwf_complex **input, float timeScale)
             {
                 if ((int)ceil(offset) + j < outputSize)
                 {
-                    output[(int)ceil(offset) + j] += linterp(out[j], out[j+1], ceil(offset) - offset);
+                    output[(int)ceil(offset) + j] += std::lerp(out[j], out[j+1], ceil(offset) - offset);
                 }
                 else
                 {

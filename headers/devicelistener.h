@@ -5,8 +5,6 @@
 #include <functiondiscoverykeys_devpkey.h>
 #include <stdio.h>
 
-#pragma comment(lib, "ole32.lib")
-
 #define SAFE_RELEASE(punk) \
     if ((punk) != NULL) \
 { (punk)->Release(); (punk) = NULL; }

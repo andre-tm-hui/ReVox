@@ -30,6 +30,7 @@ SettingsMenu::SettingsMenu(AudioManager *am, HUD *hud, QWidget *parent) :
     if (am->settings["hudPosition"] != -1)
     {
         positionsCheckboxes[am->settings["hudPosition"]]->setCheckState(Qt::CheckState::Checked);
+        ui->hudPositionLabel->setText(positionLabels[am->settings["hudPosition"].get<int>()]);
     }
 
     connect(mapper, SIGNAL(mappedInt(int)), this, SLOT(hudPositionChanged(int)));

@@ -99,7 +99,7 @@ QSlider::handle:vertical {
 </string>
     </property>
     <property name="maximum">
-     <number>100</number>
+     <number>150</number>
     </property>
     <property name="value">
      <number>0</number>
@@ -208,10 +208,10 @@ QListWidget::item:selected:!focus {
     </property>
     <property name="geometry">
      <rect>
-      <x>492</x>
-      <y>193</y>
-      <width>60</width>
-      <height>30</height>
+      <x>551</x>
+      <y>201</y>
+      <width>30</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="toolTip">
@@ -243,7 +243,7 @@ QToolButton:pressed {
     </property>
     <property name="iconSize">
      <size>
-      <width>20</width>
+      <width>15</width>
       <height>30</height>
      </size>
     </property>
@@ -251,10 +251,10 @@ QToolButton:pressed {
    <widget class="QToolButton" name="add">
     <property name="geometry">
      <rect>
-      <x>551</x>
-      <y>193</y>
-      <width>60</width>
-      <height>30</height>
+      <x>581</x>
+      <y>201</y>
+      <width>30</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="toolTip">
@@ -285,7 +285,7 @@ QToolButton:pressed {
     </property>
     <property name="iconSize">
      <size>
-      <width>20</width>
+      <width>15</width>
       <height>30</height>
      </size>
     </property>
@@ -601,6 +601,49 @@ QToolButton:pressed { background-color: #303030; }</string>
       <width>30</width>
       <height>30</height>
      </size>
+    </property>
+   </widget>
+   <widget class="QSlider" name="volume">
+    <property name="geometry">
+     <rect>
+      <x>389</x>
+      <y>126</y>
+      <width>141</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QSlider::handle:horizontal {
+image: url(:/icons/volumeHandle.png);
+background: transparent;
+border: 0px;
+}
+
+QSlider::groove:horizontal {
+    border: 1px solid transparent;
+    height: 16px; 
+}
+
+QSlider::sub-page:horizontal {
+background: #00CCCC;
+border-radius: 3px;
+margin: 6px;
+}
+
+QSlider::add-page:horizontal {
+background: #303030;
+border-radius: 3px;
+margin: 6px;
+}</string>
+    </property>
+    <property name="maximum">
+     <number>150</number>
+    </property>
+    <property name="value">
+     <number>100</number>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
     </property>
    </widget>
   </widget>

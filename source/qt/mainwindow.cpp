@@ -32,6 +32,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(devices, SIGNAL(audioInputsChanged()), this, SLOT(devicesChanged()));
     connect(devices, SIGNAL(audioOutputsChanged()), this, SLOT(devicesChanged()));
 
+    qApp->setStyleSheet("QToolTip { color: #ffffff; background-color: #000000; border: 0px; }");
+
     setWindowFlags(Qt::FramelessWindowHint | Qt::Window);
 
     restoreAction = new QAction(tr("&Open"), this);

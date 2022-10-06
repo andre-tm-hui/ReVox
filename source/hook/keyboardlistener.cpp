@@ -20,7 +20,19 @@ LRESULT CALLBACK KeyboardListener::KeyboardEvent(int nCode, WPARAM wParam, LPARA
             if (audioManager->soundboardHotkeys.find(std::to_string(p->vkCode)) == audioManager->soundboardHotkeys.end() &&
                     audioManager->voiceFXHotkeys.find(std::to_string(p->vkCode)) == audioManager->voiceFXHotkeys.end())
             {
-                rebindTo = p->vkCode;
+                switch (p->vkCode)
+                {
+                case 8: // backspace
+                    rebindTo = -2;
+                    break;
+                case 27: // escape
+                    rebindTo = -1;
+                    break;
+                default:
+                    rebindTo = p->vkCode;
+                    break;
+                }
+
                 rebinding = false;
                 cv->notify_all();
             }

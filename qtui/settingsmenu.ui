@@ -13,6 +13,11 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: #202020;
+color: #DDDDDD;
+font-family: &quot;Cascadia Code&quot;;</string>
+  </property>
   <widget class="QScrollArea" name="scrollArea">
    <property name="geometry">
     <rect>
@@ -44,6 +49,8 @@ border-radius: 2px;
 
 QScrollBar::sub-page:vertical, QScrollBar::add-page:vertical { background: none; }
 
+QScrollBar::sub-line:vertical, QScrollBar::add-line:vertical { background: none; }
+
 QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical { 
 width: 0px; 
 height: 0px;
@@ -64,7 +71,7 @@ background: transparent;
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>0</y>
+      <y>-18</y>
       <width>877</width>
       <height>573</height>
      </rect>
@@ -140,10 +147,10 @@ background: transparent;
          </font>
         </property>
         <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set this to your headphones/audio interface. To separate the audio you hear from the audio your recording software hears, see &lt;a href=&quot;https://github.com/andre-tm-hui/VirtualSnS&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#007af4;&quot;&gt;here&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set this to your headphones/audio interface. To separate the audio you hear from the audio your recording software hears, see the wiki&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="styleSheet">
-         <string notr="true">QToolTip { background: #000000; }</string>
+         <string notr="true"/>
         </property>
         <property name="text">
          <string>Output Device</string>
@@ -391,7 +398,7 @@ QCheckBox::indicator:hover { background: #B0B0B0; }</string>
          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Change where Voice FX indicators appear on your screen&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="styleSheet">
-         <string notr="true">QToolTip { background: #000000; }</string>
+         <string notr="true"/>
         </property>
         <property name="text">
          <string>HUD Position</string>
@@ -435,10 +442,10 @@ QCheckBox::indicator:hover { background: #B0B0B0; }</string>
          </font>
         </property>
         <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set this to your headphones/audio interface. To separate the audio you hear from the audio your recording software hears, see &lt;a href=&quot;https://github.com/andre-tm-hui/VirtualSnS&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#007af4;&quot;&gt;here&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;Toggle whether ReVox starts with Windows&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="styleSheet">
-         <string notr="true">QToolTip { background: #000000; }</string>
+         <string notr="true"/>
         </property>
         <property name="text">
          <string>Start With Windows</string>
@@ -482,10 +489,10 @@ QCheckBox::indicator:hover { background: #B0B0B0; }</string>
          </font>
         </property>
         <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set this to your headphones/audio interface. To separate the audio you hear from the audio your recording software hears, see &lt;a href=&quot;https://github.com/andre-tm-hui/VirtualSnS&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#007af4;&quot;&gt;here&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;Reset the ReVox audio. Use this to troubleshoot audio issues&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="styleSheet">
-         <string notr="true">QToolTip { background: #000000; }</string>
+         <string notr="true"/>
         </property>
         <property name="text">
          <string>Reset</string>
@@ -502,7 +509,7 @@ QCheckBox::indicator:hover { background: #B0B0B0; }</string>
         </property>
         <property name="font">
          <font>
-          <family>Cascadia Code SemiLight</family>
+          <family>Cascadia Code</family>
           <bold>true</bold>
          </font>
         </property>

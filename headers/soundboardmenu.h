@@ -45,6 +45,7 @@ private slots:
     void rightMarkerMoved(int value);
     void playSample();
     void stopSample();
+    void volumeChanged(int value);
 
     void onSliderChanged(int value);
 

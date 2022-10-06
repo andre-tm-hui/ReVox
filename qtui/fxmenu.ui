@@ -95,7 +95,7 @@ QSlider::handle:vertical {
 }</string>
     </property>
     <property name="maximum">
-     <number>100</number>
+     <number>150</number>
     </property>
     <property name="orientation">
      <enum>Qt::Vertical</enum>
@@ -202,10 +202,10 @@ QListWidget::item:selected:!active {
     </property>
     <property name="geometry">
      <rect>
-      <x>492</x>
-      <y>193</y>
-      <width>60</width>
-      <height>30</height>
+      <x>551</x>
+      <y>201</y>
+      <width>30</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="toolTip">
@@ -237,7 +237,7 @@ QToolButton:pressed {
     </property>
     <property name="iconSize">
      <size>
-      <width>20</width>
+      <width>15</width>
       <height>30</height>
      </size>
     </property>
@@ -245,10 +245,10 @@ QToolButton:pressed {
    <widget class="QToolButton" name="add">
     <property name="geometry">
      <rect>
-      <x>551</x>
-      <y>193</y>
-      <width>60</width>
-      <height>30</height>
+      <x>581</x>
+      <y>201</y>
+      <width>30</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="toolTip">
@@ -280,7 +280,7 @@ QToolButton:pressed {
     </property>
     <property name="iconSize">
      <size>
-      <width>20</width>
+      <width>15</width>
       <height>30</height>
      </size>
     </property>

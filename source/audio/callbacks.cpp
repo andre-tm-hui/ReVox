@@ -19,9 +19,9 @@ int playCallback(const void* inputBuffer, void* outputBuffer,
     for (auto it = p_data->timers.begin(); it != p_data->timers.end();)
     {
         SNDFILE* file = it->first;
-        int timeLeft = it->second;
+        soundData sdata = it->second;
 
-        if (timeLeft <= 0)
+        if (sdata.timeLeft <= 0)
         {
             sf_close(file);
             it = p_data->timers.erase(it);
@@ -32,10 +32,10 @@ int playCallback(const void* inputBuffer, void* outputBuffer,
             num_read = sf_read_float(file, read, framesPerBuffer * 2);
             // add the read buffer to the aggregate read buffer
             for (int i = 0; i < num_read; i++) {
-                *(out + i) += *(read + i);
+                *(out + i) += *(read + i) * sdata.volume;
             }
 
-            p_data->timers[file] -= framesPerBuffer;
+            p_data->timers[file].timeLeft -= framesPerBuffer;
 
             // close the file if EOF is reached
             if (num_read < framesPerBuffer)

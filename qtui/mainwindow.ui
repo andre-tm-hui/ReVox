@@ -40,13 +40,7 @@
   <property name="styleSheet">
    <string notr="true">background-color: #202020;
 color: #DDDDDD;
-font-family: &quot;Cascadia Code&quot;;
-
-QToolTip{
-border-radius: 5px;
-color: #FFFFFF;
-background-color: #101010;
-}</string>
+font-family: &quot;Cascadia Code&quot;;</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QGroupBox" name="sidebar">

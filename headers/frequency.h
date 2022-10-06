@@ -1,8 +1,10 @@
 #ifndef FREQUENCY_H
 #define FREQUENCY_H
 
+#define _USE_MATH_DEFINES
 #include <fftw3.h>
-#include "windowfunctions.h"
+#include <cmath>
+//#include "windowfunctions.h"
 #include <cstring>
 #include <vector>
 

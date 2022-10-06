@@ -31,7 +31,6 @@ FXMenu::FXMenu(json *hotkeys,
 
     for (auto& [keybind, settings] : (*hotkeys).items())
     {
-        QString qKeybind = vkCodenames[std::stoi(keybind)];
         addBind(std::stoi(keybind), QString::fromStdString(settings["label"].get<std::string>()));
     }
 
@@ -136,5 +135,5 @@ void FXMenu::removeBind()
 void FXMenu::onSliderChanged(int value)
 {
     am->SetMicMonitor(value);
-    ui->grooveOff->resize(ui->grooveOff->width(), 343 - 343 * value / 100);
+    ui->grooveOff->resize(ui->grooveOff->width(), 343 - 343 * value / ui->slider->maximum());
 }

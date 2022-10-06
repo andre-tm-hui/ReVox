@@ -26,5 +26,6 @@
         <file>icons/drag.png</file>
         <file>icons/err.png</file>
         <file>icons/edit.png</file>
+        <file>icons/volumeHandle.png</file>
     </qresource>
 </RCC>

@@ -5,12 +5,14 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 CONFIG += c++20 \
     qml_debug
 
+RC_ICONS = icon.ico
+
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    errdialog.cpp \
+    source/qt/widgets/errdialog.cpp \
     source/qt/menus/voicefx/autotunetab.cpp \
     source/qt/menus/fxmenu.cpp \
     source/qt/hud.cpp \
@@ -44,7 +46,7 @@ SOURCES += \
     source/qt/titlebar.cpp
 
 HEADERS += \
-    errdialog.h \
+    headers/errdialog.h \
     headers/autotunetab.h \
     headers/fxmenu.h \
     headers/cleanoutput.h \
@@ -126,7 +128,7 @@ HEADERS += \
 INCLUDEPATH += headers
 
 FORMS += \
-    errdialog.ui \
+    qtui/errdialog.ui \
     qtui/autotunetab.ui \
     qtui/fxmenu.ui \
     qtui/hud.ui \

@@ -36,8 +36,25 @@ void HotkeyItem::WaitForKeyboardInput(void *data)
     std::unique_lock<std::mutex> lck(*m_data->keyboardListener->mtx);
     m_data->keyboardListener->cv->wait(lck, m_data->keyboardListener->ready);
 
-    m_data->keycode = m_data->keyboardListener->rebindTo;
-    QString qKeybind = vkCodenames[m_data->keycode];
+    int newKeycode = m_data->keyboardListener->rebindTo;
+    QString qKeybind;
+
+    if (newKeycode == -1 && m_data->keycode == -1) newKeycode--;
+
+    if (newKeycode < -1)
+    {
+        while (!(m_data->audioManager->soundboardHotkeys.find(std::to_string(newKeycode)) == m_data->audioManager->soundboardHotkeys.end() &&
+                 m_data->audioManager->voiceFXHotkeys.find(std::to_string(newKeycode)) == m_data->audioManager->voiceFXHotkeys.end()))
+            newKeycode--;
+        qKeybind = "None";
+    }
+    else
+    {
+        if (newKeycode == -1) newKeycode = m_data->keycode;
+        qKeybind = vkCodenames[newKeycode];
+    }
+
+    m_data->keycode = newKeycode;
     m_data->button->setText(qKeybind);
     m_data->button->setStyleSheet("QPushButton {border-radius: 3px; background-color: #303030; color: #FFFFFF;}"
                                   "QPushButton:hover {background-color: #404040;}");

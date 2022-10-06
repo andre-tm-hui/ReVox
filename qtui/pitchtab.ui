@@ -150,6 +150,9 @@ background: rgba(0, 0, 0, 70); </string>
       <height>109</height>
      </rect>
     </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Increment the pitch of your voice in semitones&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
     <property name="styleSheet">
      <string notr="true">border: 0px;
 border-radius: 0px;</string>

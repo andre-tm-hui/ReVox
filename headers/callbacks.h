@@ -20,8 +20,13 @@ typedef struct{
 } recordData;
 
 typedef struct{
+    int timeLeft;
+    float volume;
+} soundData;
+
+typedef struct{
     //std::map<int, std::vector<SNDFILE*>> files;
-    std::map<SNDFILE*, int> timers;
+    std::map<SNDFILE*, soundData> timers;
     //std::map<SNDFILE*, int> *files;
     std::vector<SNDFILE*> *queue;
     SF_INFO info;

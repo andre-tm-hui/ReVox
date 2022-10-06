@@ -41,12 +41,10 @@ inline float allpass::process(float input)
     output = -input + bufout;
     if (isnan(output)){
         output = 0.f;
-        //fprintf(stdout, "%f %f %f output\n", input, buffer[bufidx], filterstore);
     }
     buffer[bufidx] = input + (bufout*feedback);
     if (isnan(buffer[bufidx])){
         buffer[bufidx] = 0.f;
-        //fprintf(stdout, "%f %f %f output\n", input, buffer[bufidx], filterstore);
     }
 
     if(++bufidx>=bufsize) bufidx = 0;

@@ -30,21 +30,6 @@ namespace Window
     }
 }
 
-static float linterp(float a, float b, float d)
-{
-    return a + d * (b - a);
-}
-
-static float magnitude(float a, float b)
-{
-    return sqrt(a * a + b * b);
-}
-
-static float wrap(float a)
-{
-    return fmod(a + M_PI, 2.f * M_PI) - M_PI;
-}
-
 static int argmax(float *arr, int size)
 {
     return std::distance(arr, std::max_element(arr, arr + size));

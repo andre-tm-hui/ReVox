@@ -30,6 +30,7 @@ SoundboardMenu::SoundboardMenu(json *hotkeys,
     // Setup playback buttons
     connect(ui->play, SIGNAL(clicked()), this, SLOT(playSample()));
     connect(ui->stop, SIGNAL(clicked()), this, SLOT(stopSample()));
+    connect(ui->volume, SIGNAL(valueChanged(int)), this, SLOT(volumeChanged(int)));
     // Setup hotkey settings
     connect(ui->recordMic, SIGNAL(stateChanged(int)), this, SLOT(setRecordMic()));
     connect(ui->recordSys, SIGNAL(stateChanged(int)), this, SLOT(setRecordSys()));
@@ -42,12 +43,9 @@ SoundboardMenu::SoundboardMenu(json *hotkeys,
 
     connect(ui->add, SIGNAL(clicked()), this, SLOT(addBind()));
     connect(ui->remove, SIGNAL(clicked()), this, SLOT(removeBind()));
-    //ui->add->installEventFilter(keyPressEater);
-    //ui->hotkeysLisit->installEventFilter(keyPressEater);
 
     for (auto& [keybind, settings] : (*hotkeys).items())
     {
-        QString qKeybind = vkCodenames[std::stoi(keybind)];
         addBind(std::stoi(keybind), QString::fromStdString(settings["label"].get<std::string>()));
     }
 
@@ -78,7 +76,7 @@ void SoundboardMenu::onHotkeySelect()
     HotkeyItem *item = qobject_cast<HotkeyItem *>(ui->hotkeysList->itemWidget(ui->hotkeysList->currentItem()));
     if (item->cb.keycode == currHotkey) return;
     QPropertyAnimation *a = fade(this, ui->settings, false, 200);
-    QPropertyAnimation *b = fade(this, ui->editor, false, 200);
+    fade(this, ui->editor, false, 200);
     fade(this, ui->overlayEditor, false, 200);
     fade(this, ui->overlaySettings, false, 200);
     connect(a, SIGNAL(finished()), this, SLOT(fadeInHotkey()));
@@ -103,9 +101,10 @@ void SoundboardMenu::fadeInHotkey()
     wv->SetAudioClip();
     ui->startAt->setValue((int)(ui->startAt->maximum() * (int)settings["startAt"] / (float)wv->GetLength()));
     ui->endAt->setValue(((int)settings["endAt"] == -1) ? ui->endAt->maximum() : (int)(ui->endAt->maximum() * (int)settings["endAt"] / (float)wv->GetLength()));
+    ui->volume->setValue((int)(settings["volume"].get<float>() * 100));
 
     QPropertyAnimation *a = fade(this, ui->settings, true, 200);
-    QPropertyAnimation *b = fade(this, ui->editor, true, 200);
+    fade(this, ui->editor, true, 200);
     a->start(QPropertyAnimation::DeleteWhenStopped);
 }
 
@@ -158,7 +157,7 @@ void SoundboardMenu::setOverlap()
 
 void SoundboardMenu::loadClip()
 {
-    QString fname = QFileDialog::getOpenFileName(this, tr("Choose Soundbyte"), "/", tr("MPEG (*.mp3)"));
+    QString fname = QFileDialog::getOpenFileName(this, tr("Choose Soundbyte"), "/", tr("Audio Files (*.mp3 *.wav)"));
     if (std::filesystem::exists(fname.toStdString()))
     {
         am->OverrideSound(fname.toStdString(), currHotkey);
@@ -209,8 +208,14 @@ void SoundboardMenu::stopSample()
     am->player->StopAll();
 }
 
+void SoundboardMenu::volumeChanged(int value)
+{
+    am->soundboardHotkeys[std::to_string(currHotkey)]["volume"] = value / 100.f;
+    am->SaveBinds();
+}
+
 void SoundboardMenu::onSliderChanged(int value)
 {
     am->SetSampleMonitor(value);
-    ui->grooveOff->resize(ui->grooveOff->width(), 343 - 343 * value / 100);
+    ui->grooveOff->resize(ui->grooveOff->width(), 343 - 343 * value / ui->slider->maximum());
 }

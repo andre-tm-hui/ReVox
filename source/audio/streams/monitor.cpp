@@ -95,9 +95,8 @@ void Monitor::Merge()
     // load both recorded files, add them together and output to a new file
     SNDFILE *fileA, *fileB, *fileOut;
     float bufferA[1024], bufferB[1024], bufferOut[1024];
-    SF_INFO infoA = data.rData->info, infoB = data.rData->info, outfo = data.rData->info;
+    SF_INFO infoA = data.rData->info, infoB = data.rData->info;
     infoA.format = 0;
-    outfo.channels = 2;
 
     fileA = sf_open((dir + "samples/" + std::to_string(keycode) + "m.mp3").c_str(),
                     SFM_READ,

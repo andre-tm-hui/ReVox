@@ -34,8 +34,8 @@ public:
 
         this->icon = new QWidget(this);
         this->icon->setStyleSheet("QWidget {image: url(:/icons/edit.png); background: transparent;}");
-        this->icon->setFixedSize(QSize(24, 24));
-        this->icon->move(QPoint(6, 6));
+        this->icon->setFixedSize(QSize(16, 16));
+        this->icon->move(QPoint(10, 10));
 
         this->hotkey = new QPushButton(this);
         this->cb.button = this->hotkey;
@@ -56,9 +56,13 @@ public:
                                     "QPushButton:hover {background-color: #404040;}");
         connect(this->hotkey, SIGNAL(clicked()), this, SLOT(rebind()));
 
-        if (keycode < 0)
+        if (keycode == -1)
         {
             rebind();
+        }
+        else if (keycode < 0)
+        {
+            this->hotkey->setText("None");
         }
         else
         {

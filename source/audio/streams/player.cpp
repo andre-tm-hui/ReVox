@@ -55,11 +55,13 @@ void Player::Play(int keycode, json settings)
         return;
     }
 
+    // add a new list if the hotkey hasn't been played yet
     if (files.find(keycode) == files.end())
     {
         files[keycode] = {};
     }
 
+    // check if the hotkey limit is reached
     if (files[keycode].size() >= settings["maxCopies"])
     {
         // Cleanup first item of data.files[keycode]
@@ -67,7 +69,7 @@ void Player::Play(int keycode, json settings)
         files[keycode].pop();
         if (data.timers.contains(clear))
         {
-            data.timers[clear] = -1;
+            data.timers[clear].timeLeft = -1;
         }
     }
 
@@ -81,7 +83,8 @@ void Player::Play(int keycode, json settings)
     }
     delete[] temp;
     files[keycode].push(file);
-    data.timers[file] = settings["endAt"].get<int>() - settings["startAt"].get<int>();
+    data.timers[file].timeLeft = settings["endAt"].get<int>() - settings["startAt"].get<int>();
+    data.timers[file].volume = settings["volume"];
 }
 
 /* Utility function to check if a file corresponding to the keycode exists */
