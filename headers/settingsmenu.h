@@ -10,6 +10,8 @@
 #include <Windows.h>
 #include <shlobj.h>
 
+#include <cupdaterdialog.h>
+
 namespace Ui {
 class SettingsMenu;
 }
@@ -28,6 +30,7 @@ private slots:
     void deviceChanged(int value);
     void hudPositionChanged(int item);
     void toggleAutostart(int state);
+    void checkForUpdates();
 
 private:
     void populateDevices();

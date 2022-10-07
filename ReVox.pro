@@ -177,3 +177,9 @@ DEPENDPATH += $$PWD/'../../C++ Libraries/libsamplerate-0.2.2-win64/bin'
 
 
 LIBS += -lole32
+
+win32: LIBS += -L$$PWD/../bin/release/x64/ -lautoupdater
+
+INCLUDEPATH += $$PWD/../github-releases-autoupdater/src \
+               $$PWD/../github-releases-autoupdater/src/updaterUI
+DEPENDPATH += $$PWD/../build/release/x64/autoupdater

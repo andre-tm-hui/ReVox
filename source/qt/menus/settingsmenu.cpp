@@ -47,6 +47,11 @@ SettingsMenu::SettingsMenu(AudioManager *am, HUD *hud, QWidget *parent) :
     _switch->setText("");
     _switch->setChecked(am->settings["startWithWindows"]);
     connect(_switch, SIGNAL(stateChanged(int)), this, SLOT(toggleAutostart(int)));
+
+    //updater = new CAutoUpdaterGithub("https://github.com/andre-tm-hui/ReVox", "1.0.0");
+    //updater->setUpdateStatusListener(this);
+
+    connect(ui->update, SIGNAL(pressed()), this, SLOT(checkForUpdates()));
 }
 
 SettingsMenu::~SettingsMenu()
@@ -158,4 +163,9 @@ void SettingsMenu::toggleAutostart(int state)
         am->settings["startWithWindows"] = true;
     }
     am->SaveSettings();
+}
+
+void SettingsMenu::checkForUpdates()
+{
+    CUpdaterDialog *updater = new CUpdaterDialog(nullptr, "https://github.com/andre-tm-hui/ReVox", "1.0.0");
 }
