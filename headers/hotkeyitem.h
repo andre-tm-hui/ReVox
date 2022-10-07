@@ -17,13 +17,22 @@ typedef struct {
     int keycode;
     bool isSoundboard;
     QWidget *hotkeyItem;
+    QWidget *addButton;
+    QWidget *mainWindow;
 } cbData;
 
 class HotkeyItem : public QWidget
 {
     Q_OBJECT;
 public:
-    inline HotkeyItem(bool isSoundboard, QString label, int width, int keycode, AudioManager *audioManager, KeyboardListener *keyboardListener) : QWidget()
+    inline HotkeyItem(bool isSoundboard,
+                      QString label,
+                      int width,
+                      int keycode,
+                      AudioManager *audioManager,
+                      KeyboardListener *keyboardListener,
+                      QWidget *addButton,
+                      QWidget *mainWindow) : QWidget()
     {
         this->cb.isSoundboard = isSoundboard;
 
@@ -31,6 +40,8 @@ public:
         this->cb.audioManager = audioManager;
         this->cb.keyboardListener = keyboardListener;
         this->cb.hotkeyItem = this;
+        this->cb.addButton = addButton;
+        this->cb.mainWindow = mainWindow;
 
         this->icon = new QWidget(this);
         this->icon->setStyleSheet("QWidget {image: url(:/icons/edit.png); background: transparent;}");

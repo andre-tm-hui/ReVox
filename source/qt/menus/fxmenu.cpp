@@ -26,7 +26,7 @@ FXMenu::FXMenu(json *hotkeys,
     connect(ui->slider, SIGNAL(valueChanged(int)), this, SLOT(onSliderChanged(int)));
     ui->slider->setValue(am->settings["monitorMic"]);
 
-    connect(ui->add, SIGNAL(clicked()), this, SLOT(addBind()));
+    connect(ui->add, SIGNAL(clicked()), this, SLOT(addBindSlot()));
     connect(ui->remove, SIGNAL(clicked()), this, SLOT(removeBind()));
 
     for (auto& [keybind, settings] : (*hotkeys).items())
@@ -104,6 +104,13 @@ void FXMenu::onHotkeySelect()
     ui->remove->setEnabled(true);
 }
 
+void FXMenu::addBindSlot()
+{
+    ui->add->setEnabled(false);
+    this->parentWidget()->setEnabled(false);
+    addBind();
+}
+
 void FXMenu::addBind(int keybind, QString label)
 {
     HotkeyItem *item = new HotkeyItem(false,
@@ -111,7 +118,9 @@ void FXMenu::addBind(int keybind, QString label)
                                       ui->hotkeysList->width(),
                                       keybind,
                                       am,
-                                      kl);
+                                      kl,
+                                      ui->add,
+                                      this->parentWidget());
     QListWidgetItem *orig = new QListWidgetItem();
     orig->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable);
     ui->hotkeysList->addItem(orig);

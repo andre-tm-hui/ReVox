@@ -183,6 +183,11 @@ QListWidget::item:hover {
 	border-radius: 10px;
 }
 
+QListWidget::item:disabled {
+	background-color: transparent;
+	border-radius: 10px;
+}
+
 QListWidget::item:selected {
 	background-color: #006060;
 	border-radius: 10px;
@@ -611,6 +616,9 @@ QToolButton:pressed { background-color: #303030; }</string>
       <width>141</width>
       <height>21</height>
      </rect>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Clip Volume&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
     <property name="styleSheet">
      <string notr="true">QSlider::handle:horizontal {

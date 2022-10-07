@@ -177,6 +177,11 @@ QListWidget::item:hover {
 	border-radius: 10px;
 }
 
+QListWidget::item:disabled {
+	background-color: transparent;
+	border-radius: 10px;
+}
+
 QListWidget::item:selected {
 	background-color: #006060;
 	border-radius: 10px;

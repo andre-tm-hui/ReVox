@@ -5,7 +5,7 @@ void HotkeyItem::rebind()
     cb.audioManager->Rebind(cb.keycode);
     cb.keyboardListener->rebinding = true;
 
-    hotkey->setText("Listening...");
+    hotkey->setText("*Select a Key*");
     this->hotkey->setStyleSheet("QPushButton {border-radius: 3px; background-color: #303030; color: #AA0000;}"
                                 "QPushButton:hover {background-color: #404040;}");
     hotkey->blockSignals(true);
@@ -62,6 +62,9 @@ void HotkeyItem::WaitForKeyboardInput(void *data)
     m_data->hotkeyItem->setEnabled(true);
 
     m_data->audioManager->SetNewBind(m_data->keycode, m_data->isSoundboard);
+
+    m_data->addButton->setEnabled(true);
+    m_data->mainWindow->setEnabled(true);
 }
 
 QString HotkeyItem::GetKeyName(int keybind)

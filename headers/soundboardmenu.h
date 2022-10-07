@@ -33,7 +33,7 @@ public:
 private slots:
     void onHotkeySelect();
     void fadeInHotkey();
-    void addBind(int keybind = -1, QString label = "");
+    void addBindSlot();
     void removeBind();
 
     void setRecordMic();
@@ -50,6 +50,8 @@ private slots:
     void onSliderChanged(int value);
 
 private:
+    void addBind(int keybind = -1, QString label = "");
+
     Ui::SoundboardMenu *ui;
     json *hotkeys;
     AudioManager *am;
