@@ -71,9 +71,9 @@ background: transparent;
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>-62</y>
+      <y>-123</y>
       <width>877</width>
-      <height>634</height>
+      <height>674</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -545,7 +545,7 @@ color: #B0B0B0;
        <property name="minimumSize">
         <size>
          <width>0</width>
-         <height>61</height>
+         <height>101</height>
         </size>
        </property>
        <property name="styleSheet">
@@ -570,7 +570,7 @@ color: #B0B0B0;
          </font>
         </property>
         <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;Reset the ReVox audio. Use this to troubleshoot audio issues&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="styleSheet">
          <string notr="true"/>
@@ -611,6 +611,31 @@ color: #F0F0F0;
         </property>
         <property name="text">
          <string>CHECK</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_14">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>55</y>
+          <width>291</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Cascadia Code</family>
+          <pointsize>9</pointsize>
+         </font>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: #606060;</string>
+        </property>
+        <property name="text">
+         <string>Automatically Check at Startup</string>
         </property>
        </widget>
       </widget>

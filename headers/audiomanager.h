@@ -11,6 +11,10 @@
 #include <samplerate.h>
 #include <waveformviewer.h>
 
+#ifndef VER_NO
+#define VER_NO "1.0.0"
+#endif
+
 using namespace nlohmann;
 
 typedef struct{
@@ -81,7 +85,8 @@ public:
             "hudPosition": 2,
             "monitorMic": 0,
             "monitorSamples": 0,
-            "startWithWindows": false
+            "startWithWindows": false,
+            "autocheckUpdates": false
         }
         )"_json;
 

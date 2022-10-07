@@ -41,17 +41,26 @@ SettingsMenu::SettingsMenu(AudioManager *am, HUD *hud, QWidget *parent) :
 
     connect(ui->reset, SIGNAL(pressed()), this->parent(), SLOT(resetAudio()));
 
-    _switch = new Switch(ui->autostartBox);
-    _switch->move(635, 12);
-    _switch->resize(61, 36);
-    _switch->setText("");
-    _switch->setChecked(am->settings["startWithWindows"]);
-    connect(_switch, SIGNAL(stateChanged(int)), this, SLOT(toggleAutostart(int)));
-
-    //updater = new CAutoUpdaterGithub("https://github.com/andre-tm-hui/ReVox", "1.0.0");
-    //updater->setUpdateStatusListener(this);
+    autostartSwitch = new Switch(ui->autostartBox);
+    autostartSwitch->move(635, 12);
+    autostartSwitch->resize(61, 36);
+    autostartSwitch->setText("");
+    autostartSwitch->setChecked(am->settings["startWithWindows"]);
+    connect(autostartSwitch, SIGNAL(stateChanged(int)), this, SLOT(toggleAutostart(int)));
 
     connect(ui->update, SIGNAL(pressed()), this, SLOT(checkForUpdates()));
+
+    autocheckSwitch = new Switch(ui->updateBox);
+    autocheckSwitch->move(635, 47);
+    autocheckSwitch->resize(61, 36);
+    autocheckSwitch->setText("");
+    autocheckSwitch->setChecked(am->settings["autocheckUpdates"]);
+    connect(autocheckSwitch, SIGNAL(stateChanged(int)), this, SLOT(toggleAutocheck(int)));
+    if (am->settings["autocheckUpdates"])
+    {
+        CUpdaterDialog *updater = new CUpdaterDialog((QWidget*)this->parent(), "https://github.com/andre-tm-hui/ReVox", VER_NO, true);
+        updater->setStyleSheet("QTextEdit {border: 1px solid #009090;}");
+    }
 }
 
 SettingsMenu::~SettingsMenu()
@@ -153,7 +162,7 @@ void SettingsMenu::toggleAutostart(int state)
             hres = psl->QueryInterface(IID_PPV_ARGS(&ppf));
             if (SUCCEEDED(hres))
             {
-                hres = ppf->Save(startup, TRUE);
+                ppf->Save(startup, TRUE);
                 ppf->Release();
             }
 
@@ -167,5 +176,12 @@ void SettingsMenu::toggleAutostart(int state)
 
 void SettingsMenu::checkForUpdates()
 {
-    CUpdaterDialog *updater = new CUpdaterDialog(nullptr, "https://github.com/andre-tm-hui/ReVox", "1.0.0");
+    CUpdaterDialog *updater = new CUpdaterDialog((QWidget*)this->parent(), "https://github.com/andre-tm-hui/ReVox", VER_NO);
+    updater->setStyleSheet("QTextEdit {border: 1px solid #009090;}");
+}
+
+void SettingsMenu::toggleAutocheck(int state)
+{
+    am->settings["autocheckUpdates"] = state == (int)Qt::CheckState::Unchecked ? false : true;
+    am->SaveSettings();
 }

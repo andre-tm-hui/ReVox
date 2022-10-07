@@ -40,7 +40,8 @@
   <property name="styleSheet">
    <string notr="true">background-color: #202020;
 color: #DDDDDD;
-font-family: &quot;Cascadia Code&quot;;</string>
+font-family: &quot;Cascadia Code&quot;;
+</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QGroupBox" name="sidebar">

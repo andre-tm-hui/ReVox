@@ -30,6 +30,7 @@ private slots:
     void deviceChanged(int value);
     void hudPositionChanged(int item);
     void toggleAutostart(int state);
+    void toggleAutocheck(int state);
     void checkForUpdates();
 
 private:
@@ -42,7 +43,7 @@ private:
     std::map<std::string, device> devices;
     int currentDevice = 0;
 
-    Switch *_switch;
+    Switch *autostartSwitch, *autocheckSwitch;
 
     std::vector<QString> positionLabels = {"Top Left", "Top", "Top Right", "Left", "Right", "Bottom Left", "Bottom", "Bottom Right", "Off"};
     std::vector<QCheckBox*> positionsCheckboxes = {};
