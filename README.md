@@ -39,7 +39,7 @@ A Virtual Soundboard, Sampler and Voice Changer packaged into a single program. 
   - [GitHub Releases Autoupdater](https://github.com/VioletGiraffe/github-releases-autoupdater)
 ### Instructions:
 1. Clone the repo
-2. In ReVox.pro, relink the PortAudio, Libsndfile, Libsamplerate and FFTW libraries to your local versions
+2. In ReVox.pro, relink the above libraries to your local libraries/binaries
 3. Build using MinGW
 
 ## Credits
