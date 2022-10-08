@@ -611,9 +611,9 @@ QToolButton:pressed { background-color: #303030; }</string>
    <widget class="QSlider" name="volume">
     <property name="geometry">
      <rect>
-      <x>389</x>
+      <x>369</x>
       <y>126</y>
-      <width>141</width>
+      <width>191</width>
       <height>21</height>
      </rect>
     </property>
@@ -636,19 +636,21 @@ QSlider::sub-page:horizontal {
 background: #00CCCC;
 border-radius: 3px;
 margin: 6px;
+margin-left: 30px;
 }
 
 QSlider::add-page:horizontal {
 background: #303030;
 border-radius: 3px;
 margin: 6px;
+margin-right: 30px;
 }</string>
     </property>
     <property name="maximum">
      <number>150</number>
     </property>
     <property name="value">
-     <number>100</number>
+     <number>150</number>
     </property>
     <property name="orientation">
      <enum>Qt::Horizontal</enum>

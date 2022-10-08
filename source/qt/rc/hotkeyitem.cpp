@@ -5,7 +5,7 @@ void HotkeyItem::rebind()
     cb.audioManager->Rebind(cb.keycode);
     cb.keyboardListener->rebinding = true;
 
-    hotkey->setText("*Select a Key*");
+    hotkey->setText("Press a Key");
     this->hotkey->setStyleSheet("QPushButton {border-radius: 3px; background-color: #303030; color: #AA0000;}"
                                 "QPushButton:hover {background-color: #404040;}");
     hotkey->blockSignals(true);
@@ -18,9 +18,9 @@ void HotkeyItem::rebind()
 void HotkeyItem::labelChanged()
 {
     int pos = this->label->cursorPosition();
-    if (this->label->text().length() > 18)
+    if (this->label->text().length() > 30)
     {
-        this->label->setText(this->label->text().left(18));
+        this->label->setText(this->label->text().left(30));
         this->label->setAlignment(Qt::AlignVCenter);
     }
     this->label->setCursorPosition(pos);
