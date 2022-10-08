@@ -52,6 +52,7 @@ Uses the following:
   - nlohmann's json library for saving user configs in human-readable formats
   - Freeverb, written by Jezar, for a solid open-source reverb algorithm
   - GitHub Releases Autoupdater for scraping new updates from GitHub
+  - [SingleApplication](https://github.com/itay-grudev/SingleApplication) to prevent users from having more than one instance of ReVox running simultaneously
   
 ### Licensing
 Licensed under LGPLv3 Open-Source License
