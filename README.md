@@ -55,4 +55,4 @@ Uses the following:
   - [SingleApplication](https://github.com/itay-grudev/SingleApplication) to prevent users from having more than one instance of ReVox running simultaneously
   
 ### Licensing
-Licensed under LGPLv3 Open-Source License
+Licensed under GPLv3 Open-Source License
