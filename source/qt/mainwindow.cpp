@@ -55,7 +55,8 @@ MainWindow::MainWindow(QWidget *parent)
     trayIcon->setContextMenu(trayIconMenu);
     trayIcon->setIcon(QIcon(":/icons/icon.png"));
 
-    this->hide();
+    if (audioManager->settings["startWithWindows"])
+        this->hide();
     trayIcon->show();
 
     this->setWindowIcon(QIcon(":/icons/icon.png"));
