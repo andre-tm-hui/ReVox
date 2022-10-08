@@ -73,3 +73,5 @@ Thumbs.db
 
 build/
 *.xcf
+.vs/
+nlohmann/

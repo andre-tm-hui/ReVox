@@ -1,7 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>icons/settings.png</file>
-        <file>icons/FXOff.png</file>
-        <file>icons/FXOn.png</file>
-    </qresource>
-</RCC>
