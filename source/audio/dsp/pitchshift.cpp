@@ -100,35 +100,28 @@ void PitchShift::repitch(float *buf)
         marker = pos - period/4 + argmax(inputs + pos - (int)period/4, (int)period/2);
         markers.push_back(marker - bufSize);
         pos = marker + period;
-        //fprintf(stdout, "%f,", marker - bufSize); fflush(stdout);
     }
-    //fprintf(stdout, "\n%d markers found\n", markers.size()); fflush(stdout);
 
     // Get windows
     std::vector<std::vector<float>> windows = getWindows(inputs + bufSize, period, markers, scale);
-    //fprintf(stdout, "windows generated\n"); fflush(stdout);
 
     // Get synthesized markers
     int idx = 0;
     float marker_s = markers[0];
 
-    //fprintf(stdout, "%f\n", marker_s); fflush(stdout);
     if (setupFlag && lastMarker < bufSize)
     {
-        //fprintf(stdout, "test %f\n", marker_s); fflush(stdout);
         marker_s = (1.f - ((bufSize - lastMarker) / (prevPeriod * prevFactor))) * period * scale;
     }
-    //fprintf(stdout, "%f\n", factor); fflush(stdout);
+
     std::vector<float> markers_s{};
     while (marker_s < bufSize)
     {
         markers_s.push_back(marker_s);
-        //fprintf(stdout, "%f,", marker_s); fflush(stdout);
         float offset = (markers[(int)fmod((idx + 1), markers.size())] - markers[idx]) * scale;
         marker_s += offset > 0 ? offset : period * scale;
         idx++;
     }
-    //fprintf(stdout, "new markers synthesized\n"); fflush(stdout);
 
     if (markers_s.empty())
     {
@@ -142,7 +135,6 @@ void PitchShift::repitch(float *buf)
     // Overlap add the windows to the output buffer at the synthesized markers
     for (auto marker_s : markers_s)
     {
-        //fprintf(stdout, "%f,", marker_s); fflush(stdout);
         // Get closest marker
         int closestIdx = -1;
         float distance = INFINITY;
@@ -220,19 +212,24 @@ void PitchShift::add(float *buf)
 
 std::vector<float> PitchShift::resample(std::vector<float> input, float scale)
 {
-    std::vector<float> out = {};
+    int err;
 
-    int outputSize = ceil((float)input.size() * scale);
+    SRC_STATE *src = src_new(SRC_LINEAR, 1, &err);
+    SRC_DATA *dat = new SRC_DATA();
+    int outputFrames = (int)(scale * input.size());
 
-    // basic linear resampling -> the human voice should not reach close to the nyquist frequency of common sample rates
-    // hence there's no reason to use more costly but accurate resampling methods
+    float *out = new float[outputFrames];
+    dat->data_in = &input[0];
+    dat->data_out = out;
+    dat->input_frames = input.size();
+    dat->output_frames = outputFrames;
+    dat->src_ratio = scale;
 
-    for (int i = 0; i < outputSize; i++)
-    {
-        float idx = (float)((int)input.size()-1) * (float)i / (float)(outputSize-1); // -1 to make sure the last of both arrays match
+    src_process(src, dat);
 
-        out.push_back(std::lerp(input[floor(idx)], input[ceil(idx)], idx - floor(idx)));
-    }
-
-    return out;
+    std::vector<float> v(out, out + outputFrames);
+    src_delete(src);
+    delete[] out;
+    delete dat;
+    return v;
 }

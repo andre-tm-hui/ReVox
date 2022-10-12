@@ -99,10 +99,6 @@ MainWindow::MainWindow(QWidget *parent)
     mapper_menu.setMapping(ui->settingsButton, -1);
     settingsMenu->SetDevices(audioManager->outputDevices, audioManager->GetCurrentOutputDevice());
 
-    alive = true;
-    t = std::thread(CheckForFXUpdates, &fxHotkey, fxMenu);
-    t.detach();
-
     audioManager->fxHotkey = &fxHotkey;
     audioManager->SetWaveform(soundboardMenu->GetWaveform());
 
@@ -114,8 +110,6 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-    alive = false;
-    t.join();
     delete ui;
 }
 
@@ -123,7 +117,6 @@ KeyboardListener* MainWindow::keyboardListener = new KeyboardListener();
 AudioManager* KeyboardListener::audioManager = new AudioManager();
 AudioManager* MainWindow::audioManager = KeyboardListener::audioManager;
 std::map<QString, int> MainWindow::keycodeMap = {};
-std::atomic<bool> MainWindow::alive = true;
 
 bool MainWindow::event(QEvent *event)
 {
@@ -134,7 +127,7 @@ bool MainWindow::event(QEvent *event)
         {
             this->hide();
             event->ignore();
-            audioManager->passthrough->SetFX(audioManager->GetFXOff());
+            //audioManager->passthrough->SetFX(audioManager->GetFXOff());
             fxMenu->DisableTabWidget();
             soundboardMenu->DisableSettings();
         }
@@ -142,7 +135,7 @@ bool MainWindow::event(QEvent *event)
     case QEvent::Close:
         this->hide();
         event->ignore();
-        audioManager->passthrough->SetFX(audioManager->GetFXOff());
+        //audioManager->passthrough->SetFX(audioManager->GetFXOff());
         fxMenu->DisableTabWidget();
         soundboardMenu->DisableSettings();
         break;
@@ -156,7 +149,7 @@ void MainWindow::close()
 {
     this->hide();
     //event->ignore();
-    audioManager->passthrough->SetFX(audioManager->GetFXOff());
+    //audioManager->passthrough->SetFX(audioManager->GetFXOff());
     fxMenu->DisableTabWidget();
     soundboardMenu->DisableSettings();
 }
@@ -165,6 +158,7 @@ void MainWindow::setVisible(bool visible)
 {
     restoreAction->setEnabled(!visible);
     QMainWindow::setVisible(visible);
+    if (setup) fxMenu->OnHotkeyToggle(fxHotkey);
 }
 
 void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
@@ -244,22 +238,6 @@ void MainWindow::fadeInMenu()
 void MainWindow::resetAudio()
 {
     audioManager->Reset();
-}
-
-
-void MainWindow::CheckForFXUpdates(int *hotkey, FXMenu *fxMenu)
-{
-    int prevHotkey = *hotkey;
-
-    while (alive)
-    {
-        if (*hotkey != prevHotkey)
-        {
-            fxMenu->OnHotkeyToggle(*hotkey);
-        }
-        prevHotkey = *hotkey;
-        std::this_thread::sleep_for(std::chrono::milliseconds(300));
-    }
 }
 
 void MainWindow::moveWindow(QMouseEvent *event, int x, int y)

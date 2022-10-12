@@ -32,6 +32,8 @@ private slots:
     void setScale(int opt);
 
 private:
+    void setFields(bool animate = true);
+
     Ui::AutotuneTab *ui;
 
     json *values = nullptr;

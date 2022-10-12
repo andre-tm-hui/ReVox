@@ -30,6 +30,7 @@ AudioManager::AudioManager()
 
             std::ifstream voiceFXBindsFile(appdata + dirName + "voicefx.json");
             if (!voiceFXBindsFile.fail()) voiceFXBindsFile >> voiceFXHotkeys;
+            std::cout<<"loaded"<<std::endl;
         }
     }
 
@@ -287,6 +288,12 @@ void AudioManager::Rebind(int keycode)
 
 void AudioManager::SetNewBind(int keycode, bool isSoundboard)
 {
+    if (rebindAt == keycode)
+    {
+        rebindAt = -1;
+        return;
+    }
+
     json *obj, entry;
     if (isSoundboard)
     {

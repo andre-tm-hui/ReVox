@@ -22,10 +22,10 @@ LRESULT CALLBACK KeyboardListener::KeyboardEvent(int nCode, WPARAM wParam, LPARA
             {
                 switch (p->vkCode)
                 {
-                case 8: // backspace
+                case 8: // backspace to clear
                     rebindTo = -2;
                     break;
-                case 27: // escape
+                case 27: // escape to cancel
                     rebindTo = -1;
                     break;
                 default:

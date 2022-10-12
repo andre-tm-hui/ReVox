@@ -53,15 +53,18 @@ AutotuneTab::~AutotuneTab()
 
 void AutotuneTab::SetValues(json *values, bool animate)
 {
-    if (values != nullptr)
-    {
-        this->values = values;
-        ui->toggle->setCheckState((*this->values)["enabled"] ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
-        return;
-    }
+    this->values = values;
+    this->blockSignals(true);
+    ui->toggle->setCheckState((*values)["enabled"] ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
+    this->blockSignals(false);
 
     if (*this->values == nullptr) return;
 
+    setFields(animate);
+}
+
+void AutotuneTab::setFields(bool animate)
+{
     if ((*this->values)["enabled"])
     {
         ui->settings->setEnabled(true);
@@ -108,7 +111,7 @@ void AutotuneTab::toggle(int state)
         tabWidget->setTabIcon(1, QIcon(":/icons/FXOff.png"));
         am->passthrough->data.pitchShift->setAutotune(false);
         if (this->values != nullptr) (*this->values)["enabled"] = false;
-        SetValues(nullptr, true);
+        setFields();
         ui->overlay->show();
     }
     else
@@ -116,7 +119,7 @@ void AutotuneTab::toggle(int state)
         tabWidget->setTabIcon(1, QIcon(":/icons/FXOn.png"));
         am->passthrough->data.pitchShift->setAutotune(true);
         if (this->values != nullptr) (*this->values)["enabled"] = true;
-        SetValues(nullptr, true);
+        setFields();
         ui->overlay->hide();
     }
     am->SaveBinds();

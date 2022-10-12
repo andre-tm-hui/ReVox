@@ -29,6 +29,7 @@ private slots:
     void updateOffset(int value);
 
 private:
+    void setFields(bool animate = true);
     Ui::PitchTab *ui;
     AudioManager *am;
     QTabWidget *tabWidget;

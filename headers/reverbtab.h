@@ -38,6 +38,7 @@ private slots:
     void updateDamp(int value);
 
 private:
+    void setFields(bool animate = true);
     Ui::ReverbTab *ui;
     AudioManager *am;
     QTabWidget *tabWidget;

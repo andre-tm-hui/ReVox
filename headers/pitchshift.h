@@ -7,6 +7,7 @@
 #include <math.h>
 #include <frequency.h>
 #include <windowfunctions.h>
+#include <samplerate.h>
 
 class PitchShift
 {

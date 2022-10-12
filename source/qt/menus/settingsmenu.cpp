@@ -135,7 +135,7 @@ void SettingsMenu::hudPositionChanged(int item)
 
 void SettingsMenu::toggleAutostart(int state)
 {
-    std::string path = std::getenv("APPDATA") + std::string("/Microsoft/Windows/Start Menu/Programs/Startup/vsns.lnk");
+    std::string path = std::getenv("APPDATA") + std::string("/Microsoft/Windows/Start Menu/Programs/Startup/ReVox.lnk");
 
     if (state == (int)Qt::CheckState::Unchecked)
     {

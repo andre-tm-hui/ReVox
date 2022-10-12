@@ -41,7 +41,6 @@ public:
 
     static AudioManager* audioManager;
     static KeyboardListener* keyboardListener;
-    static std::atomic<bool> alive;
 
     void setVisible(bool visible) override;
     std::map<std::string, QCheckBox*> checkboxes = {};
@@ -72,10 +71,6 @@ private:
     QListWidget *keybinds;
     bool setup = false;
     bool dragging = false;
-
-    static void WaitForKeyboardInput(QListWidgetItem* item);
-    static void CheckForFXUpdates(int *hotkey, FXMenu *fxMenu);
-    std::thread t;
 
     QAction *minimizeAction;
     QAction *maximizeAction;

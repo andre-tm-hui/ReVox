@@ -70,21 +70,26 @@ void FXMenu::DisableTabWidget()
 
 void FXMenu::OnHotkeyToggle(int keycode, bool clear)
 {
+    if (hotkeys->find(std::to_string(keycode)) == hotkeys->end()) return;
     currHotkey = keycode;
     for (int i = 0; i < ui->tabWidget->count(); i++)
     {
         ui->tabWidget->widget(i)->setEnabled(!clear);
     }
     json *settings = &(*hotkeys)[std::to_string(currHotkey)];
+    am->passthrough->SetFX(*settings);
 
     reverbTab->SetValues(&(*settings)["reverb"],
                          ui->tabWidget->currentIndex() == 0 ? true : false);
 
+
     autotuneTab->SetValues(&(*settings)["autotune"],
                            ui->tabWidget->currentIndex() == 1 ? true : false);
 
+
     pitchTab->SetValues(&(*settings)["pitch"],
                         ui->tabWidget->currentIndex() == 2 ? true : false);
+
 
     if (clear)
     {

@@ -50,8 +50,13 @@ void HotkeyItem::WaitForKeyboardInput(void *data)
     }
     else
     {
-        if (newKeycode == -1) newKeycode = m_data->keycode;
-        qKeybind = vkCodenames[newKeycode];
+        if (newKeycode == -1)
+            newKeycode = m_data->keycode;
+
+        if (newKeycode >= 0)
+            qKeybind = vkCodenames[newKeycode];
+        else
+            qKeybind = "None";
     }
 
     m_data->keycode = newKeycode;

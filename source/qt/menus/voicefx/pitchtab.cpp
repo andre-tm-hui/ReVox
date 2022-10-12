@@ -28,14 +28,18 @@ PitchTab::~PitchTab()
 
 void PitchTab::SetValues(json *values, bool animate)
 {
-    if (values != nullptr)
-    {
-        this->values = values;
-        ui->toggle->setCheckState((*values)["enabled"] ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
-    }
+    this->values = values;
+    this->blockSignals(true);
+    ui->toggle->setCheckState((*values)["enabled"] ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
+    this->blockSignals(false);
 
     if (*this->values == nullptr) return;
 
+    setFields(animate);
+}
+
+void PitchTab::setFields(bool animate)
+{
     int val = 12;
     bool enabled = false;
     if ((*this->values)["enabled"])
@@ -53,6 +57,8 @@ void PitchTab::SetValues(json *values, bool animate)
         dial->setValue(val);
     }
 
+    am->passthrough->data.pitchShift->setPitchscale((*this->values)["pitch"].get<float>());
+
     ui->settings->setEnabled(enabled);
 }
 
@@ -63,7 +69,7 @@ void PitchTab::toggle(int state)
         tabWidget->setTabIcon(2, QIcon(":/icons/FXOff.png"));
         am->passthrough->data.pitchShift->setPitchshift(false);
         if (this->values != nullptr) (*this->values)["enabled"] = false;
-        SetValues(nullptr, true);
+        setFields();
         ui->overlay->show();
     }
     else
@@ -71,7 +77,7 @@ void PitchTab::toggle(int state)
         tabWidget->setTabIcon(2, QIcon(":/icons/FXOn.png"));
         am->passthrough->data.pitchShift->setPitchshift(true);
         if (this->values != nullptr) (*this->values)["enabled"] = true;
-        SetValues(nullptr, true);
+        setFields();
         ui->overlay->hide();
     }
     am->SaveBinds();

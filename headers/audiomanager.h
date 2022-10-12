@@ -12,7 +12,7 @@
 #include <waveformviewer.h>
 
 #ifndef VER_NO
-#define VER_NO "1.0.0"
+#define VER_NO "1.0.0-beta"
 #endif
 
 using namespace nlohmann;

@@ -44,14 +44,16 @@ ReverbTab::~ReverbTab()
 
 void ReverbTab::SetValues(json *values, bool animate)
 {
-    if (values != nullptr)
-    {
-        this->values = values;
-        ui->toggle->setCheckState((*this->values)["enabled"] ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
-    }
+    this->values = values;
+    this->blockSignals(true);
+    ui->toggle->setCheckState((*values)["enabled"] ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
+    this->blockSignals(false);
 
     if (*this->values == nullptr) return;
+}
 
+void ReverbTab::setFields(bool animate)
+{
     if ((*this->values)["enabled"])
     {
         if (animate)
@@ -99,7 +101,7 @@ void ReverbTab::toggle(int state)
         tabWidget->setTabIcon(0, QIcon(":/icons/FXOff.png"));
         am->passthrough->data.reverb->setEnabled(false);
         if (this->values != nullptr) (*this->values)["enabled"] = false;
-        SetValues(nullptr, true);
+        setFields();
         ui->overlay->show();
     }
     else
@@ -107,7 +109,7 @@ void ReverbTab::toggle(int state)
         tabWidget->setTabIcon(0, QIcon(":/icons/FXOn.png"));
         am->passthrough->data.reverb->setEnabled(true);
         if (this->values != nullptr) (*this->values)["enabled"] = true;
-        SetValues(nullptr, true);
+        setFields();
         ui->overlay->hide();
     }
     am->SaveBinds();
