@@ -1,5 +1,5 @@
 # ReVox
-<p align="center"><image src="https://github.com/onglez/ReVox/blob/master/images/intro.gif" width="60%"></image></p>
+<p align="center"><image src="https://github.com/andre-tm-hui/ReVox/blob/master/images/intro.gif" width="60%"></image></p>
 
 A Virtual Soundboard, Sampler and Voice Changer packaged into a single program. Get creative in your voice chats/streams.
 
