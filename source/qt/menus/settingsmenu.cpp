@@ -58,7 +58,7 @@ SettingsMenu::SettingsMenu(AudioManager *am, HUD *hud, QWidget *parent) :
     connect(autocheckSwitch, SIGNAL(stateChanged(int)), this, SLOT(toggleAutocheck(int)));
     if (am->settings["autocheckUpdates"])
     {
-        CUpdaterDialog *updater = new CUpdaterDialog((QWidget*)this->parent(), "https://github.com/onglez/ReVox", VER_NO, true);
+        CUpdaterDialog *updater = new CUpdaterDialog((QWidget*)this->parent(), "https://github.com/andre-tm-hui/ReVox", VER_NO, true);
         updater->setStyleSheet("QTextEdit {border: 1px solid #009090;}");
     }
 }
@@ -176,7 +176,7 @@ void SettingsMenu::toggleAutostart(int state)
 
 void SettingsMenu::checkForUpdates()
 {
-    CUpdaterDialog *updater = new CUpdaterDialog((QWidget*)this->parent(), "https://github.com/onglez/ReVox", VER_NO);
+    CUpdaterDialog *updater = new CUpdaterDialog((QWidget*)this->parent(), "https://github.com/andre-tm-hui/ReVox", VER_NO);
     updater->setStyleSheet("QTextEdit {border: 1px solid #009090;}");
 }
 
