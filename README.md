@@ -4,6 +4,7 @@
 A Virtual Soundboard, Sampler and Voice Changer packaged into a single program. Get creative in your voice chats/streams.
 
 ### [Get Started](https://github.com/onglez/ReVox/wiki/Installation)
+### [Join the Discord](https://discord.gg/ugv5aMSm63)
 
 # Features
   - Realtime recording of audio from:
