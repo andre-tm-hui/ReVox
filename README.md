@@ -6,6 +6,11 @@ A Virtual Soundboard, Sampler and Voice Changer packaged into a single program. 
 ### [Get Started](https://github.com/onglez/ReVox/wiki/Installation)
 ### [Join the Discord](https://discord.gg/ugv5aMSm63)
 
+#### Note:
+Some antivirus software may flag ReVox as a virus. I can guarantee that any version of ReVox downloaded from official sources (GitHub, Discord Releases channel) is completely safe. ReVox does not send any information anywhere, and only accesses the internet when checking for updates.
+
+This can possibly be fixed with money, but this is a non-profit passion project.
+
 # Features
   - Realtime recording of audio from:
     - An input device (microphone, audio interface, headset etc.)
