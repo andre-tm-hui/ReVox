@@ -9,7 +9,7 @@ A Virtual Soundboard, Sampler and Voice Changer packaged into a single program. 
 #### Note:
 Some antivirus software may flag ReVox as a virus. I can guarantee that any version of ReVox downloaded from official sources (GitHub, Discord Releases channel) is completely safe. ReVox does not send any information anywhere, and only accesses the internet when checking for updates.
 
-This can possibly be fixed with money, but this is a non-profit passion project.
+This can possibly be fixed with money, but this is a non-profit passion project with no funding.
 
 # Features
   - Realtime recording of audio from:
