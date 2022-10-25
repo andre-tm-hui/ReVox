@@ -1,9 +1,15 @@
 # ReVox
-<p align="center"><image src="https://github.com/onglez/ReVox/blob/master/images/intro.gif" width="60%"></image></p>
+<p align="center"><image src="https://github.com/andre-tm-hui/ReVox/blob/master/images/intro.gif" width="60%"></image></p>
 
 A Virtual Soundboard, Sampler and Voice Changer packaged into a single program. Get creative in your voice chats/streams.
 
 ### [Get Started](https://github.com/onglez/ReVox/wiki/Installation)
+### [Join the Discord](https://discord.gg/ugv5aMSm63)
+
+#### Note:
+Some antivirus software may flag ReVox as a virus. I can guarantee that any version of ReVox downloaded from official sources (GitHub, Discord Releases channel) is completely safe. ReVox does not send any information anywhere, and only accesses the internet when checking for updates.
+
+This can possibly be fixed with money, but this is a non-profit passion project with no funding.
 
 # Features
   - Realtime recording of audio from:
