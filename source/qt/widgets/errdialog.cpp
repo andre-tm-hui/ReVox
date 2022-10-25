@@ -8,10 +8,11 @@ ErrDialog::ErrDialog(int errCode, QWidget *parent) :
     ui->setupUi(this);
 
     std::stringstream ss;
-    ss<<"ReVox - Error Code: %d"<<errCode;
+    ss<<"ReVox - Error Code: "<<errCode;
     this->setWindowTitle(QString::fromStdString(ss.str()));
 
-    ui->label->setText(errMessages[errCode]);
+    ui->label->setText(errTitles[errCode]);
+    ui->label_2->setText(errMessages[errCode]);
 
     connect(ui->pushButton, SIGNAL(pressed()), this, SLOT(close()));
 }

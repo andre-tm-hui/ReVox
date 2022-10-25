@@ -31,6 +31,9 @@ public:
     void OnHotkeyToggle(int keycode, bool clear = true);
     void DisableTabWidget();
 
+signals:
+    void itemSelected();
+
 private slots:
     void onHotkeySelect();
 

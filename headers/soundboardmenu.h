@@ -30,6 +30,10 @@ public:
     WaveformViewer* GetWaveform() { return wv; }
     void DisableSettings();
 
+signals:
+    void addBindPressed();
+    void itemSelected();
+
 private slots:
     void onHotkeySelect();
     void fadeInHotkey();

@@ -12,6 +12,7 @@ RC_ICONS = icon.ico
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    onboarding.cpp \
     source/qt/widgets/errdialog.cpp \
     source/qt/menus/voicefx/autotunetab.cpp \
     source/qt/menus/fxmenu.cpp \
@@ -83,11 +84,13 @@ HEADERS += \
     headers/settingsmenu.h \
     headers/soundboardmenu.h \
     headers/titlebar.h \
-    nlohmann/json.hpp
+    nlohmann/json.hpp \
+    onboarding.h
 
 INCLUDEPATH += headers
 
 FORMS += \
+    onboarding.ui \
     qtui/errdialog.ui \
     qtui/autotunetab.ui \
     qtui/fxmenu.ui \

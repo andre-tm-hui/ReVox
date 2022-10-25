@@ -72,11 +72,12 @@ void FXMenu::OnHotkeyToggle(int keycode, bool clear)
 {
     if (hotkeys->find(std::to_string(keycode)) == hotkeys->end()) return;
     currHotkey = keycode;
+    json *settings = &(*hotkeys)[std::to_string(currHotkey)];
     for (int i = 0; i < ui->tabWidget->count(); i++)
     {
         ui->tabWidget->widget(i)->setEnabled(!clear);
     }
-    json *settings = &(*hotkeys)[std::to_string(currHotkey)];
+
     am->passthrough->SetFX(*settings);
 
     reverbTab->SetValues(&(*settings)["reverb"],
@@ -107,6 +108,8 @@ void FXMenu::onHotkeySelect()
     if (item->cb.keycode == this->currHotkey) return;
     OnHotkeyToggle(item->cb.keycode, false);
     ui->remove->setEnabled(true);
+
+    emit itemSelected();
 }
 
 void FXMenu::addBindSlot()

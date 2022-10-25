@@ -105,6 +105,12 @@ MainWindow::MainWindow(QWidget *parent)
     titleBar = new TitleBar(this);
     connect(titleBar, SIGNAL(windowMoved(QMouseEvent*,int,int)), this, SLOT(moveWindow(QMouseEvent*,int,int)));
 
+    if (audioManager->settings["firstTime"]) {
+        Onboarding *ob = new Onboarding(soundboardMenu, fxMenu, ui->fxButton, this);
+        audioManager->settings["firstTime"] = false;
+        audioManager->SaveSettings();
+    }
+
     setup = true;
 }
 

@@ -73,6 +73,7 @@ void SoundboardMenu::DisableSettings()
 // Slots
 void SoundboardMenu::onHotkeySelect()
 {
+    emit itemSelected();
     HotkeyItem *item = qobject_cast<HotkeyItem *>(ui->hotkeysList->itemWidget(ui->hotkeysList->currentItem()));
     if (item->cb.keycode == currHotkey) return;
     QPropertyAnimation *a = fade(this, ui->settings, false, 200);
@@ -133,6 +134,7 @@ void SoundboardMenu::addBind(int keybind, QString label)
 
     ui->hotkeysList->scrollToBottom();
     ui->hotkeysList->resize(ui->hotkeysList->width(), std::min(36 * ui->hotkeysList->count() + 2, 221));
+    emit addBindPressed();
 }
 
 void SoundboardMenu::removeBind()

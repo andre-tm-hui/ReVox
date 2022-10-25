@@ -25,13 +25,13 @@ private:
     std::vector<QString> errTitles = {
         "No error",
         "VB-Cable Missing",
-        "Default devices incorrectly configured"
+        "Audio Devices Misconfigured"
     };
 
     std::vector<QString> errMessages = {
         "No error",
         "Virtual Audio Cable not detected. Please install from <a href=\"https://vb-audio.com/Cable/\">here</a>.",
-        "The Virtual Audio Cable has been set as a default device. Please change this in your sound settings."
+        "Make sure the VB-Audio Cable devices are not set as default audio devices."
     };
 };
 

@@ -86,7 +86,8 @@ public:
             "monitorMic": 0,
             "monitorSamples": 0,
             "startWithWindows": false,
-            "autocheckUpdates": false
+            "autocheckUpdates": false,
+            "firstTime": true
         }
         )"_json;
 
@@ -131,7 +132,8 @@ private:
             "label": "",
             "reverb": { "enabled": false, "roomsize": 0.5, "mix": 0.5, "width": 0.5, "damp": 0.5 },
             "autotune": { "enabled": false, "speed": 0.5, "notes": [ true, false, true, false, true, true, false, true, false, true, false, true ] },
-            "pitch": { "enabled": false, "pitch": 1.0 }
+            "pitch": { "enabled": false, "pitch": 1.0 },
+            "editable": true
         }
         )"_json;
 

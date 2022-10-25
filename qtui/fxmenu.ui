@@ -121,7 +121,7 @@ QSlider::handle:vertical {
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Listen to your own voice&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
     <property name="text">
-     <string>MIC MONITOR VOLUME</string>
+     <string>MICROPHONE MONITOR</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>

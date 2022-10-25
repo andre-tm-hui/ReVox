@@ -26,6 +26,7 @@
 #include <qttransitions.h>
 #include <titlebar.h>
 #include <errdialog.h>
+#include <onboarding.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }

@@ -131,7 +131,7 @@ QSlider::handle:vertical {
      <string notr="true">background: transparent;</string>
     </property>
     <property name="text">
-     <string>SAMPLE MONITOR VOLUME</string>
+     <string>SOUNDBOARD MONITOR</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -410,7 +410,7 @@ background-color: #404040;
     </rect>
    </property>
    <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Crop your clips&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="styleSheet">
     <string notr="true">border: 1px solid #282828;
