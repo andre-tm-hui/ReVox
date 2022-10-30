@@ -32,12 +32,12 @@
         <file>images/pixMasks/2.bmp</file>
         <file>images/pixMasks/3.bmp</file>
         <file>images/pixMasks/4.bmp</file>
-        <file>images/pixMasks/5.bmp</file>
-        <file>images/pixMasks/6.bmp</file>
         <file>images/pixMasks/7.bmp</file>
         <file>images/pixMasks/8.bmp</file>
         <file>images/pixMasks/9.bmp</file>
         <file>images/pixMasks/10.bmp</file>
         <file>images/pixMasks/11.bmp</file>
+        <file>images/pixMasks/5.bmp</file>
+        <file>images/pixMasks/6.bmp</file>
     </qresource>
 </RCC>

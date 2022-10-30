@@ -23,14 +23,39 @@ AudioManager::AudioManager()
         else
         {
             std::ifstream settingsFile (appdata + dirName + "settings.json");
-            if (!settingsFile.fail()) settingsFile >> settings;
+            if (!settingsFile.fail())
+            {
+                settingsFile >> settings;
+                for (auto [k,v] : defaultSettings.items())
+                    if (settings.find(k) == settings.end())
+                        settings[k] = v;
+            }
+            else settings = defaultSettings;
 
             std::ifstream soundboardBindsFile(appdata + dirName + "soundboard.json");
-            if (!soundboardBindsFile.fail()) soundboardBindsFile >> soundboardHotkeys;
+            if (!soundboardBindsFile.fail())
+            {
+                soundboardBindsFile >> soundboardHotkeys;
+                for (auto& [keycode,keybind] : soundboardHotkeys.items())
+                    for (auto [k,v] : baseSoundboardHotkey.items())
+                        if (keybind.find(k) == keybind.end())
+                            keybind[k] = v;
+            }
 
             std::ifstream voiceFXBindsFile(appdata + dirName + "voicefx.json");
-            if (!voiceFXBindsFile.fail()) voiceFXBindsFile >> voiceFXHotkeys;
-            std::cout<<"loaded"<<std::endl;
+            if (!voiceFXBindsFile.fail())
+            {
+                voiceFXBindsFile >> voiceFXHotkeys;
+                for (auto& [keycode,keybind] : voiceFXHotkeys.items())
+                    for (auto [k,v] : baseFXHotkey.items()) {
+                        if (keybind.find(k) == keybind.end())
+                            keybind[k] = v;
+                        else if (v.is_object())
+                            for (auto [k1,v1] : v.items())
+                               if (keybind[k].find(k1) == keybind[k].end())
+                                   keybind[k][k1] = v1;
+                    }
+            }
         }
     }
 

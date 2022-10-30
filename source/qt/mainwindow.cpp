@@ -16,17 +16,15 @@ MainWindow::MainWindow(QWidget *parent)
     }
     if (!vCablesFound)
     {
-        ErrDialog *err = new ErrDialog(1);
-        err->show();
-        connect(err, SIGNAL(errQuit()), qApp, SLOT(quit()));
+        QMessageBox::critical(nullptr, "Error", "VB-Audio Cables not installed.");
+        QApplication::quit();
         return;
     }
     if (devices->defaultAudioInput().description().contains("VB-Audio Virtual Cable") ||
             devices->defaultAudioOutput().description().contains("VB-Audio Virtual Cable"))
     {
-        ErrDialog *err = new ErrDialog(2);
-        err->show();
-        connect(err, SIGNAL(errQuit()), qApp, SLOT(quit()));
+        QMessageBox::critical(nullptr, "Error", "VB-Audio Cables set to default devices. Please change them.");
+        QApplication::quit();
         return;
     }
     connect(devices, SIGNAL(audioInputsChanged()), this, SLOT(devicesChanged()));
@@ -54,9 +52,6 @@ MainWindow::MainWindow(QWidget *parent)
     trayIcon = new QSystemTrayIcon(this);
     trayIcon->setContextMenu(trayIconMenu);
     trayIcon->setIcon(QIcon(":/icons/icon.png"));
-
-    if (audioManager->settings["startWithWindows"])
-        this->hide();
     trayIcon->show();
 
     this->setWindowIcon(QIcon(":/icons/icon.png"));
@@ -105,8 +100,15 @@ MainWindow::MainWindow(QWidget *parent)
     titleBar = new TitleBar(this);
     connect(titleBar, SIGNAL(windowMoved(QMouseEvent*,int,int)), this, SLOT(moveWindow(QMouseEvent*,int,int)));
 
+    if (audioManager->settings["startWithWindows"])
+        this->hide();
+    else
+        this->show();
+
     if (audioManager->settings["firstTime"]) {
         Onboarding *ob = new Onboarding(soundboardMenu, fxMenu, ui->fxButton, this);
+        ob->raise();
+        ob->show();
         audioManager->settings["firstTime"] = false;
         audioManager->SaveSettings();
     }
@@ -235,7 +237,7 @@ void MainWindow::fadeInMenu()
 {
     nextMenu->setVisible(true);
     nextMenu->setEnabled(true);
-    QPropertyAnimation *a = fade(this, nextMenu, true, 200);
+    fade(this, nextMenu, true, 200);
     activeMenu->hide();
     activeMenu->setEnabled(false);
     activeMenu = nextMenu;

@@ -25,8 +25,8 @@
 #include <hud.h>
 #include <qttransitions.h>
 #include <titlebar.h>
-#include <errdialog.h>
 #include <onboarding.h>
+#include <QMessageBox>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }

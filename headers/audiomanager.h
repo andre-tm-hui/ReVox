@@ -38,24 +38,28 @@ public:
     void Record(int keycode);
     void StopRecording();
     void Play(int keycode, bool recordFallback = true);
+    void OverrideSound(std::string fname, int keycode);
 
     void Reset(bool devicesChanged = false);
 
     void Rebind(int keycode);
     void SetNewBind(int keycode, bool isSoundboard);
     void RemoveBind(int keycode);
+
     void SaveBinds();
     void SaveSettings();
+
     void SetHUD(HUD *hud);
+
     void SetWaveform(WaveformViewer *wv) { this->wv = wv; }
     void ResetWaveform() { this->wv->SetAudioClip(); }
-    void OverrideSound(std::string fname, int keycode);
 
     void SetSampleMonitor(int n) { monitor->data.monitorSamples = (float)n / 100.f; settings["monitorSamples"] = n; SaveSettings(); }
     void SetMicMonitor(int n) { monitor->data.monitorMic = (float)n / 100.f; settings["monitorMic"] = n; SaveSettings(); }
 
     int GetCurrentOutputDevice() { return ids.output; }
     void SetCurrentOutputDevice(int id) { ids.output = id; settings["outputDevice"] = Pa_GetDeviceInfo(ids.output)->name; Reset(); }
+
     json GetFXOff() { return baseFXHotkey; }
     json* GetFXOffPointer() { return &baseFXHotkey; }
 
@@ -77,24 +81,11 @@ public:
 
     bool recording = false;
 
-    json settings = R"(
-        {
-            "outputDevice": "",
-            "sampleRate": 48000,
-            "framesPerBuffer": 2048,
-            "hudPosition": 2,
-            "monitorMic": 0,
-            "monitorSamples": 0,
-            "startWithWindows": false,
-            "autocheckUpdates": false,
-            "firstTime": true
-        }
-        )"_json;
+    json settings;
 
     int *fxHotkey;
 
 private:
-    //std::map<std::string, QCheckBox*> *checkboxes;
     int sampleRate, framesPerBuffer, defVInput, defVOutput;
     deviceIDs ids = {-1, -1, -1, -1};
     int rebindAt = -1;
@@ -114,6 +105,18 @@ private:
     void GetDeviceSettings();
     int GetChannels(int id, bool isInput);
     int GetCorrespondingLoopbackDevice(int i);
+
+    json defaultSettings = R"(
+        {
+            "outputDevice": "",
+            "sampleRate": 48000,
+            "framesPerBuffer": 2048,
+            "hudPosition": -1,
+            "startWithWindows": false,
+            "autocheckUpdates": false,
+            "firstTime": true
+        }
+        )"_json;
 
     json baseSoundboardHotkey = R"(
         {
