@@ -71,7 +71,7 @@ Thumbs.db
 *.dll
 *.exe
 
-build/
+builds/
 *.xcf
 .vs/
 nlohmann/
