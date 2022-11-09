@@ -12,8 +12,7 @@ RC_ICONS = icon.ico
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    onboarding.cpp \
-    source/qt/widgets/errdialog.cpp \
+    source/qt/onboarding.cpp \
     source/qt/menus/voicefx/autotunetab.cpp \
     source/qt/menus/fxmenu.cpp \
     source/qt/hud.cpp \
@@ -47,7 +46,6 @@ SOURCES += \
     source/qt/titlebar.cpp
 
 HEADERS += \
-    headers/errdialog.h \
     headers/autotunetab.h \
     headers/fxmenu.h \
     headers/cleanoutput.h \
@@ -85,12 +83,12 @@ HEADERS += \
     headers/soundboardmenu.h \
     headers/titlebar.h \
     nlohmann/json.hpp \
-    onboarding.h
+    headers/onboarding.h
 
 INCLUDEPATH += headers
 
 FORMS += \
-    onboarding.ui \
+    qtui/onboarding.ui \
     qtui/errdialog.ui \
     qtui/autotunetab.ui \
     qtui/fxmenu.ui \
@@ -139,10 +137,19 @@ INCLUDEPATH += $$PWD/'../../C++ Libraries/libsamplerate-0.2.2-win64/include'
 DEPENDPATH += $$PWD/'../../C++ Libraries/libsamplerate-0.2.2-win64/bin'
 
 
-LIBS += -lole32
+LIBS += -lole32 \
+        -luser32 \
+        -lcfgmgr32 \
 
-win32: LIBS += -L$$PWD/../bin/release/x64/ -lautoupdater
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../bin/release/x64/ -lautoupdater
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../bin/debug/x64/ -lautoupdater
 
 INCLUDEPATH += $$PWD/../github-releases-autoupdater/src \
                $$PWD/../github-releases-autoupdater/src/updaterUI
 DEPENDPATH += $$PWD/../build/release/x64/autoupdater
+
+
+win32: LIBS += -L'C:/Program Files (x86)/Windows Kits/10/Lib/10.0.22621.0/um/x64/' -lhid
+
+win32:!win32-g++: PRE_TARGETDEPS += 'C:/Program Files (x86)/Windows Kits/10/Lib/10.0.22621.0/um/x64/hid.lib'
+else:win32-g++: PRE_TARGETDEPS += 'C:/Program Files (x86)/Windows Kits/10/Lib/10.0.22621.0/um/x64/libhid.a'

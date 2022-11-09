@@ -86,27 +86,29 @@ void PitchShift::repitch(float *buf)
         if (inputs[i] > max)
         {
             max = inputs[i];
-            marker = (float)i;
+            marker = i;
         }
     }
     marker -= bufSize;
 
     // Get all the "markers", i.e. peaks of the input signal
-    std::vector<float> markers{};
-    markers.push_back(marker);
-    int pos = bufSize + marker + period;
-    while (pos < 2 * bufSize)
+    std::vector<int> markers;
+    //markers.push_back(marker);
+    //int pos = bufSize + marker + period;
+    /*while (pos < 2 * bufSize)
     {
         marker = pos - period/4 + argmax(inputs + pos - (int)period/4, (int)period/2);
         markers.push_back(marker - bufSize);
         pos = marker + period;
-    }
+    }*/
+    for (int m = marker; m < bufSize; m+=period) markers.push_back(m);
 
     // Get windows
     std::vector<std::vector<float>> windows = getWindows(inputs + bufSize, period, markers, scale);
 
     // Get synthesized markers
     int idx = 0;
+    if (markers.size() == 0) return;
     float marker_s = markers[0];
 
     if (setupFlag && lastMarker < bufSize)
@@ -114,14 +116,19 @@ void PitchShift::repitch(float *buf)
         marker_s = (1.f - ((bufSize - lastMarker) / (prevPeriod * prevFactor))) * period * scale;
     }
 
-    std::vector<float> markers_s{};
-    while (marker_s < bufSize)
+    std::vector<int> markers_s;
+    for (float m = marker_s; m < bufSize; m += period * scale) {
+        markers_s.push_back((int)round(m));
+    }
+    /*while (marker_s < bufSize)
     {
         markers_s.push_back(marker_s);
-        float offset = (markers[(int)fmod((idx + 1), markers.size())] - markers[idx]) * scale;
+        float offset = (markers[(int)((idx + 1) % markers.size())] - markers[idx % markers.size()]) * scale;
         marker_s += offset > 0 ? offset : period * scale;
+        markers_s.push_back(round(marker_s));
+        marker_s += period * scale;
         idx++;
-    }
+    }*/
 
     if (markers_s.empty())
     {
@@ -133,18 +140,18 @@ void PitchShift::repitch(float *buf)
     }
 
     // Overlap add the windows to the output buffer at the synthesized markers
+    int closestIdx = 0;
     for (auto marker_s : markers_s)
     {
         // Get closest marker
-        int closestIdx = -1;
         float distance = INFINITY;
-        for (int i = 0; i < (int)markers.size(); i++)
+        for (int i = closestIdx; i < (int)markers.size(); i++)
         {
             if (abs(marker_s - markers[i]) < distance)
             {
                 distance = abs(marker_s - markers[i]);
                 closestIdx = i;
-            }
+            } else break;
         }
 
         addToBuffer(windows[closestIdx], marker_s);
@@ -159,12 +166,17 @@ void PitchShift::repitch(float *buf)
     setupFlag = true;
 }
 
-void PitchShift::addToBuffer(std::vector<float> window, float marker)
+void PitchShift::addToBuffer(std::vector<float> window, int marker)
 {
     window = Window::Hann(window);
-    float pos;
+    int pos;
 
-    if (marker == ceil(marker))
+    for (int i = -window.size() / 2, j = 0; i < (int)window.size()/2; i++, j++) {
+        pos = bufSize + marker + i;
+        if (pos >= 0 && pos < 3 * bufSize) outputs[pos] += window[j];
+    }
+
+    /*if (marker == ceil(marker))
     {
         for (int i = -window.size()/2, j = 0; i < (int)window.size()/2; i++, j++)
         {
@@ -179,18 +191,18 @@ void PitchShift::addToBuffer(std::vector<float> window, float marker)
             pos = bufSize + marker + i;
             if (pos >= 0 && pos < 3 * bufSize) outputs[(int)ceil(pos)] += std::lerp(window[j], window[j+1], fmod(ceil(pos), pos));
         }
-    }
+    }*/
 }
 
-std::vector<std::vector<float>> PitchShift::getWindows(float *buf, float period, std::vector<float> markers, float scale)
+std::vector<std::vector<float>> PitchShift::getWindows(float *buf, float period, std::vector<int> markers, float scale)
 {
     std::vector<std::vector<float>> output = {};
     for (auto marker : markers)
     {
-        std::vector<float> window = {};
+        std::vector<float> window(2*period, 0);
         for (int i = -period; i < period; i++)
         {
-            window.push_back(std::lerp(buf[(int)floor(marker+i)], buf[(int)ceil(marker+i)], fmod(marker+i, floor(marker+i))));
+            window[i+period] = buf[marker+i];
         }
         if (scale != 1.f) window = resample(window, scale);
         output.push_back(window);
@@ -212,7 +224,16 @@ void PitchShift::add(float *buf)
 
 std::vector<float> PitchShift::resample(std::vector<float> input, float scale)
 {
-    int err;
+    std::vector<float> v(ceil(scale * input.size()), 0.f);
+    float i_scaled;
+    for (int i = 0; i < v.size(); i++) {
+        i_scaled = (float)i / (v.size()-1) * (input.size()-1);
+        v[i] = std::lerp(input[floor(i_scaled)],
+                         input[ceil(i_scaled)],
+                         i_scaled - floor(i_scaled));
+    }
+
+    /*int err;
 
     SRC_STATE *src = src_new(SRC_LINEAR, 1, &err);
     SRC_DATA *dat = new SRC_DATA();
@@ -230,6 +251,6 @@ std::vector<float> PitchShift::resample(std::vector<float> input, float scale)
     std::vector<float> v(out, out + outputFrames);
     src_delete(src);
     delete[] out;
-    delete dat;
+    delete dat;*/
     return v;
 }

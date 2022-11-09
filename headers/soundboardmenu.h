@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QFileDialog>
+#include <QSignalMapper>
 #include <nlohmann/json.hpp>
 #include <audiomanager.h>
 #include <keyboardlistener.h>
@@ -11,6 +12,16 @@
 #include <qttransitions.h>
 
 using namespace nlohmann;
+
+enum rebindType {
+    rebind_recordOver
+};
+
+typedef struct {
+    AudioManager *am;
+    QWidget *mainWindow;
+    QWidget *mainThread;
+} rebindData;
 
 namespace Ui {
 class SoundboardMenu;
@@ -33,11 +44,12 @@ public:
 signals:
     void addBindPressed();
     void itemSelected();
+    void newKeySet();
 
 private slots:
     void onHotkeySelect();
     void fadeInHotkey();
-    void addBindSlot();
+    void addBind(int keybind = -1, QString label = "");
     void removeBind();
 
     void setRecordMic();
@@ -53,8 +65,14 @@ private slots:
 
     void onSliderChanged(int value);
 
+    void rebind(int i);
+    void cleanupRebind();
+
 private:
-    void addBind(int keybind = -1, QString label = "");
+    static void WaitForKeyboardInput(void *widget, AudioManager *am);
+    rebindData data;
+    rebindType rbType;
+    QSignalMapper *mapper;
 
     Ui::SoundboardMenu *ui;
     json *hotkeys;
@@ -63,6 +81,7 @@ private:
     WaveformViewer *wv;
 
     int currHotkey;
+    bool changingClips = false;
 };
 
 #endif // SOUNDBOARDMENU_H

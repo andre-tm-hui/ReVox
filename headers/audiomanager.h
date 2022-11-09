@@ -12,10 +12,17 @@
 #include <waveformviewer.h>
 
 #ifndef VER_NO
-#define VER_NO "1.0.0-beta"
+#define VER_NO "0.1"
 #endif
 
 using namespace nlohmann;
+
+enum bindType {
+    invalid = -1,
+    soundboard,
+    voicefx,
+    recordOver
+};
 
 typedef struct{
     int input;
@@ -35,16 +42,21 @@ public:
     std::map<std::string, device> outputDevices;
     std::map<std::string, device> loopbackDevices;
 
-    void Record(int keycode);
+    void KeyEvent(int keycode, std::string deviceName, int event);
+
+    void Record(std::string idx);
     void StopRecording();
-    void Play(int keycode, bool recordFallback = true);
-    void OverrideSound(std::string fname, int keycode);
+    void Play(std::string idx, bool recordFallback = true);
+    void OverrideSound(std::string fname, int idx);
 
     void Reset(bool devicesChanged = false);
 
-    void Rebind(int keycode);
-    void SetNewBind(int keycode, bool isSoundboard);
-    void RemoveBind(int keycode);
+    void StartRebind();
+    bool IsRebinding() { return rebinding; };
+    int GetRebindDestination() { return rebindTo; }
+    std::string GetRebindDevice() { return rebindDevice; }
+    void SetNewBind(int keycode, std::string deviceName, int idx, bindType bindType);
+    void RemoveBind(int idx, bindType bindType);
 
     void SaveBinds();
     void SaveSettings();
@@ -88,7 +100,9 @@ public:
 private:
     int sampleRate, framesPerBuffer, defVInput, defVOutput;
     deviceIDs ids = {-1, -1, -1, -1};
-    int rebindAt = -1;
+    int rebindAt = -1, rebindTo = -1;
+    std::string rebindDevice = "";
+    bool rebinding = false, recordOver = false;
 
     std::string appdata;
     std::string dirName = "/ReVox/";
@@ -106,20 +120,28 @@ private:
     int GetChannels(int id, bool isInput);
     int GetCorrespondingLoopbackDevice(int i);
 
+    std::pair<bindType, std::string> isExistingKeybind(int keycode, std::string deviceName);
+
     json defaultSettings = R"(
         {
-            "outputDevice": "",
+            "outputDevice": "No Device Detected",
             "sampleRate": 48000,
             "framesPerBuffer": 2048,
             "hudPosition": -1,
             "startWithWindows": false,
             "autocheckUpdates": false,
-            "firstTime": true
+            "firstTime": true,
+            "monitorMic": 1.0,
+            "monitorSamples": 1.0,
+            "recordOverKeybind": -1,
+            "recordOverDeviceName": ""
         }
         )"_json;
 
     json baseSoundboardHotkey = R"(
         {
+            "keycode": -1,
+            "deviceName": "",
             "label": "",
             "recordInput": true,
             "recordLoopback": true,
@@ -132,6 +154,8 @@ private:
 
     json baseFXHotkey = R"(
         {
+            "keycode": -1,
+            "deviceName": "",
             "label": "",
             "reverb": { "enabled": false, "roomsize": 0.5, "mix": 0.5, "width": 0.5, "damp": 0.5 },
             "autotune": { "enabled": false, "speed": 0.5, "notes": [ true, false, true, false, true, true, false, true, false, true, false, true ] },

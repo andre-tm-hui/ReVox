@@ -12,13 +12,13 @@
 
 typedef struct {
     AudioManager *audioManager;
-    KeyboardListener *keyboardListener;
     QPushButton *button;
+    int idx;
     int keycode;
     bool isSoundboard;
     QWidget *hotkeyItem;
-    QWidget *addButton;
     QWidget *mainWindow;
+    QWidget *mainThread;
 } cbData;
 
 class HotkeyItem : public QWidget
@@ -28,20 +28,18 @@ public:
     inline HotkeyItem(bool isSoundboard,
                       QString label,
                       int width,
+                      int idx,
                       int keycode,
                       AudioManager *audioManager,
-                      KeyboardListener *keyboardListener,
-                      QWidget *addButton,
                       QWidget *mainWindow) : QWidget()
     {
         this->cb.isSoundboard = isSoundboard;
-
+        this->cb.idx = idx;
         this->cb.keycode = keycode;
         this->cb.audioManager = audioManager;
-        this->cb.keyboardListener = keyboardListener;
         this->cb.hotkeyItem = this;
-        this->cb.addButton = addButton;
         this->cb.mainWindow = mainWindow;
+        this->cb.mainThread = this;
 
         this->icon = new QWidget(this);
         this->icon->setStyleSheet("QWidget {image: url(:/icons/edit.png); background: transparent;}");
@@ -65,6 +63,8 @@ public:
         this->hotkey->setFixedSize(QSize(4 * width / 16 - 6, 30));
         this->hotkey->setStyleSheet("QPushButton {border-radius: 3px; background-color: #303030; color: #FFFFFF;}"
                                     "QPushButton:hover {background-color: #404040;}");
+
+        json *hotkeys = isSoundboard ? &(audioManager->soundboardHotkeys) : &(audioManager->voiceFXHotkeys);
         connect(this->hotkey, SIGNAL(clicked()), this, SLOT(rebind()));
 
         if (keycode == -1)
@@ -78,7 +78,10 @@ public:
         else
         {
             this->hotkey->setText(vkCodenames[keycode]);
+            this->hotkey->setToolTip(QString::fromStdString((*hotkeys)[std::to_string(idx)]["deviceName"].get<std::string>()));
         }
+
+        connect(this, SIGNAL(newKeySet(QString)), this, SLOT(cleanup(QString)), Qt::ConnectionType::QueuedConnection);
     }
 
     QWidget *icon;
@@ -86,10 +89,13 @@ public:
     QLineEdit *label;
     cbData cb;
 
+signals:
+    void newKeySet(QString qKeybind);
+
 private slots:
     void rebind();
+    void cleanup(QString qKeybind);
     void labelChanged();
-
 
 private:
     static void WaitForKeyboardInput(void *data);

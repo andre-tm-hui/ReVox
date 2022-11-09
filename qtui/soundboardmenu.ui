@@ -301,7 +301,7 @@ QToolButton:pressed {
     <rect>
      <x>220</x>
      <y>260</y>
-     <width>611</width>
+     <width>351</width>
      <height>41</height>
     </rect>
    </property>
@@ -319,8 +319,8 @@ background: #282828;
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>7</y>
-      <width>101</width>
+      <y>8</y>
+      <width>81</width>
       <height>26</height>
      </rect>
     </property>
@@ -331,15 +331,15 @@ background: #282828;
      <string notr="true">background: transparent;</string>
     </property>
     <property name="text">
-     <string>Record Mic</string>
+     <string>Rec. Mic</string>
     </property>
    </widget>
    <widget class="QCheckBox" name="recordSys">
     <property name="geometry">
      <rect>
-      <x>150</x>
-      <y>7</y>
-      <width>171</width>
+      <x>120</x>
+      <y>8</y>
+      <width>121</width>
       <height>26</height>
      </rect>
     </property>
@@ -350,42 +350,15 @@ background: #282828;
      <string notr="true">background: transparent</string>
     </property>
     <property name="text">
-     <string>Record System Audio</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="loadClip">
-    <property name="geometry">
-     <rect>
-      <x>480</x>
-      <y>0</y>
-      <width>131</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">QPushButton {
-background-color: #383838;
-border-radius: 10px;
-}
-
-QPushButton:hover {
-background-color: #484848;
-}
-
-QPushButton:pressed {
-background-color: #404040;
-}</string>
-    </property>
-    <property name="text">
-     <string>Load a Clip</string>
+     <string>Rec. Sys Audio</string>
     </property>
    </widget>
    <widget class="QCheckBox" name="overlap">
     <property name="geometry">
      <rect>
-      <x>350</x>
-      <y>7</y>
-      <width>91</width>
+      <x>260</x>
+      <y>8</y>
+      <width>71</width>
       <height>26</height>
      </rect>
     </property>
@@ -497,7 +470,7 @@ QSlider {
 }</string>
     </property>
     <property name="maximum">
-     <number>460</number>
+     <number>461</number>
     </property>
     <property name="value">
      <number>0</number>
@@ -537,10 +510,10 @@ QSlider {
 }</string>
     </property>
     <property name="maximum">
-     <number>460</number>
+     <number>461</number>
     </property>
     <property name="value">
-     <number>460</number>
+     <number>461</number>
     </property>
     <property name="orientation">
      <enum>Qt::Horizontal</enum>
@@ -656,13 +629,40 @@ margin-right: 30px;
      <enum>Qt::Horizontal</enum>
     </property>
    </widget>
+   <widget class="QPushButton" name="loadClip">
+    <property name="geometry">
+     <rect>
+      <x>70</x>
+      <y>127</y>
+      <width>141</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+background-color: #383838;
+border-radius: 3px;
+}
+
+QPushButton:hover {
+background-color: #484848;
+}
+
+QPushButton:pressed {
+background-color: #404040;
+}</string>
+    </property>
+    <property name="text">
+     <string>Load a Clip</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QWidget" name="overlaySettings" native="true">
    <property name="geometry">
     <rect>
      <x>220</x>
      <y>260</y>
-     <width>611</width>
+     <width>351</width>
      <height>41</height>
     </rect>
    </property>
@@ -684,6 +684,54 @@ background: rgba(0,0,0,100);</string>
     <string notr="true">border-radius: 10px;
 background: rgba(0,0,0,100);</string>
    </property>
+  </widget>
+  <widget class="QGroupBox" name="recordOver">
+   <property name="geometry">
+    <rect>
+     <x>580</x>
+     <y>260</y>
+     <width>251</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border: 1px solid #282828;
+border-radius: 10px;
+background: #282828;</string>
+   </property>
+   <property name="title">
+    <string/>
+   </property>
+   <widget class="QPushButton" name="recordOverKeybind">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>5</y>
+      <width>111</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {border-radius: 3px; background-color: #303030; color: #FFFFFF;}
+QPushButton:hover {background-color: #404040;}</string>
+    </property>
+    <property name="text">
+     <string>None</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>15</x>
+      <y>10</y>
+      <width>91</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Modifier Key</string>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources>

@@ -446,7 +446,7 @@ background: transparent;</string>
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>540</y>
+     <y>541</y>
      <width>960</width>
      <height>541</height>
     </rect>
@@ -591,11 +591,11 @@ color: #E0E0E0;
    <zorder>widget_14</zorder>
    <zorder>groupBox_5</zorder>
   </widget>
-  <widget class="QGroupBox" name="slide_5">
+  <widget class="QGroupBox" name="slide_6">
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>540</y>
+     <y>541</y>
      <width>960</width>
      <height>541</height>
     </rect>
@@ -736,11 +736,11 @@ color: #E0E0E0;
    <zorder>widget_18</zorder>
    <zorder>groupBox_6</zorder>
   </widget>
-  <widget class="QGroupBox" name="slide_6">
+  <widget class="QGroupBox" name="slide_7">
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>0</y>
+     <y>541</y>
      <width>960</width>
      <height>541</height>
     </rect>
@@ -881,11 +881,11 @@ color: #E0E0E0;
    <zorder>widget_22</zorder>
    <zorder>groupBox_7</zorder>
   </widget>
-  <widget class="QGroupBox" name="slide_7">
+  <widget class="QGroupBox" name="slide_8">
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>540</y>
+     <y>0</y>
      <width>960</width>
      <height>540</height>
     </rect>
@@ -1023,7 +1023,7 @@ color: #E0E0E0;
       </font>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Press this key to play the soundbyte assigned to the hotkey. If no soundbyte is assigned, this key behaves as below.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Press this key to play the soundbyte assigned to the hotkey. If no soundclip is assigned, recording starts, and stops when the key is released.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1049,7 +1049,7 @@ color: #E0E0E0;
       </font>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Hold this combination of keys to record over an existing soundbyte. Release to stop recording.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Hold this combination of keys to record over an existing soundclip. Release to stop recording.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1078,7 +1078,7 @@ color: #E0E0E0;
       <string notr="true">border-right: 1px solid #FFFFFF;</string>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&amp;quot;Alt&amp;quot; + &lt;span style=&quot; font-style:italic;&quot;&gt;Your Hotkey&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Modifier&lt;/span&gt; + &lt;span style=&quot; font-style:italic;&quot;&gt;Your Hotkey&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1089,6 +1089,9 @@ color: #E0E0E0;
     </widget>
    </widget>
    <widget class="QWidget" name="widget_27" native="true">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -1104,7 +1107,7 @@ color: #E0E0E0;
    <zorder>widget_27</zorder>
    <zorder>groupBox_9</zorder>
   </widget>
-  <widget class="QGroupBox" name="slide_8">
+  <widget class="QGroupBox" name="slide_9">
    <property name="enabled">
     <bool>true</bool>
    </property>
@@ -1216,7 +1219,7 @@ background: transparent;</string>
    <zorder>widget_33</zorder>
    <zorder>groupBox_11</zorder>
   </widget>
-  <widget class="QGroupBox" name="slide_9">
+  <widget class="QGroupBox" name="slide_10">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -1325,7 +1328,7 @@ background: transparent;</string>
    <zorder>widget_32</zorder>
    <zorder>groupBox_12</zorder>
   </widget>
-  <widget class="QGroupBox" name="slide_10">
+  <widget class="QGroupBox" name="slide_11">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -1470,7 +1473,7 @@ color: #E0E0E0;
    <zorder>widget_3</zorder>
    <zorder>groupBox_14</zorder>
   </widget>
-  <widget class="QGroupBox" name="slide_11">
+  <widget class="QGroupBox" name="slide_12">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -1664,7 +1667,7 @@ color: #E0E0E0;
    <zorder>widget_48</zorder>
    <zorder>groupBox_16</zorder>
   </widget>
-  <widget class="QGroupBox" name="slide_12">
+  <widget class="QGroupBox" name="slide_13">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -1803,11 +1806,155 @@ color: #E0E0E0;
    <zorder>widget_50</zorder>
    <zorder>groupBox_18</zorder>
   </widget>
+  <widget class="QGroupBox" name="slide_5">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>540</y>
+     <width>960</width>
+     <height>541</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border: 0px;
+background: transparent;</string>
+   </property>
+   <property name="title">
+    <string/>
+   </property>
+   <widget class="QGroupBox" name="groupBox_8">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>120</y>
+      <width>371</width>
+      <height>141</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QGroupBox {
+	background: rgba(0, 0, 0, 200);
+	border-radius: 20px;
+}</string>
+    </property>
+    <property name="title">
+     <string/>
+    </property>
+    <widget class="QLabel" name="label_19">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>4</y>
+       <width>371</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Cascadia Code</family>
+       <pointsize>12</pointsize>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Recording to a Hotkey</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+     <property name="margin">
+      <number>0</number>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_20">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>30</y>
+       <width>371</width>
+       <height>91</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Cascadia Code</family>
+       <pointsize>8</pointsize>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If there is no soundclip assigned to a hotkey, you can hold the hotkey to start recording a clip. If you would like to replace an existing clip, bind a modifier key below and hold it along with the hotkey you want to record over.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+     <property name="margin">
+      <number>5</number>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="next_6">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>300</x>
+       <y>110</y>
+       <width>61</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Cascadia Code</family>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+background: transparent;
+border: 0px;
+color: #606060;
+}
+
+QPushButton:hover {
+color: #B0B0B0;
+}
+
+QPushButton:pressed {
+color: #E0E0E0;
+}</string>
+     </property>
+     <property name="text">
+      <string>Next -&gt;</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="widget_19" native="true">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>960</width>
+      <height>540</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background: rgba(0, 0, 0, 150);</string>
+    </property>
+   </widget>
+   <zorder>widget_19</zorder>
+   <zorder>groupBox_8</zorder>
+  </widget>
   <zorder>slide_2</zorder>
   <zorder>slide</zorder>
   <zorder>slide_3</zorder>
   <zorder>slide_4</zorder>
-  <zorder>slide_5</zorder>
   <zorder>slide_6</zorder>
   <zorder>slide_7</zorder>
   <zorder>slide_8</zorder>
@@ -1815,7 +1962,9 @@ color: #E0E0E0;
   <zorder>slide_10</zorder>
   <zorder>slide_11</zorder>
   <zorder>slide_12</zorder>
+  <zorder>slide_13</zorder>
   <zorder>skip</zorder>
+  <zorder>slide_5</zorder>
  </widget>
  <resources/>
  <connections/>

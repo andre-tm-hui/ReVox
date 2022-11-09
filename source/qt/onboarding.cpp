@@ -25,6 +25,7 @@ Onboarding::Onboarding(SoundboardMenu *soundboardMenu,
     slides.push_back(ui->slide_10);
     slides.push_back(ui->slide_11);
     slides.push_back(ui->slide_12);
+    slides.push_back(ui->slide_13);
 
     for (unsigned int i = 0; i < slides.size(); i++) {
         slides[i]->hide();
@@ -33,6 +34,7 @@ Onboarding::Onboarding(SoundboardMenu *soundboardMenu,
     connect(ui->next_1, SIGNAL(clicked()), this, SLOT(next()));
     connect(ui->next_2, SIGNAL(clicked()), this, SLOT(next()));
     connect(ui->next_4, SIGNAL(clicked()), this, SLOT(next()));
+    connect(ui->next_6, SIGNAL(clicked()), this, SLOT(next()));
     connect(ui->next_7, SIGNAL(clicked()), this, SLOT(next()));
     connect(ui->next_8, SIGNAL(clicked()), this, SLOT(next()));
     connect(ui->next_13, SIGNAL(clicked()), this, SLOT(next()));
@@ -56,7 +58,7 @@ void Onboarding::next()
 {
     hideSlide();
     currentSlide++;
-    if (currentSlide == 11) {
+    if (currentSlide == 12) {
         ui->skip->hide();
     }
     if (currentSlide < slides.size())

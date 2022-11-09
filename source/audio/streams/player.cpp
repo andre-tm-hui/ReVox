@@ -76,11 +76,8 @@ void Player::Play(int keycode, json settings)
     // open the file and add it to the queue
     SNDFILE* file = sf_open(FILE_NAME.c_str(), SFM_READ, &data.info);
     if (settings["endAt"] == -1) settings["endAt"] = data.info.frames;
-    float *temp = new float[2];
-    for (int i = 0; i < settings["startAt"]; i++)
-    {
-        sf_read_float(file, temp, 2);
-    }
+    float *temp = new float[2 * settings["startAt"].get<int>()];
+    sf_read_float(file, temp, 2 * settings["startAt"].get<int>());
     delete[] temp;
     files[keycode].push(file);
     data.timers[file].timeLeft = settings["endAt"].get<int>() - settings["startAt"].get<int>();

@@ -39,5 +39,6 @@
         <file>images/pixMasks/11.bmp</file>
         <file>images/pixMasks/5.bmp</file>
         <file>images/pixMasks/6.bmp</file>
+        <file>images/pixMasks/12.bmp</file>
     </qresource>
 </RCC>

@@ -37,9 +37,9 @@ public:
 private:
     void add(float *buf);
 
-    std::vector<std::vector<float>> getWindows(float *buffer, float period, std::vector<float> markers, float scale = 1.f);
+    std::vector<std::vector<float>> getWindows(float *buffer, float period, std::vector<int> markers, float scale = 1.f);
 
-    void addToBuffer(std::vector<float> window, float marker);
+    void addToBuffer(std::vector<float> window, int marker);
 
     std::vector<float> resample(std::vector<float> input, float scale);
     // by resampling, if played back at the original sampling rate, the pitch will change, as does the length

@@ -1,3 +1,5 @@
+#define _ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH
+
 #include "mainwindow.h"
 #include "audiomanager.h"
 #include "singleapplication.h"
@@ -8,6 +10,8 @@
 #include <QComboBox>
 #include <QLocale>
 #include <QTranslator>
+
+#include <Windows.h>
 
 int main(int argc, char *argv[])
 {
@@ -28,8 +32,4 @@ int main(int argc, char *argv[])
     w.keyboardListener->Start();
 
     return a.exec();
-}
-
-void Test(){
-
 }

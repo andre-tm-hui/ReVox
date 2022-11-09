@@ -37,14 +37,12 @@ signals:
 private slots:
     void onHotkeySelect();
 
-    void addBindSlot();
+    void addBind(int keybind = -1, QString label = "");
     void removeBind();
 
     void onSliderChanged(int value);
 
 private:
-    void addBind(int keybind = -1, QString label = "");
-
     Ui::FXMenu *ui;
     json *hotkeys;
     AudioManager *am;

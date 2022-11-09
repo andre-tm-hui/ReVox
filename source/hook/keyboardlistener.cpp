@@ -1,122 +1,113 @@
 #include "keyboardlistener.h"
 
-KeyboardListener::KeyboardListener()
+std::wstring FillDeviceInfo(const std::wstring& deviceInterfaceName)
 {
+    // you need to provide deviceInterfaceName
+    // example from my system: `\\?\HID#VID_203A&PID_FFFC&MI_01#7&2de99099&0&0000#{378de44c-56ef-11d1-bc8c-00a0c91405dd}`
 
-}
+    DEVPROPTYPE propertyType;
+    ULONG propertySize = 0;
+    CONFIGRET cr = ::CM_Get_Device_Interface_PropertyW(deviceInterfaceName.c_str(), &DEVPKEY_Device_InstanceId, &propertyType, nullptr, &propertySize, 0);
 
-// define some static properties
-int KeyboardListener::rebindTo = -1;
-bool KeyboardListener::rebinding = false;
-std::mutex* KeyboardListener::mtx = new std::mutex();
-std::condition_variable* KeyboardListener::cv = new std::condition_variable();
+    if (cr != CR_BUFFER_SMALL)
+        return L"";
 
+    std::wstring deviceId;
+    deviceId.resize(propertySize);
+    cr = ::CM_Get_Device_Interface_PropertyW(deviceInterfaceName.c_str(), &DEVPKEY_Device_InstanceId, &propertyType, (PBYTE)deviceId.data(), &propertySize, 0);
 
-LRESULT CALLBACK KeyboardListener::KeyboardEvent(int nCode, WPARAM wParam, LPARAM lParam) {
-    if (nCode == HC_ACTION) {
-        PKBDLLHOOKSTRUCT p = (PKBDLLHOOKSTRUCT)lParam;
-        if (rebinding)
-        {
-            if (audioManager->soundboardHotkeys.find(std::to_string(p->vkCode)) == audioManager->soundboardHotkeys.end() &&
-                    audioManager->voiceFXHotkeys.find(std::to_string(p->vkCode)) == audioManager->voiceFXHotkeys.end())
-            {
-                switch (p->vkCode)
-                {
-                case 8: // backspace to clear
-                    rebindTo = -2;
-                    break;
-                case 27: // escape to cancel
-                    rebindTo = -1;
-                    break;
-                default:
-                    rebindTo = p->vkCode;
-                    break;
-                }
+    if (cr != CR_SUCCESS)
+        return L"";
 
-                rebinding = false;
-                cv->notify_all();
-            }
-        }
-        else
-        {
-            json bindSettings;
-            bool isSoundboard = true;
-            if (audioManager->soundboardHotkeys.find(std::to_string(p->vkCode)) != audioManager->soundboardHotkeys.end())
-            {
-                bindSettings = audioManager->soundboardHotkeys[std::to_string(p->vkCode)];
-            }
-            else if (audioManager->voiceFXHotkeys.find(std::to_string(p->vkCode)) != audioManager->voiceFXHotkeys.end())
-            {
-                bindSettings = audioManager->voiceFXHotkeys[std::to_string(p->vkCode)];
-                isSoundboard = false;
-            }
-            if (!bindSettings.empty()) {
-                switch (wParam) {
-                case WM_KEYDOWN:
-                    if (isSoundboard)
-                    {
-                        if (!audioManager->recording) {
-                            audioManager->Play(p->vkCode);
-                        }
-                    }
-                    else
-                    {
-                        if (audioManager->passthrough != nullptr)
-                        {
-                            audioManager->passthrough->SetFX(audioManager->voiceFXHotkeys[std::to_string(p->vkCode)]);
-                            *(audioManager->fxHotkey) = p->vkCode;
-                        }
-                    }
+    // here is deviceId will contain device instance id
+    // example from my system: `HID\VID_203A&PID_FFFC&MI_01\7&2de99099&0&0000`
 
-                    break;
-                case WM_KEYUP:
-                    if (isSoundboard)
-                    {
-                        // stop recording when button is released
-                        if (audioManager->recording)
-                        {
-                            audioManager->StopRecording();
-                        }
-                    }
-                    break;
-                case WM_SYSKEYDOWN:
-                    if (isSoundboard)
-                    {
-                        // secondary record button - used to record over already existing clips
-                        if (!audioManager->recording)
-                        {
-                            audioManager->Record(p->vkCode);
-                        }
-                    }
-                    break;
-                case WM_SYSKEYUP:
-                    if (isSoundboard)
-                    {
-                        // stop recording when button is released
-                        if (audioManager->recording)
-                        {
-                            audioManager->StopRecording();
-                        }
-                    }
-                    break;
-                default:
-                    break;
-                }
-            }
-        }
+    DEVINST devInst;
+    cr = ::CM_Locate_DevNodeW(&devInst, (DEVINSTID_W)deviceId.c_str(), CM_LOCATE_DEVNODE_NORMAL);
+
+    if (cr != CR_SUCCESS)
+        return L"";
+
+    propertySize = 0;
+    cr = ::CM_Get_DevNode_PropertyW(devInst, &DEVPKEY_Device_FriendlyName, &propertyType, nullptr, &propertySize, 0);
+
+    if (cr == CR_BUFFER_SMALL)
+    {
+        std::wstring friendlyString;
+        friendlyString.resize(propertySize);
+        cr = ::CM_Get_DevNode_PropertyW(devInst, &DEVPKEY_Device_FriendlyName, &propertyType, (PBYTE)friendlyString.data(), &propertySize, 0);
+        return friendlyString;
     }
-    return CallNextHookEx(0, nCode, wParam, lParam);
+
+    propertySize = 0;
+    cr = ::CM_Get_DevNode_PropertyW(devInst, &DEVPKEY_NAME, &propertyType, nullptr, &propertySize, 0);
+
+    if (cr == CR_BUFFER_SMALL)
+    {
+        std::wstring friendlyString;
+        friendlyString.resize(propertySize);
+        cr = ::CM_Get_DevNode_PropertyW(devInst, &DEVPKEY_NAME, &propertyType, (PBYTE)friendlyString.data(), &propertySize, 0);
+        return friendlyString;
+    }
+
+    return L"";
 }
 
-int KeyboardListener::Start()
+KeyboardListener::KeyboardListener() {}
+
+LRESULT CALLBACK KeyboardListener::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+    switch (uMsg) {
+    case WM_INPUT:
+        // Get the RawInputData
+        UINT dwSize;
+        GetRawInputData((HRAWINPUT)lParam, RID_INPUT, NULL, &dwSize, sizeof(RAWINPUTHEADER));
+        LPBYTE lpb = new BYTE[dwSize];
+        if (lpb == NULL) return 0;
+        if (GetRawInputData((HRAWINPUT)lParam, RID_INPUT, lpb, &dwSize, sizeof(RAWINPUTHEADER)) != dwSize)
+            OutputDebugString(TEXT("GetRawInputData does not return correct size!\n"));
+
+        RAWINPUT *raw = (RAWINPUT*)lpb;
+
+        // Get the identifying data - code, deviceName, and the action - event
+        USHORT code = raw->data.keyboard.VKey;
+        USHORT event = raw->data.keyboard.Flags;
+
+        TCHAR ridDeviceName[256];
+        UINT cbDataSize = 256;
+        GetRawInputDeviceInfo(raw->header.hDevice, RIDI_DEVICENAME, ridDeviceName, &cbDataSize);
+        if (cbDataSize == 0 || cbDataSize == UINT(-1))
+            OutputDebugString(TEXT("Failed to get device name!\n"));
+
+
+        std::wstring wDeviceName = FillDeviceInfo(ridDeviceName);
+        std::string deviceName(wDeviceName.begin(), wDeviceName.end());
+        deviceName.erase(std::remove_if(deviceName.begin(), deviceName.end(),
+                                        [](char c){ return c == '\u0000' || !(c >= 0 && c < 128); }), deviceName.end());
+
+        audioManager->KeyEvent(code, deviceName, event); // Manage all keyboard events in AudioManager obj
+        break;
+    }
+
+    return DefWindowProc(hWnd, uMsg, wParam, lParam);
+}
+
+int KeyboardListener::Start(HWND hWnd)
 {
-    hhookKbdListener = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardEvent, 0, 0);
+    HINSTANCE hInstance = GetModuleHandle(NULL);
+    WNDCLASSEXW wcex = {};
+    wcex.cbSize = sizeof(wcex);
+    wcex.style = CS_HREDRAW | CS_VREDRAW;
+    wcex.lpfnWndProc = WndProc;
+    wcex.lpszClassName = TEXT("KbdListener");
+    wcex.hInstance = hInstance;
+    if (RegisterClassEx(&wcex))
+        hWnd = CreateWindowEx(0, wcex.lpszClassName, L"KbdListener", 0, 0, 0, 0, 0, HWND_MESSAGE, NULL, hInstance, NULL);
+
+    rid.usUsagePage = 0x01;
+    rid.usUsage = 0x06;
+    rid.dwFlags = RIDEV_INPUTSINK;
+    rid.hwndTarget = hWnd;
+    if (!RegisterRawInputDevices(&rid, 1, sizeof(rid))) { std::cout<<"failed"<<std::endl;}
+    SetWindowLongPtr(hWnd, GWLP_WNDPROC, (LONG_PTR)&WndProc);
     return 0;
 }
-
-
-KeyboardListener::~KeyboardListener()
-{
-    UnhookWindowsHookEx(hhookKbdListener);
-}
-

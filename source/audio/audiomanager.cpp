@@ -17,6 +17,7 @@ AudioManager::AudioManager()
             std::filesystem::create_directory(appdata + dirName);
             std::filesystem::create_directory(appdata + dirName + "samples/");
 
+            settings = defaultSettings;
             SaveSettings();
         }
         // otherwise, load saved configurations
@@ -26,18 +27,17 @@ AudioManager::AudioManager()
             if (!settingsFile.fail())
             {
                 settingsFile >> settings;
-                for (auto [k,v] : defaultSettings.items())
+                for (auto const& [k,v] : defaultSettings.items())
                     if (settings.find(k) == settings.end())
                         settings[k] = v;
             }
-            else settings = defaultSettings;
 
             std::ifstream soundboardBindsFile(appdata + dirName + "soundboard.json");
             if (!soundboardBindsFile.fail())
             {
                 soundboardBindsFile >> soundboardHotkeys;
-                for (auto& [keycode,keybind] : soundboardHotkeys.items())
-                    for (auto [k,v] : baseSoundboardHotkey.items())
+                for (auto& [idx,keybind] : soundboardHotkeys.items())
+                    for (auto const& [k,v] : baseSoundboardHotkey.items())
                         if (keybind.find(k) == keybind.end())
                             keybind[k] = v;
             }
@@ -46,12 +46,12 @@ AudioManager::AudioManager()
             if (!voiceFXBindsFile.fail())
             {
                 voiceFXBindsFile >> voiceFXHotkeys;
-                for (auto& [keycode,keybind] : voiceFXHotkeys.items())
-                    for (auto [k,v] : baseFXHotkey.items()) {
+                for (auto& [idx,keybind] : voiceFXHotkeys.items())
+                    for (auto const& [k,v] : baseFXHotkey.items()) {
                         if (keybind.find(k) == keybind.end())
                             keybind[k] = v;
                         else if (v.is_object())
-                            for (auto [k1,v1] : v.items())
+                            for (auto const& [k1,v1] : v.items())
                                if (keybind[k].find(k1) == keybind[k].end())
                                    keybind[k][k1] = v1;
                     }
@@ -71,15 +71,71 @@ AudioManager::~AudioManager()
     SaveBinds();
 }
 
-void AudioManager::Record(int keycode)
+void AudioManager::KeyEvent(int keycode, std::string deviceName, int event)
 {
-    if ((soundboardHotkeys[std::to_string(keycode)]["recordInput"] ||
-         soundboardHotkeys[std::to_string(keycode)]["recordLoopback"]) &&
-            std::filesystem::exists(appdata + dirName + "samples/" + std::to_string(keycode) + ".mp3"))
-        std::filesystem::remove(appdata + dirName + "samples/" + std::to_string(keycode) + ".mp3");
+    std::pair<bindType, std::string> bind = isExistingKeybind(keycode, deviceName);
+    bindType bt = bind.first;
+    std::string idx = bind.second;
 
-    if (soundboardHotkeys[std::to_string(keycode)]["recordInput"] && passthrough != nullptr) passthrough->Record(keycode);
-    if (soundboardHotkeys[std::to_string(keycode)]["recordLoopback"] && monitor != nullptr) monitor->Record(keycode);
+    if (rebinding) {
+        if ((bt == bindType::soundboard || bt == bindType::voicefx) && idx.size() > 0) return;
+        rebindDevice = deviceName;
+        switch (keycode) {
+        case 8: // bksp to clear
+            rebindTo = -2;
+            break;
+        case 27: // esc to cancel
+            rebindTo = -1;
+            break;
+        default:
+            rebindTo = keycode;
+        }
+
+        rebinding = false;
+    } else {
+        json bindSettings;
+        switch (bt) {
+        case bindType::invalid:
+            return;
+        case bindType::soundboard:
+            if (idx.size() == 0) return;
+            bindSettings = soundboardHotkeys[idx];
+            if (bindSettings.empty()) return;
+            if (event == 0)
+                Play(idx);
+            else
+                if (recording)
+                    StopRecording();
+            break;
+        case bindType::voicefx:
+            if (idx.size() == 0) return;
+            bindSettings = voiceFXHotkeys[idx];
+            if (bindSettings.empty()) return;
+            if (event == 0 && passthrough != nullptr) {
+                passthrough->SetFX(bindSettings);
+                *fxHotkey = keycode;
+            }
+            break;
+        case bindType::recordOver:
+            if (event == 0)
+                this->recordOver = true;
+            else
+                this->recordOver = false;
+            break;
+        }
+    }
+}
+
+void AudioManager::Record(std::string idx)
+{
+    json keyData = soundboardHotkeys[idx];
+    if ((keyData["recordInput"] ||
+         keyData["recordLoopback"]) &&
+            std::filesystem::exists(appdata + dirName + "samples/" + idx + ".mp3"))
+        std::filesystem::remove(appdata + dirName + "samples/" + idx + ".mp3");
+
+    if (keyData["recordInput"] && passthrough != nullptr) passthrough->Record(std::stoi(idx));
+    if (keyData["recordLoopback"] && monitor != nullptr) monitor->Record(std::stoi(idx));
 
     recording = true;
 }
@@ -93,14 +149,16 @@ void AudioManager::StopRecording()
     wv->SetAudioClip();
 }
 
-void AudioManager::Play(int keycode, bool recordFallback)
+void AudioManager::Play(std::string idx, bool recordFallback)
 {
-    if (player != nullptr)
+    if (player != nullptr && !recording)
     {
-        if (player->CanPlay(keycode))
-            player->Play(keycode, soundboardHotkeys[std::to_string(keycode)]);
-        else if (recordFallback)
-            Record(keycode);
+        bool playable = player->CanPlay(std::stoi(idx));
+        if (this->recordOver || !playable)
+            Record(idx);
+        else if ( playable) {
+            player->Play(std::stoi(idx), soundboardHotkeys[idx]);
+        }
     }
 }
 
@@ -142,7 +200,7 @@ void AudioManager::GetDeviceSettings()
                 loopbackDevices[deviceName] = {Pa_HostApiDeviceIndexToDeviceIndex(apiMap["Windows WASAPI"], i), 2};
                 std::string outputDeviceName = deviceName.substr(0, deviceName.size()-11);
                 outputDevices[outputDeviceName] = {deviceList[outputDeviceName], GetChannels(deviceList[outputDeviceName], false)};
-                if (outputDeviceName.find(settings["outputDevice"]) != std::string::npos)
+                if (outputDeviceName.find(settings["outputDevice"].get<std::string>()) != std::string::npos)
                 {
                     ids.output = outputDevices[outputDeviceName].id;
                     settings["outputDevice"] = outputDeviceName;
@@ -216,11 +274,11 @@ int AudioManager::GetCorrespondingLoopbackDevice(int i)
 /* Reset functions for portaudio objects, called when corresponding devices are changed in the GUI */
 void AudioManager::Reset(bool devicesChanged)
 {
-    delete passthrough;
-    delete player;
-    delete monitor;
-    delete cleanOutput;
-    delete noiseGen;
+    if (passthrough != nullptr) delete passthrough;
+    if (player != nullptr) delete player;
+    if (monitor != nullptr) delete monitor;
+    if (cleanOutput != nullptr) delete cleanOutput;
+    if (noiseGen != nullptr) delete noiseGen;
 
     Pa_Terminate();
     Pa_Initialize();
@@ -258,11 +316,14 @@ void AudioManager::SetupStreams()
                                             settings["framesPerBuffer"].get<int>(),
                                             appdata + dirName,
                                             inputBuffer);
+
     if (ids.streamOut != ids.output)
         cleanOutput     = new CleanOutput(  GetDeviceByIndex(loopbackdevice),
                                             GetDeviceByIndex(ids.output),
                                             settings["sampleRate"].get<int>(),
                                             1);
+    else
+        cleanOutput = nullptr;
 
     SetSampleMonitor(settings["monitorSamples"].get<int>());
     SetMicMonitor(settings["monitorMic"].get<int>());
@@ -306,60 +367,64 @@ void AudioManager::SaveBinds()
 }
 
 /* Functions handling hotkey binding/rebinding */
-void AudioManager::Rebind(int keycode)
+void AudioManager::StartRebind()
 {
-    rebindAt = keycode;
+    rebinding = true;
 }
 
-void AudioManager::SetNewBind(int keycode, bool isSoundboard)
+void AudioManager::SetNewBind(int keycode, std::string deviceName, int idx, bindType bindType)
 {
-    if (rebindAt == keycode)
-    {
-        rebindAt = -1;
-        return;
-    }
-
     json *obj, entry;
-    if (isSoundboard)
-    {
-        obj = &soundboardHotkeys;
-        entry = baseSoundboardHotkey;
-    }
-    else
-    {
-        obj = &voiceFXHotkeys;
-        entry = baseFXHotkey;
-    }
+    switch (bindType) {
+    case bindType::soundboard: case bindType::voicefx:
+        if (bindType == soundboard)
+        {
+            obj = &soundboardHotkeys;
+            entry = baseSoundboardHotkey;
+        }
+        else
+        {
+            obj = &voiceFXHotkeys;
+            entry = baseFXHotkey;
+        }
 
-    if (rebindAt != -1)
-    {
-        (*obj)[std::to_string(keycode)] = (*obj)[std::to_string(rebindAt)];
-        if (isSoundboard && player->CanPlay(rebindAt)) player->Rename(rebindAt, keycode);
-
-        obj->erase(std::to_string(rebindAt));
-        rebindAt = -1;
+        entry["keycode"] = keycode;
+        entry["deviceName"] = deviceName;
+        if (obj->find(std::to_string(idx)) == obj->end())
+            (*obj)[std::to_string(idx)] = entry;
+        else {
+            obj = &((*obj)[std::to_string(idx)]);
+            (*obj)["keycode"] = keycode;
+            (*obj)["deviceName"] = deviceName;
+        }
+        SaveBinds();
+        break;
+    case bindType::recordOver:
+        settings["recordOverKeybind"] = keycode;
+        if (keycode >= 0)
+            settings["recordOverDeviceName"] = deviceName;
+        else
+            settings["recordOverDeviceName"] = "";
+        SaveSettings();
+        break;
     }
-    else
-    {
-        (*obj)[std::to_string(keycode)] = entry;
-    }
-    SaveBinds();
 }
 
-void AudioManager::RemoveBind(int keycode)
+void AudioManager::RemoveBind(int idx, bindType bindType)
 {
-    if (soundboardHotkeys.find(std::to_string(keycode)) != soundboardHotkeys.end())
-    {
-        soundboardHotkeys.erase(std::to_string(keycode));
+    json *obj = bindType == soundboard ? &soundboardHotkeys : &voiceFXHotkeys;
+    if (bindType == soundboard && std::filesystem::exists(appdata + dirName + "samples/" + std::to_string(idx) + ".mp3"))
+        std::filesystem::remove(appdata + dirName + "samples/" + std::to_string(idx) + ".mp3");
+    int i;
+    for (i = 0; i < obj->size(); i++) {
+        if (i > idx) {
+            (*obj)[std::to_string(i - 1)] = (*obj)[std::to_string(i)];
+            if (bindType == soundboard && player->CanPlay(i))
+                player->Rename(i, i - 1);
+        }
     }
-    else if (voiceFXHotkeys.find(std::to_string(keycode)) != voiceFXHotkeys.end())
-    {
-        voiceFXHotkeys.erase(std::to_string(keycode));
-    }
-    if (std::filesystem::exists(appdata + dirName + "samples/" + std::to_string(keycode) + ".mp3"))
-    {
-        std::filesystem::remove(appdata + dirName + "samples/" + std::to_string(keycode) + ".mp3");
-    }
+    obj->erase(std::to_string(i-1));
+
     SaveBinds();
 }
 
@@ -392,9 +457,9 @@ device AudioManager::GetDeviceByIndex(int i)
     return {-1, -1};
 }
 
-void AudioManager::OverrideSound(std::string fname, int keycode)
+void AudioManager::OverrideSound(std::string fname, int idx)
 {
-    std::string path = appdata + dirName + "samples/" + std::to_string(keycode) + ".mp3";
+    std::string path = appdata + dirName + "samples/" + std::to_string(idx) + ".mp3";
     if (std::filesystem::exists(path))
     {
         std::filesystem::remove(path);
@@ -434,7 +499,7 @@ void AudioManager::OverrideSound(std::string fname, int keycode)
         sf_count_t count;
         SF_INFO infoR = info;
         infoR.samplerate = settings["sampleRate"];
-        SNDFILE* outfile = sf_open((appdata + dirName + "samples/" + std::to_string(keycode) + "r.mp3").c_str(), SFM_WRITE, &infoR);
+        SNDFILE* outfile = sf_open((appdata + dirName + "samples/" + std::to_string(idx) + "r.mp3").c_str(), SFM_WRITE, &infoR);
         double ratio = (double)settings["sampleRate"] / (double)info.samplerate;
 
         int err;
@@ -443,8 +508,8 @@ void AudioManager::OverrideSound(std::string fname, int keycode)
         float *in = new float[1024], *out = new float[(int)(512 * ratio) * 2 + 2];
         dat->data_in = in;
         dat->data_out = out;
-        dat->input_frames = 1024 / info.channels;
-        dat->output_frames = (int)((512 * ratio)) + 1;
+        dat->input_frames = 1024;
+        dat->output_frames = (int)((1024 * ratio)) + 2;
         dat->src_ratio = ratio;
 
         while (1)
@@ -452,7 +517,7 @@ void AudioManager::OverrideSound(std::string fname, int keycode)
             count = sf_read_float(infile, in, 1024);
             if (count == 0) break;
             src_process(src, dat);
-            sf_write_float(outfile, out, dat->output_frames_gen * 2);
+            sf_write_float(outfile, out, dat->output_frames_gen);
             if (count < 1024) break;
         }
 
@@ -464,6 +529,56 @@ void AudioManager::OverrideSound(std::string fname, int keycode)
         delete dat;
 
         std::filesystem::remove(path.c_str());
-        std::filesystem::rename((appdata + dirName + "samples/" + std::to_string(keycode) + "r.mp3").c_str(), path.c_str());
+        std::filesystem::rename((appdata + dirName + "samples/" + std::to_string(idx) + "r.mp3").c_str(), path.c_str());
     }
+
+    if (info.channels != 2) {
+        SF_INFO info;
+        SNDFILE* infile = sf_open(path.c_str(), SFM_READ, &info);
+
+        sf_count_t count;
+        SF_INFO infoR = info;
+        infoR.channels = 2;
+        SNDFILE* outfile = sf_open((appdata + dirName + "samples/" + std::to_string(idx) + "c.mp3").c_str(), SFM_WRITE, &infoR);
+        double ratio = (double)settings["sampleRate"] / (double)info.samplerate;
+
+        float *in = new float[512 * info.channels], *out = new float[1024];
+
+        while (1)
+        {
+            count = sf_read_float(infile, in, 512 * info.channels);
+            if (count == 0) break;
+            for (int i = 0; i < 512; i++) {
+                for (int j = 1; j < info.channels; j++) {
+                    in[info.channels * i] += in[info.channels * i + j];
+                }
+                out[2 * i] = in[info.channels * i] / info.channels;
+                out[2 * i + 1] = out[2 * i];
+            }
+            sf_write_float(outfile, out, 1024);
+            if (count < 512 * info.channels) break;
+        }
+
+        sf_close(infile);
+        sf_close(outfile);
+        delete[] in;
+        delete[] out;
+        std::filesystem::remove(path.c_str());
+        std::filesystem::rename((appdata + dirName + "samples/" + std::to_string(idx) + "c.mp3").c_str(), path.c_str());
+    }
+}
+
+std::pair<bindType, std::string> AudioManager::isExistingKeybind(int keycode, std::string deviceName) {
+    for (auto const& [k,v] : soundboardHotkeys.items())
+        if (v["keycode"] == keycode && v["deviceName"] == deviceName)
+            return {bindType::soundboard, k};
+
+    for (auto const& [k,v] : voiceFXHotkeys.items())
+        if (v["keycode"] == keycode && v["deviceName"] == deviceName)
+            return {bindType::voicefx, k};
+
+    if (settings["recordOverKeybind"] == keycode && settings["recordOverDeviceName"] == deviceName)
+        return {bindType::recordOver, ""};
+
+    return {bindType::invalid, ""};
 }

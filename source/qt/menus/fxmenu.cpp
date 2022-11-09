@@ -26,12 +26,12 @@ FXMenu::FXMenu(json *hotkeys,
     connect(ui->slider, SIGNAL(valueChanged(int)), this, SLOT(onSliderChanged(int)));
     ui->slider->setValue(am->settings["monitorMic"]);
 
-    connect(ui->add, SIGNAL(clicked()), this, SLOT(addBindSlot()));
+    connect(ui->add, SIGNAL(clicked()), this, SLOT(addBind()));
     connect(ui->remove, SIGNAL(clicked()), this, SLOT(removeBind()));
 
     for (auto& [keybind, settings] : (*hotkeys).items())
     {
-        addBind(std::stoi(keybind), QString::fromStdString(settings["label"].get<std::string>()));
+        addBind(settings["keycode"].get<int>(), QString::fromStdString(settings["label"].get<std::string>()));
     }
 
     for (int i = 0; i < ui->tabWidget->count(); i++)
@@ -68,10 +68,10 @@ void FXMenu::DisableTabWidget()
     ui->remove->setEnabled(false);
 }
 
-void FXMenu::OnHotkeyToggle(int keycode, bool clear)
+void FXMenu::OnHotkeyToggle(int idx, bool clear)
 {
-    if (hotkeys->find(std::to_string(keycode)) == hotkeys->end()) return;
-    currHotkey = keycode;
+    if (hotkeys->find(std::to_string(idx)) == hotkeys->end()) return;
+    currHotkey = idx;
     json *settings = &(*hotkeys)[std::to_string(currHotkey)];
     for (int i = 0; i < ui->tabWidget->count(); i++)
     {
@@ -105,18 +105,11 @@ void FXMenu::OnHotkeyToggle(int keycode, bool clear)
 void FXMenu::onHotkeySelect()
 {
     HotkeyItem *item = qobject_cast<HotkeyItem *>(ui->hotkeysList->itemWidget(ui->hotkeysList->currentItem()));
-    if (item->cb.keycode == this->currHotkey) return;
-    OnHotkeyToggle(item->cb.keycode, false);
+    if (item->cb.idx == this->currHotkey) return;
+    OnHotkeyToggle(item->cb.idx, false);
     ui->remove->setEnabled(true);
 
     emit itemSelected();
-}
-
-void FXMenu::addBindSlot()
-{
-    ui->add->setEnabled(false);
-    this->parentWidget()->setEnabled(false);
-    addBind();
 }
 
 void FXMenu::addBind(int keybind, QString label)
@@ -124,10 +117,9 @@ void FXMenu::addBind(int keybind, QString label)
     HotkeyItem *item = new HotkeyItem(false,
                                       label == "" ? "Bind " + QString::number(ui->hotkeysList->count() + 1) : label,
                                       ui->hotkeysList->width(),
+                                      ui->hotkeysList->count(),
                                       keybind,
                                       am,
-                                      kl,
-                                      ui->add,
                                       this->parentWidget());
     QListWidgetItem *orig = new QListWidgetItem();
     orig->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable);
@@ -136,17 +128,23 @@ void FXMenu::addBind(int keybind, QString label)
     orig->setSizeHint(QSize(0, 36));
 
     ui->hotkeysList->scrollToBottom();
-    ui->hotkeysList->resize(ui->hotkeysList->width(), std::min(36 * ui->hotkeysList->count() + 2, 221));
+    ui->hotkeysList->resize(ui->hotkeysList->width(), __min(36 * ui->hotkeysList->count() + 2, 221));
 }
 
 void FXMenu::removeBind()
 {
     HotkeyItem *item = qobject_cast<HotkeyItem *>(ui->hotkeysList->itemWidget(ui->hotkeysList->currentItem()));
-    am->RemoveBind(item->cb.keycode);
+    am->RemoveBind(item->cb.idx, bindType::voicefx);
     ui->hotkeysList->removeItemWidget(ui->hotkeysList->currentItem());
     delete ui->hotkeysList->currentItem();
     DisableTabWidget();
-    ui->hotkeysList->resize(ui->hotkeysList->width(), std::min(36 * ui->hotkeysList->count() + 2, 221));
+
+    for (int i = item->cb.idx; i < ui->hotkeysList->count(); i++) {
+        HotkeyItem *item = qobject_cast<HotkeyItem *>(ui->hotkeysList->itemWidget(ui->hotkeysList->item(i)));
+        item->cb.idx--;
+    }
+
+    ui->hotkeysList->resize(ui->hotkeysList->width(), __min(36 * ui->hotkeysList->count() + 2, 221));
 }
 
 void FXMenu::onSliderChanged(int value)
