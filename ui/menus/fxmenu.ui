@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>FXMenu</class>
+ <widget class="QWidget" name="FXMenu">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>880</width>
+    <height>540</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background: transparent;</string>
+  </property>
+  <widget class="MonitorSlider" name="monitorSlider" native="true">
+   <property name="geometry">
+    <rect>
+     <x>45</x>
+     <y>60</y>
+     <width>125</width>
+     <height>420</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Hear your own voice&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+  </widget>
+  <widget class="QWidget" name="hotkeysContainer" native="true">
+   <property name="geometry">
+    <rect>
+     <x>215</x>
+     <y>50</y>
+     <width>600</width>
+     <height>215</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QTabWidget" name="fxTabWidget">
+   <property name="geometry">
+    <rect>
+     <x>215</x>
+     <y>275</y>
+     <width>600</width>
+     <height>215</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QTabWidget::pane { border: 0px; background-color: #181818; border-radius: 10px; border-top-left-radius: 0px;}
+
+QTabWidget::tab-bar { left: 0px; }
+
+QTabBar::tab { 
+font-family: Arial;
+background: #282828; 
+border: 1px solid #282828; 
+border-bottom-color: #181818; 
+border-top-left-radius: 3px; 
+border-top-right-radius: 3px;
+min-width: 20ex; 
+padding: 3px 10px;}
+
+QTabBar::tab:hover { background: #383838; }
+
+QTabBar::tab:selected { background: #181818; font-weight: bold; color: #00D0D0; border-color: #181818; border-bottom-color: #181818; }
+
+QTabBar::tab:!selected { border-color: #181818; color: #707070; margin-top: 2px;}</string>
+   </property>
+   <property name="tabShape">
+    <enum>QTabWidget::Rounded</enum>
+   </property>
+   <property name="currentIndex">
+    <number>0</number>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>10</width>
+     <height>10</height>
+    </size>
+   </property>
+   <property name="elideMode">
+    <enum>Qt::ElideNone</enum>
+   </property>
+   <widget class="QWidget" name="tab">
+    <attribute name="title">
+     <string>Reverb</string>
+    </attribute>
+   </widget>
+   <widget class="QWidget" name="tab_2">
+    <attribute name="title">
+     <string>Tab 2</string>
+    </attribute>
+   </widget>
+  </widget>
+  <widget class="QWidget" name="overlay" native="true">
+   <property name="geometry">
+    <rect>
+     <x>215</x>
+     <y>299</y>
+     <width>600</width>
+     <height>191</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background: rgba(0,0,0,100);
+border-radius: 10px;
+border-top-left-radius: 0px;</string>
+   </property>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MonitorSlider</class>
+   <extends>QWidget</extends>
+   <header>ui/widgets/monitorslider.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

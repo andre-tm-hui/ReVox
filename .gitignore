@@ -75,3 +75,5 @@ builds/
 *.xcf
 .vs/
 nlohmann/
+deprecated/
+docs/

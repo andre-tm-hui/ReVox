@@ -1,0 +1,447 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SoundboardMenu</class>
+ <widget class="QWidget" name="SoundboardMenu">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>880</width>
+    <height>540</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background: transparent;</string>
+  </property>
+  <widget class="QWidget" name="hotkeysContainer" native="true">
+   <property name="geometry">
+    <rect>
+     <x>215</x>
+     <y>50</y>
+     <width>600</width>
+     <height>215</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QGroupBox" name="settingsContainer">
+   <property name="geometry">
+    <rect>
+     <x>215</x>
+     <y>275</y>
+     <width>600</width>
+     <height>215</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QGroupBox { border: 0px; background-color: #181818; border-radius: 10px; }</string>
+   </property>
+   <property name="title">
+    <string/>
+   </property>
+   <widget class="QWidget" name="cropperBG" native="true">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>50</y>
+      <width>600</width>
+      <height>111</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background: #080808;</string>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="modifierGroup">
+    <property name="geometry">
+     <rect>
+      <x>398</x>
+      <y>11</y>
+      <width>191</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Hold this key along with any hotkey to begin recording, overriding an existing clip&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QGroupBox { border-radius: 0px; border: 0px; background-color: transparent; }</string>
+    </property>
+    <property name="title">
+     <string/>
+    </property>
+    <widget class="QLabel" name="modifierLabel">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>-11</y>
+       <width>80</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QWidget {color: #A0A0A0;}
+QWidget:disabled {color: #707070;}</string>
+     </property>
+     <property name="text">
+      <string>Modifier Key</string>
+     </property>
+    </widget>
+    <widget class="QWidget" name="modifierPlaceholder" native="true">
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>0</y>
+       <width>110</width>
+       <height>30</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="toggleGroup">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>250</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string/>
+    </property>
+    <widget class="QWidget" name="horizontalLayoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>0</y>
+       <width>221</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QCheckBox" name="mic">
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Toggle recording from your mic&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QCheckBox::indicator { width: 12px; height: 12px; border-radius: 6px;}
+QCheckBox::indicator:unchecked { background-color: #505050; }
+QCheckBox::indicator:unchecked:hover { background-color: #808080; }
+QCheckBox::indicator:checked { background-color: #980000; }
+QCheckBox::indicator:checked:hover { background-color: #C80000; }
+QCheckBox::indicator:disabled { background-color: #303030; }</string>
+        </property>
+        <property name="text">
+         <string>Mic</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="system">
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Toggle recording from system audio&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QCheckBox::indicator { width: 12px; height: 12px; border-radius: 6px;}
+QCheckBox::indicator:unchecked { background-color: #505050; }
+QCheckBox::indicator:unchecked:hover { background-color: #808080; }
+QCheckBox::indicator:checked { background-color: #980000; }
+QCheckBox::indicator:checked:hover { background-color: #C80000; }
+QCheckBox::indicator:disabled { background-color: #303030; }</string>
+        </property>
+        <property name="text">
+         <string>System</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="overlap">
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Toggle whether successive hotkey presses make clips overlap or interupts them&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QCheckBox::indicator { width: 12px; height: 12px; border-radius: 6px;}
+QCheckBox::indicator:unchecked { background-color: #505050; }
+QCheckBox::indicator:unchecked:hover { background-color: #808080; }
+QCheckBox::indicator:checked { background-color: #00D000; }
+QCheckBox::indicator:checked:hover { background-color: #00FF00; }
+QCheckBox::indicator:disabled { background-color: #303030; }</string>
+        </property>
+        <property name="text">
+         <string>Overlap</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="buttonBox">
+    <property name="geometry">
+     <rect>
+      <x>18</x>
+      <y>177</y>
+      <width>50</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="title">
+     <string/>
+    </property>
+    <widget class="QToolButton" name="load">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>24</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>ArrowCursor</cursorShape>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Load a clip&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QToolButton { background-color: #404040; border: 0px; border-top-left-radius: 3px; border-bottom-left-radius: 3px; }
+QToolButton:hover { background-color: #505050; }
+QToolButton:disabled {; background-color: #303030;}
+</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="../../rc.qrc">
+       <normaloff>:/rc/soundboardMenu/loadIdle.png</normaloff>
+       <disabledoff>:/rc/soundboardMenu/loadDisabled.png</disabledoff>
+       <activeoff>:/rc/soundboardMenu/loadHover.png</activeoff>
+       <selectedoff>:/rc/soundboardMenu/loadHover.png</selectedoff>:/rc/soundboardMenu/loadIdle.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>20</width>
+       <height>20</height>
+      </size>
+     </property>
+    </widget>
+    <widget class="QToolButton" name="del">
+     <property name="geometry">
+      <rect>
+       <x>26</x>
+       <y>0</y>
+       <width>24</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>ArrowCursor</cursorShape>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Delete selected clip&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QToolButton { background-color: #404040; border: 0px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; }
+QToolButton:hover { background-color: #505050; }
+QToolButton:disabled { background-color: #303030;}
+</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="../../rc.qrc">
+       <normaloff>:/rc/soundboardMenu/deleteIdle.png</normaloff>
+       <disabledoff>:/rc/soundboardMenu/deleteDisabled.png</disabledoff>
+       <activeoff>:/rc/soundboardMenu/deleteHover.png</activeoff>
+       <selectedoff>:/rc/soundboardMenu/deleteHover.png</selectedoff>:/rc/soundboardMenu/deleteIdle.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>20</width>
+       <height>20</height>
+      </size>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QSlider" name="clipVolume">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>454</x>
+      <y>180</y>
+      <width>125</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="cursor">
+     <cursorShape>ArrowCursor</cursorShape>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Clip volume&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QSlider::groove:horizontal { height: 4px; background-color: #303030; border-radius: 2px; }
+
+QSlider::handle:horizontal { border: 0px; width: 14px; height: 14px; border-radius: 7px; background: #606060; margin: -5px 0px; }
+
+QSlider::handle:horizontal:hover { background: #C0C0C0; }
+
+QSlider::handle:horizontal:disabled {background: #303030;}
+
+QSlider::sub-page:horizontal { background-color: #00D0D0; border-radius: 2px; }</string>
+    </property>
+    <property name="maximum">
+     <number>150</number>
+    </property>
+    <property name="value">
+     <number>50</number>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="mediaButtonBox">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>174</y>
+      <width>60</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="title">
+     <string/>
+    </property>
+    <widget class="QToolButton" name="play">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>30</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>ArrowCursor</cursorShape>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Play selected clip&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QToolButton { border-image: url(&quot;:/rc/soundboardMenu/playIdle.png&quot;) 0 0 0 0 stretch stretch; }
+QToolButton:hover { border-image: url(&quot;:/rc/soundboardMenu/playHover.png&quot;) 0 0 0 0 stretch stretch; }
+QToolButton:pressed { border-image: url(&quot;:/rc/soundboardMenu/playIdle.png&quot;) 0 0 0 0 stretch stretch; }
+QToolButton:disabled { border-image: url(&quot;:/rc/soundboardMenu/playDisabled.png&quot;) 0 0 0 0 stretch stretch; }
+</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
+     </property>
+    </widget>
+    <widget class="QToolButton" name="stop">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>0</y>
+       <width>30</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>ArrowCursor</cursorShape>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Stop all playback&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QToolButton { border-image: url(&quot;:/rc/soundboardMenu/stopIdle.png&quot;) 0 0 0 0 stretch stretch; }
+QToolButton:hover { border-image: url(&quot;:/rc/soundboardMenu/stopHover.png&quot;) 0 0 0 0 stretch stretch; }
+QToolButton:pressed { border-image: url(&quot;:/rc/soundboardMenu/stopIdle.png&quot;) 0 0 0 0 stretch stretch; }
+QToolButton:disabled { border-image: url(&quot;:/rc/soundboardMenu/stopDisabled.png&quot;) 0 0 0 0 stretch stretch; }
+</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
+     </property>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="MonitorSlider" name="monitorSlider" native="true">
+   <property name="geometry">
+    <rect>
+     <x>45</x>
+     <y>60</y>
+     <width>125</width>
+     <height>420</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Hear your own clips&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MonitorSlider</class>
+   <extends>QWidget</extends>
+   <header>ui/widgets/monitorslider.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../../rc.qrc"/>
+ </resources>
+ <connections/>
+</ui>

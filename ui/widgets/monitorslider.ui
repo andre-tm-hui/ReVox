@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MonitorSlider</class>
+ <widget class="QWidget" name="MonitorSlider">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>125</width>
+    <height>420</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QSlider" name="monitor">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>0</y>
+     <width>50</width>
+     <height>420</height>
+    </rect>
+   </property>
+   <property name="cursor">
+    <cursorShape>ArrowCursor</cursorShape>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the monitoring volume&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QSlider { background: transparent; }
+
+QSlider::groove:vertical {
+	border-radius: 4px;
+	background-color: #000000;
+	width: 8px;
+	margin: 45px;
+}
+
+QSlider::handle:vertical {
+	border-image: url(:/rc/monitor/slider.png) 0 0 0 0 stretch stretch;
+	height: 76px;
+	margin: -38px -34px;
+}
+
+QSlider::handle:vertical:hover {
+	height: 80px;
+	margin: -40px -36px;
+}</string>
+   </property>
+   <property name="maximum">
+    <number>150</number>
+   </property>
+   <property name="value">
+    <number>0</number>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Vertical</enum>
+   </property>
+  </widget>
+  <widget class="QWidget" name="monitorOff" native="true">
+   <property name="geometry">
+    <rect>
+     <x>25</x>
+     <y>40</y>
+     <width>100</width>
+     <height>340</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QWidget { background-image: url(&quot;:/rc/monitor/monitorOff.png&quot;); background-repeat: no-repeat; background-position: top;}</string>
+   </property>
+  </widget>
+  <widget class="QWidget" name="monitorOn" native="true">
+   <property name="geometry">
+    <rect>
+     <x>25</x>
+     <y>39</y>
+     <width>100</width>
+     <height>341</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QWidget { background-image: url(&quot;:/rc/monitor/monitorOn.png&quot;); background-repeat: no-repeat; background-position: bottom;}</string>
+   </property>
+  </widget>
+  <widget class="QWidget" name="label" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>40</y>
+     <width>25</width>
+     <height>340</height>
+    </rect>
+   </property>
+  </widget>
+  <zorder>monitorOn</zorder>
+  <zorder>label</zorder>
+  <zorder>monitorOff</zorder>
+  <zorder>monitor</zorder>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

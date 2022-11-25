@@ -12,93 +12,120 @@ RC_ICONS = icon.ico
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    source/qt/onboarding.cpp \
-    source/qt/menus/voicefx/autotunetab.cpp \
-    source/qt/menus/fxmenu.cpp \
-    source/qt/hud.cpp \
-    source/qt/menus/voicefx/pitchtab.cpp \
-    source/qt/menus/voicefx/reverbtab.cpp \
-    source/qt/menus/settingsmenu.cpp \
-    source/qt/menus/soundboardmenu.cpp \
-    source/qt/rc/qttransitions.cpp \
-    source/audio/streams/cleanoutput.cpp \
-    source/audio/streams/monitor.cpp \
-    source/audio/streams/noisegenerator.cpp \
-    source/audio/dsp/comb.cpp \
-    source/audio/audiomanager.cpp \
-    source/audio/dsp/allpass.cpp \
-    source/audio/dsp/frequency.cpp \
-    source/audio/dsp/pitchshift.cpp \
-    source/audio/dsp/revmodel.cpp \
-    source/audio/dsp/stft.cpp \
-    source/audio/streams/audiostream.cpp \
-    source/audio/callbacks.cpp \
-    source/hook/keyboardlistener.cpp \
-    source/main.cpp \
-    source/qt/mainwindow.cpp \
-    source/audio/streams/passthrough.cpp \
-    source/audio/streams/player.cpp \
-    source/qt/rc/hotkeyitem.cpp \
-    source/qt/rc/keypresseater.cpp \
-    source/qt/widgets/customdial.cpp \
-    source/qt/widgets/switch.cpp \
-    source/qt/widgets/waveformviewer.cpp \
-    source/qt/titlebar.cpp
+    main.cpp \
+    audiofx/autotuner.cpp \
+    audiofx/repitcher.cpp \
+    audiofx/reverberator.cpp \
+    audiofx/lib/pitchshift/frequency.cpp \
+    audiofx/lib/pitchshift/pitchshift.cpp \
+    audiofx/lib/pitchshift/stft.cpp \
+    audiofx/lib/reverb/allpass.cpp \
+    audiofx/lib/reverb/comb.cpp \
+    audiofx/lib/reverb/revmodel.cpp \
+    backend/keyboardlistener.cpp \
+    backend/streams/audiostream.cpp \
+    backend/streams/callbacks.cpp \
+    backend/streams/cleanoutput.cpp \
+    backend/streams/monitor.cpp \
+    backend/streams/noisegenerator.cpp \
+    backend/streams/passthrough.cpp \
+    backend/streams/player.cpp \
+    interface/baseinterface.cpp \
+    interface/basemanager.cpp \
+    interface/fxmanager.cpp \
+    interface/maininterface.cpp \
+    interface/soundboardmanager.cpp \
+    ui/hud.cpp \
+    ui/mainwindow.cpp \
+    ui/onboarding.cpp \
+    ui/menus/fxmenu.cpp \
+    ui/menus/soundboardmenu.cpp \
+    ui/titlebar.cpp \
+    ui/components/cropper.cpp \
+    ui/components/fxtab.cpp \
+    ui/menus/settingsmenu.cpp \
+    ui/util/keypresseater.cpp \
+    ui/util/qttransitions.cpp \
+    ui/widgets/bindablebutton.cpp \
+    ui/widgets/customdial.cpp \
+    ui/widgets/hotkeylistitemwidget.cpp \
+    ui/widgets/hotkeylistwidget.cpp \
+    ui/widgets/monitorslider.cpp \
+    ui/widgets/switch.cpp \
+    ui/widgets/fx/fxdial.cpp \
+    ui/widgets/fx/fxkeypicker.cpp \
+    ui/widgets/fx/fxparam.cpp \
+    ui/widgets/soundboard/clickthroughslider.cpp \
+    ui/widgets/soundboard/waveformviewer.cpp
 
 HEADERS += \
-    headers/autotunetab.h \
-    headers/fxmenu.h \
-    headers/cleanoutput.h \
-    headers/customdial.h \
-    headers/allpass.h \
-    headers/audiomanager.h \
-    headers/audiostream.h \
-    headers/callbacks.h \
-    headers/comb.h \
-    headers/denormals.h \
-    headers/frequency.h \
-    headers/hotkeyitem.h \
-    headers/keyboardlistener.h \
-    headers/keypresseater.h \
-    headers/mainwindow.h \
-    headers/monitor.h \
-    headers/noisegenerator.h \
-    headers/passthrough.h \
-    headers/pitchshift.h \
-    headers/player.h \
-    headers/pvdat.h \
-    headers/qttransitions.h \
-    headers/revmodel.h \
-    headers/revtuning.h \
-    headers/stft.h \
-    headers/style.h \
-    headers/switch.h \
-    headers/vkcodenames.h \
-    headers/waveformviewer.h \
-    headers/windowfunctions.h \
-    headers/hud.h \
-    headers/pitchtab.h \
-    headers/reverbtab.h \
-    headers/settingsmenu.h \
-    headers/soundboardmenu.h \
-    headers/titlebar.h \
-    nlohmann/json.hpp \
-    headers/onboarding.h
+    audiofx/iaudiofx.h \
+    audiofx/autotuner.h \
+    audiofx/repitcher.h \
+    audiofx/reverberator.h \
+    audiofx/lib/pitchshift/frequency.h \
+    audiofx/lib/pitchshift/pitchshift.h \
+    audiofx/lib/pitchshift/stft.h \
+    audiofx/lib/pitchshift/pvdat.h \
+    audiofx/lib/pitchshift/windowfunctions.h \
+    audiofx/lib/reverb/allpass.h \
+    audiofx/lib/reverb/comb.h \
+    audiofx/lib/reverb/revmodel.h \
+    audiofx/lib/reverb/denormals.h \
+    audiofx/lib/reverb/revtuning.h \
+    backend/keyboardlistener.h \
+    backend/vkcodenames.h \
+    backend/streams/audiostream.h \
+    backend/streams/callbacks.h \
+    backend/streams/cleanoutput.h \
+    backend/streams/monitor.h \
+    backend/streams/noisegenerator.h \
+    backend/streams/passthrough.h \
+    backend/streams/player.h \
+    interface/baseinterface.h \
+    interface/basemanager.h \
+    interface/fxmanager.h \
+    interface/maininterface.h \
+    interface/soundboardmanager.h \
+    ui/hud.h \
+    ui/mainwindow.h \
+    ui/onboarding.h \
+    ui/menus/fxmenu.h \
+    ui/menus/soundboardmenu.h \
+    ui/titlebar.h \
+    ui/components/cropper.h \
+    ui/components/fxtab.h \
+    ui/menus/settingsmenu.h \
+    ui/util/keypresseater.h \
+    ui/util/qttransitions.h \
+    ui/widgets/bindablebutton.h \
+    ui/widgets/customdial.h \
+    ui/widgets/hotkeylistitemwidget.h \
+    ui/widgets/hotkeylistwidget.h \
+    ui/widgets/monitorslider.h \
+    ui/widgets/switch.h \
+    ui/widgets/style.h \
+    ui/widgets/fx/fxdial.h \
+    ui/widgets/fx/fxkeypicker.h \
+    ui/widgets/fx/fxparam.h \
+    ui/widgets/soundboard/clickthroughslider.h \
+    ui/widgets/soundboard/waveformviewer.h \
+    nlohmann/json.hpp
 
 INCLUDEPATH += headers
 
 FORMS += \
-    qtui/onboarding.ui \
-    qtui/errdialog.ui \
-    qtui/autotunetab.ui \
-    qtui/fxmenu.ui \
-    qtui/hud.ui \
-    qtui/pitchtab.ui \
-    qtui/mainwindow.ui \
-    qtui/reverbtab.ui \
-    qtui/settingsmenu.ui \
-    qtui/soundboardmenu.ui \
-    qtui/titlebar.ui
+    ui/hud.ui \
+    ui/mainwindow.ui \
+    ui/menus/fxmenu.ui \
+    ui/menus/soundboardmenu.ui \
+    ui/onboarding.ui \
+    ui/titlebar.ui \
+    ui/components/fxtab.ui \
+    ui/menus/settingsmenu.ui \
+    ui/widgets/monitorslider.ui \
+    ui/widgets/fx/fxdial.ui \
+    ui/widgets/fx/fxkeypicker.ui
 
 CONFIG += lrelease
 CONFIG += embed_translations
@@ -114,14 +141,9 @@ else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../portaudio/msvc/x64/r
 INCLUDEPATH += $$PWD/../portaudio/include
 DEPENDPATH += $$PWD/../portaudio/msvc/x64/Release
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/'../../C++ Libraries/libsndfile-1.1.0-win64/lib/' -lsndfile
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/'../../C++ Libraries/libsndfile-1.1.0-win64/lib/' -lsndfile
-
-INCLUDEPATH += $$PWD/'../../C++ Libraries/libsndfile-1.1.0-win64/include'
-DEPENDPATH += $$PWD/'../../C++ Libraries/libsndfile-1.1.0-win64/bin'
 
 RESOURCES += \
-    appicon.qrc
+    rc.qrc
 
 include(singleapplication/singleapplication.pri)
 DEFINES += QAPPLICATION_CLASS=QApplication
@@ -149,7 +171,11 @@ INCLUDEPATH += $$PWD/../github-releases-autoupdater/src \
 DEPENDPATH += $$PWD/../build/release/x64/autoupdater
 
 
-win32: LIBS += -L'C:/Program Files (x86)/Windows Kits/10/Lib/10.0.22621.0/um/x64/' -lhid
+win32: LIBS += -lhid
 
-win32:!win32-g++: PRE_TARGETDEPS += 'C:/Program Files (x86)/Windows Kits/10/Lib/10.0.22621.0/um/x64/hid.lib'
-else:win32-g++: PRE_TARGETDEPS += 'C:/Program Files (x86)/Windows Kits/10/Lib/10.0.22621.0/um/x64/libhid.a'
+
+
+win32: LIBS += -L$$PWD/'../../C++ Libraries/libsndfile-1.1.0-win64/bin/' -lsndfile
+
+INCLUDEPATH += $$PWD/'../../C++ Libraries/libsndfile-1.1.0-win64/include'
+DEPENDPATH += $$PWD/'../../C++ Libraries/libsndfile-1.1.0-win64/include'

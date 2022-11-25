@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>FXKeyPicker</class>
+ <widget class="QWidget" name="FXKeyPicker">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>200</width>
+    <height>121</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QWidget" name="container" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>200</width>
+     <height>121</height>
+    </rect>
+   </property>
+   <widget class="QCheckBox" name="C">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>20</width>
+      <height>101</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QCheckBox {border: 0px;}
+QCheckBox::indicator {border: 0px; width: 20px; height: 101px;}
+QCheckBox::indicator:checked {background: #00E0E0;}
+QCheckBox::indicator:unchecked {background: #303030;}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>16</width>
+      <height>16</height>
+     </size>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="Eb">
+    <property name="geometry">
+     <rect>
+      <x>46</x>
+      <y>8</y>
+      <width>17</width>
+      <height>65</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QCheckBox {border: 0px;}
+QCheckBox::indicator {border: 2px solid #181818; width: 10px; height: 61px;}
+QCheckBox::indicator:checked {background: #00A0A0;}
+QCheckBox::indicator:unchecked {background: #303030;}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>16</width>
+      <height>16</height>
+     </size>
+    </property>
+    <property name="checked">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="G">
+    <property name="geometry">
+     <rect>
+      <x>98</x>
+      <y>10</y>
+      <width>20</width>
+      <height>101</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QCheckBox {border: 0px;}
+QCheckBox::indicator {border: 0px; width: 20px; height: 101px;}
+QCheckBox::indicator:checked {background: #00E0E0;}
+QCheckBox::indicator:unchecked {background: #303030;}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>16</width>
+      <height>16</height>
+     </size>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="keySelect">
+    <property name="geometry">
+     <rect>
+      <x>167</x>
+      <y>10</y>
+      <width>16</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton { border: 0px; background: transparent;}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="Bb">
+    <property name="geometry">
+     <rect>
+      <x>134</x>
+      <y>8</y>
+      <width>17</width>
+      <height>65</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QCheckBox {border: 0px;}
+QCheckBox::indicator {border: 2px solid #181818; width: 10px; height: 61px;}
+QCheckBox::indicator:checked {background: #00A0A0;}
+QCheckBox::indicator:unchecked {background: #303030;}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>16</width>
+      <height>16</height>
+     </size>
+    </property>
+    <property name="checked">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="D">
+    <property name="geometry">
+     <rect>
+      <x>32</x>
+      <y>10</y>
+      <width>20</width>
+      <height>101</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QCheckBox {border: 0px;}
+QCheckBox::indicator {border: 0px; width: 20px; height: 101px;}
+QCheckBox::indicator:checked {background: #00E0E0;}
+QCheckBox::indicator:unchecked {background: #303030;}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>16</width>
+      <height>16</height>
+     </size>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="E">
+    <property name="geometry">
+     <rect>
+      <x>54</x>
+      <y>10</y>
+      <width>20</width>
+      <height>101</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QCheckBox {border: 0px;}
+QCheckBox::indicator {border: 0px; width: 20px; height: 101px;}
+QCheckBox::indicator:checked {background: #00E0E0;}
+QCheckBox::indicator:unchecked {background: #303030;}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>16</width>
+      <height>16</height>
+     </size>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="A">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>10</y>
+      <width>20</width>
+      <height>101</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QCheckBox {border: 0px;}
+QCheckBox::indicator {border: 0px; width: 20px; height: 101px;}
+QCheckBox::indicator:checked {background: #00E0E0;}
+QCheckBox::indicator:unchecked {background: #303030;}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>16</width>
+      <height>16</height>
+     </size>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="B">
+    <property name="geometry">
+     <rect>
+      <x>142</x>
+      <y>10</y>
+      <width>20</width>
+      <height>101</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QCheckBox {border: 0px;}
+QCheckBox::indicator {border: 0px; width: 20px; height: 101px;}
+QCheckBox::indicator:checked {background: #00E0E0;}
+QCheckBox::indicator:unchecked {background: #303030;}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>16</width>
+      <height>16</height>
+     </size>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="Gb">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>8</y>
+      <width>17</width>
+      <height>65</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QCheckBox {border: 0px;}
+QCheckBox::indicator {border: 2px solid #181818; width: 10px; height: 61px;}
+QCheckBox::indicator:checked {background: #00A0A0;}
+QCheckBox::indicator:unchecked {background: #303030;}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>16</width>
+      <height>16</height>
+     </size>
+    </property>
+    <property name="checked">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="Db">
+    <property name="geometry">
+     <rect>
+      <x>24</x>
+      <y>8</y>
+      <width>17</width>
+      <height>65</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QCheckBox {border: 0px;}
+QCheckBox::indicator {border: 2px solid #181818; width: 10px; height: 61px;}
+QCheckBox::indicator:checked {background: #00A0A0;}
+QCheckBox::indicator:unchecked {background: #303030;}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>16</width>
+      <height>16</height>
+     </size>
+    </property>
+    <property name="checked">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="Ab">
+    <property name="geometry">
+     <rect>
+      <x>112</x>
+      <y>8</y>
+      <width>17</width>
+      <height>65</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QCheckBox {border: 0px;}
+QCheckBox::indicator {border: 2px solid #181818; width: 10px; height: 61px;}
+QCheckBox::indicator:checked {background: #00A0A0;}
+QCheckBox::indicator:unchecked {background: #303030;}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>16</width>
+      <height>16</height>
+     </size>
+    </property>
+    <property name="checked">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="F">
+    <property name="geometry">
+     <rect>
+      <x>76</x>
+      <y>10</y>
+      <width>20</width>
+      <height>101</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QCheckBox {border: 0px;}
+QCheckBox::indicator {border: 0px; width: 20px; height: 101px;}
+QCheckBox::indicator:checked {background: #00E0E0;}
+QCheckBox::indicator:unchecked {background: #303030;}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>16</width>
+      <height>16</height>
+     </size>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <zorder>C</zorder>
+   <zorder>G</zorder>
+   <zorder>keySelect</zorder>
+   <zorder>D</zorder>
+   <zorder>E</zorder>
+   <zorder>A</zorder>
+   <zorder>B</zorder>
+   <zorder>F</zorder>
+   <zorder>Eb</zorder>
+   <zorder>Bb</zorder>
+   <zorder>Gb</zorder>
+   <zorder>Db</zorder>
+   <zorder>Ab</zorder>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

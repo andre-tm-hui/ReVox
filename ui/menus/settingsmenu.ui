@@ -1,0 +1,647 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SettingsMenu</class>
+ <widget class="QWidget" name="SettingsMenu">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>881</width>
+    <height>510</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
+  <widget class="QScrollArea" name="scrollArea">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>881</width>
+     <height>511</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Cascadia Code</family>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QScrollArea { border: 0px;}
+
+QScrollBar {
+border: 0px;
+background: #282828;
+width: 4px;
+}
+
+QScrollBar::handle:vertical{
+border: 1px solid #404040;
+background: #404040;
+border-radius: 2px;
+}
+
+QScrollBar::sub-page:vertical, QScrollBar::add-page:vertical { background: none; }
+
+QScrollBar::sub-line:vertical, QScrollBar::add-line:vertical { background: none; }
+
+QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical { 
+width: 0px; 
+height: 0px;
+border: 0px;
+background: transparent;
+}</string>
+   </property>
+   <property name="horizontalScrollBarPolicy">
+    <enum>Qt::ScrollBarAlwaysOff</enum>
+   </property>
+   <property name="sizeAdjustPolicy">
+    <enum>QAbstractScrollArea::AdjustToContents</enum>
+   </property>
+   <property name="widgetResizable">
+    <bool>true</bool>
+   </property>
+   <widget class="QWidget" name="scrollAreaWidgetContents">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>877</width>
+      <height>674</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <property name="leftMargin">
+      <number>90</number>
+     </property>
+     <property name="topMargin">
+      <number>30</number>
+     </property>
+     <property name="rightMargin">
+      <number>90</number>
+     </property>
+     <property name="bottomMargin">
+      <number>80</number>
+     </property>
+     <item>
+      <widget class="QGroupBox" name="deviceBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>61</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QGroupBox { border: 0px; border-bottom: 1px solid #505050;}</string>
+       </property>
+       <property name="title">
+        <string/>
+       </property>
+       <widget class="QComboBox" name="devices">
+        <property name="geometry">
+         <rect>
+          <x>450</x>
+          <y>16</y>
+          <width>231</width>
+          <height>28</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: #FFFFFF;</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>20</y>
+          <width>191</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Cascadia Code</family>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set this to your headphones/audio interface. To separate the audio you hear from the audio your recording software hears, see the wiki&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+        <property name="text">
+         <string>Output Device</string>
+        </property>
+       </widget>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="hudBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>280</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QGroupBox {border:0px; border-bottom: 1px solid #505050;}</string>
+       </property>
+       <property name="title">
+        <string/>
+       </property>
+       <widget class="QLabel" name="hudPositionLabel">
+        <property name="geometry">
+         <rect>
+          <x>490</x>
+          <y>40</y>
+          <width>111</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Cascadia Code</family>
+          <pointsize>9</pointsize>
+         </font>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: #808080;</string>
+        </property>
+        <property name="text">
+         <string>Off</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+       <widget class="QWidget" name="widget_2" native="true">
+        <property name="geometry">
+         <rect>
+          <x>100</x>
+          <y>60</y>
+          <width>501</width>
+          <height>191</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QWidget { background: #303030; border: 2px solid #505050; border-radius: 10px;}</string>
+        </property>
+        <widget class="QCheckBox" name="topLeft">
+         <property name="geometry">
+          <rect>
+           <x>2</x>
+           <y>2</y>
+           <width>30</width>
+           <height>50</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QCheckBox {border: 0px; }
+QCheckBox::indicator { width: 30px; height: 50px; border-top-left-radius: 7px; }
+QCheckBox::indicator:checked { background: #909090; }
+QCheckBox::indicator:unchecked { background: #505050; }
+QCheckBox::indicator:hover { background: #B0B0B0; }</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="bottomLeft">
+         <property name="geometry">
+          <rect>
+           <x>2</x>
+           <y>139</y>
+           <width>30</width>
+           <height>50</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QCheckBox {border: 0px; }
+QCheckBox::indicator { width: 30px; height: 50px; border-bottom-left-radius: 7px; }
+QCheckBox::indicator:checked { background: #909090; }
+QCheckBox::indicator:unchecked { background: #505050; }
+QCheckBox::indicator:hover { background: #B0B0B0; }</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="bottomRight">
+         <property name="geometry">
+          <rect>
+           <x>469</x>
+           <y>139</y>
+           <width>30</width>
+           <height>50</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QCheckBox {border: 0px; }
+QCheckBox::indicator { width: 30px; height: 50px; border-bottom-right-radius: 7px; }
+QCheckBox::indicator:checked { background: #909090; }
+QCheckBox::indicator:unchecked { background: #505050; }
+QCheckBox::indicator:hover { background: #B0B0B0; }</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="topRight">
+         <property name="geometry">
+          <rect>
+           <x>469</x>
+           <y>2</y>
+           <width>30</width>
+           <height>50</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QCheckBox {border: 0px; }
+QCheckBox::indicator { width: 30px; height: 50px; border-top-right-radius: 7px; }
+QCheckBox::indicator:checked { background: #909090; }
+QCheckBox::indicator:unchecked { background: #505050; }
+QCheckBox::indicator:hover { background: #B0B0B0; }</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="left">
+         <property name="geometry">
+          <rect>
+           <x>2</x>
+           <y>70</y>
+           <width>30</width>
+           <height>50</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QCheckBox {border: 0px; }
+QCheckBox::indicator { width: 30px; height: 50px; }
+QCheckBox::indicator:checked { background: #909090; }
+QCheckBox::indicator:unchecked { background: #505050; }
+QCheckBox::indicator:hover { background: #B0B0B0; }</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="right">
+         <property name="geometry">
+          <rect>
+           <x>469</x>
+           <y>70</y>
+           <width>30</width>
+           <height>50</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QCheckBox {border: 0px; }
+QCheckBox::indicator { width: 30px; height: 50px; }
+QCheckBox::indicator:checked { background: #909090; }
+QCheckBox::indicator:unchecked { background: #505050; }
+QCheckBox::indicator:hover { background: #B0B0B0; }</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="top">
+         <property name="geometry">
+          <rect>
+           <x>180</x>
+           <y>2</y>
+           <width>140</width>
+           <height>15</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QCheckBox {border: 0px; }
+QCheckBox::indicator { width: 140px; height: 15px; }
+QCheckBox::indicator:checked { background: #909090; }
+QCheckBox::indicator:unchecked { background: #505050; }
+QCheckBox::indicator:hover { background: #B0B0B0; }</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="bottom">
+         <property name="geometry">
+          <rect>
+           <x>180</x>
+           <y>174</y>
+           <width>140</width>
+           <height>15</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QCheckBox {border: 0px; }
+QCheckBox::indicator { width: 140px; height: 15px; }
+QCheckBox::indicator:checked { background: #909090; }
+QCheckBox::indicator:unchecked { background: #505050; }
+QCheckBox::indicator:hover { background: #B0B0B0; }</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QLabel" name="label_2">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>20</y>
+          <width>161</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Cascadia Code</family>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Change where Voice FX indicators appear on your screen&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+        <property name="text">
+         <string>HUD Position</string>
+        </property>
+       </widget>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="autostartBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>61</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QGroupBox { border: 0px; border-bottom: 1px solid #505050;}</string>
+       </property>
+       <property name="title">
+        <string/>
+       </property>
+       <widget class="QLabel" name="label_3">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>20</y>
+          <width>231</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Cascadia Code</family>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;Toggle whether ReVox starts with Windows&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+        <property name="text">
+         <string>Start With Windows</string>
+        </property>
+       </widget>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="resetBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>61</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QGroupBox { border: 0px; border-bottom: 1px solid #505050;}</string>
+       </property>
+       <property name="title">
+        <string/>
+       </property>
+       <widget class="QLabel" name="label_5">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>20</y>
+          <width>71</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Cascadia Code</family>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;Reset the ReVox audio. Use this to troubleshoot audio issues&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+        <property name="text">
+         <string>Reset</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="reset">
+        <property name="geometry">
+         <rect>
+          <x>600</x>
+          <y>16</y>
+          <width>83</width>
+          <height>29</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Cascadia Code</family>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton { background-color: #700000; border: 2px solid #900000; color: #AAAAAA; border-radius: 3px;}
+
+QPushButton:hover {
+background-color: #800000;
+border-color: #A00000;
+color: #BBBBBB;
+}
+
+QPushButton:pressed {
+background-color: #780000;
+border-color: #980000;
+color: #B0B0B0;
+}</string>
+        </property>
+        <property name="text">
+         <string>RESET</string>
+        </property>
+       </widget>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="updateBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>101</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QGroupBox { border: 0px; border-bottom: 0px solid #505050;}</string>
+       </property>
+       <property name="title">
+        <string/>
+       </property>
+       <widget class="QLabel" name="label_13">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>20</y>
+          <width>231</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Cascadia Code</family>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+        <property name="text">
+         <string>Check for Updates</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="update">
+        <property name="geometry">
+         <rect>
+          <x>600</x>
+          <y>16</y>
+          <width>83</width>
+          <height>29</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Cascadia Code</family>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton { background-color: #007070; border: 2px solid #009090; color: #E0E0E0; border-radius: 3px;}
+
+QPushButton:hover {
+background-color: #008080;
+border-color: #00A0A0;
+color: #FFFFFF;
+}
+
+QPushButton:pressed {
+background-color: #007878;
+border-color: #009898;
+color: #F0F0F0;
+}</string>
+        </property>
+        <property name="text">
+         <string>CHECK</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_14">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>55</y>
+          <width>291</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Cascadia Code</family>
+          <pointsize>9</pointsize>
+         </font>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: #606060;</string>
+        </property>
+        <property name="text">
+         <string>Automatically Check at Startup</string>
+        </property>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
