@@ -115,7 +115,7 @@ void SoundboardManager::OverrideSound(std::string fname, int idx) {
     SF_INFO info;
     info.format = 0;
     SNDFILE* infile = sf_open(path.c_str(), SFM_READ, &info);
-    if (info.samplerate != sampleRate)
+    if (info.samplerate != sampleRate || info.channels != 2)
     {
         sf_count_t count;
         SF_INFO infoR;
@@ -140,7 +140,7 @@ void SoundboardManager::OverrideSound(std::string fname, int idx) {
 
         while (true) {
             count = sf_read_float(infile, in, 1024 * info.channels);
-            src_strerror(src_process(src, dat));
+            src_process(src, dat);
 
             if (info.channels != 2) {
                 for (int i = 0; i < newNFrames; i++) {
