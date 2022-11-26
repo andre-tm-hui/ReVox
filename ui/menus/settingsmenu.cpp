@@ -83,6 +83,7 @@ void SettingsMenu::populateDevices()
     ui->devices->clear();
     for (auto const& [name, device] : devices)
     {
+        if (name.find("VB-Audio") != std::string::npos) continue;
         ui->devices->addItem(QString::fromStdString(name));
         if (device.id == currentDevice)
         {

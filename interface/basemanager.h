@@ -30,25 +30,15 @@ public:
     void StartRebinding(std::string path);
     bool IsRebinding();
     RebindData GetRebindData();
-    //void SetBind(RebindData data, std::string path, bool isBasic);
     void RemoveBind(int idx);
 
-
-
-    //json GetSetting(std::string path);
     json GetDefaultHotkey() { return defaultObj; }
 
     bool KeybindExists(int keycode, std::string deviceName);
 
-    //std::string GetRootDir() { return rootDir; };
-
 protected:
     bool LoadSettings() override;
-    //void SaveSettings();
 
-    //std::string rootDir = "";
-    //std::string dataPath = "";
-    //json settings = NULL;
     json defaultObj = R"({})"_json;
 
 private:

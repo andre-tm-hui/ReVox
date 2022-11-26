@@ -84,7 +84,6 @@ void FXManager::ResetStreams() {
 
 void FXManager::SetMonitoringVol(int n) {
     UpdateSettings<int>("monitor", n);
-    //settings["monitor"] = n;
     monitor->SetFXMonitorVol(settings["monitor"].get<int>() / 100.f);
 }
 

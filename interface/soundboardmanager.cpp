@@ -68,7 +68,7 @@ void SoundboardManager::Play(std::string idx) {
         bool playable = player->CanPlay(std::stoi(idx));
         if (this->recordOver || !playable)
             Record(idx);
-        else if ( playable) {
+        else if (playable) {
             player->Play(std::stoi(idx), settings["hotkeys"][idx]);
         }
     }

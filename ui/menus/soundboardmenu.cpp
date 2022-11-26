@@ -130,7 +130,7 @@ void SoundboardMenu::setMonitorVolume(int val) {
 
 void SoundboardMenu::play() {
     if (currHotkey == -1) return;
-    sm->Play(std::to_string(currHotkey), false);
+    sm->Play(std::to_string(currHotkey));
 }
 
 void SoundboardMenu::stop() {

@@ -119,6 +119,8 @@ QPushButton:hover { color: #C0C0C0; }</string>
       <bool>true</bool>
      </property>
     </widget>
+    <zorder>label_01</zorder>
+    <zorder>next_01</zorder>
    </widget>
   </widget>
   <widget class="QGroupBox" name="slide_02">
@@ -185,6 +187,8 @@ QPushButton:hover { color: #C0C0C0; }</string>
       <bool>true</bool>
      </property>
     </widget>
+    <zorder>label_02</zorder>
+    <zorder>next_02</zorder>
    </widget>
   </widget>
   <widget class="QGroupBox" name="slide_03">
@@ -304,6 +308,8 @@ Rebind a hotkey by clicking the current bind and tapping an unused key.</string>
       <bool>true</bool>
      </property>
     </widget>
+    <zorder>label_04</zorder>
+    <zorder>next_04</zorder>
    </widget>
   </widget>
   <widget class="QGroupBox" name="slide_05">
@@ -373,6 +379,8 @@ QPushButton:hover { color: #C0C0C0; }</string>
       <bool>true</bool>
      </property>
     </widget>
+    <zorder>label_05</zorder>
+    <zorder>next_05</zorder>
    </widget>
   </widget>
   <widget class="QGroupBox" name="slide_06">
@@ -559,6 +567,8 @@ QPushButton:hover { color: #C0C0C0; }</string>
       <bool>true</bool>
      </property>
     </widget>
+    <zorder>label_08</zorder>
+    <zorder>next_08</zorder>
    </widget>
   </widget>
   <widget class="QGroupBox" name="slide_09">
@@ -628,6 +638,8 @@ QPushButton:hover { color: #C0C0C0; }</string>
       <bool>true</bool>
      </property>
     </widget>
+    <zorder>label_09</zorder>
+    <zorder>next_09</zorder>
    </widget>
   </widget>
   <widget class="QGroupBox" name="slide_10">
@@ -697,6 +709,8 @@ QPushButton:hover { color: #C0C0C0; }</string>
       <bool>true</bool>
      </property>
     </widget>
+    <zorder>label_10</zorder>
+    <zorder>next_10</zorder>
    </widget>
    <widget class="QLabel" name="arrowLeft_10">
     <property name="geometry">
@@ -814,6 +828,8 @@ QPushButton:hover { color: #C0C0C0; }</string>
       <bool>true</bool>
      </property>
     </widget>
+    <zorder>label_11</zorder>
+    <zorder>next_11</zorder>
    </widget>
   </widget>
   <widget class="QGroupBox" name="slide_12">
@@ -883,6 +899,8 @@ QPushButton:hover { color: #C0C0C0; }</string>
       <bool>true</bool>
      </property>
     </widget>
+    <zorder>label_12</zorder>
+    <zorder>next_12</zorder>
    </widget>
   </widget>
   <widget class="QGroupBox" name="slide_13">
@@ -952,6 +970,8 @@ QPushButton:hover { color: #C0C0C0; }</string>
       <bool>true</bool>
      </property>
     </widget>
+    <zorder>label_13</zorder>
+    <zorder>next_13</zorder>
    </widget>
   </widget>
   <widget class="QGroupBox" name="slide_14">
@@ -1070,6 +1090,8 @@ QPushButton:hover { color: #C0C0C0; }</string>
       <bool>true</bool>
      </property>
     </widget>
+    <zorder>label_15</zorder>
+    <zorder>next_15</zorder>
    </widget>
   </widget>
   <widget class="QGroupBox" name="slide_16">
@@ -1139,6 +1161,8 @@ QPushButton:hover { color: #C0C0C0; }</string>
       <bool>true</bool>
      </property>
     </widget>
+    <zorder>label_16</zorder>
+    <zorder>next_16</zorder>
    </widget>
   </widget>
   <widget class="QGroupBox" name="slide_17">
@@ -1260,6 +1284,8 @@ QPushButton:hover { color: #C0C0C0; }</string>
       <bool>true</bool>
      </property>
     </widget>
+    <zorder>label_18</zorder>
+    <zorder>next_18</zorder>
    </widget>
   </widget>
   <widget class="QGroupBox" name="slide_19">
@@ -1329,6 +1355,8 @@ QPushButton:hover { color: #C0C0C0; }</string>
       <bool>true</bool>
      </property>
     </widget>
+    <zorder>label_19</zorder>
+    <zorder>next_19</zorder>
    </widget>
   </widget>
   <widget class="QGroupBox" name="slide_20">
@@ -1398,6 +1426,8 @@ QPushButton:hover { color: #C0C0C0; }</string>
       <bool>true</bool>
      </property>
     </widget>
+    <zorder>label_20</zorder>
+    <zorder>next_20</zorder>
    </widget>
   </widget>
   <widget class="QGroupBox" name="slide_21">
@@ -1467,6 +1497,8 @@ QPushButton:hover { color: #C0C0C0; }</string>
       <bool>true</bool>
      </property>
     </widget>
+    <zorder>label_21</zorder>
+    <zorder>next_21</zorder>
    </widget>
   </widget>
   <widget class="QGroupBox" name="slide_22">
@@ -1533,6 +1565,8 @@ QPushButton:hover { color: #C0C0C0; }</string>
       <bool>true</bool>
      </property>
     </widget>
+    <zorder>label_22</zorder>
+    <zorder>next_22</zorder>
    </widget>
   </widget>
   <widget class="QWidget" name="bg" native="true">

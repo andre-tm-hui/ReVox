@@ -100,6 +100,10 @@ bool BaseManager::LoadSettings() {
     if (!settingsFile.fail()) {
         json temp;
         settingsFile >> temp;
+        if (temp.find("monitor") == temp.end()) {
+            SaveSettings();
+            return false;
+        }
 
         for (auto& [id,obj] : settings.items())
             if (temp.find(id) == temp.end())
@@ -114,6 +118,5 @@ bool BaseManager::LoadSettings() {
         return true;
     }
     SaveSettings();
-    //SetMonitoringVol(settings["monitor"]);
     return false;
 }

@@ -82,13 +82,13 @@ QSlider::handle:vertical:hover {
    <property name="geometry">
     <rect>
      <x>25</x>
-     <y>39</y>
+     <y>40</y>
      <width>100</width>
-     <height>341</height>
+     <height>340</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">QWidget { background-image: url(&quot;:/rc/monitor/monitorOn.png&quot;); background-repeat: no-repeat; background-position: bottom;}</string>
+    <string notr="true">QWidget { background-image: url(&quot;:/rc/monitor/monitorOn.png&quot;); background-repeat: no-repeat; background-position: top;}</string>
    </property>
   </widget>
   <widget class="QWidget" name="label" native="true">

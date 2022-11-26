@@ -21,6 +21,10 @@ bool BaseInterface::LoadSettings() {
     if (!settingsFile.fail()) {
         json temp;
         settingsFile >> temp;
+        if (temp.find("monitorMic") != temp.end()) {
+            SaveSettings();
+            return false;
+        }
 
         for (auto& [id,obj] : settings.items())
             if (temp.find(id) == temp.end())
