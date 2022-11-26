@@ -18,8 +18,9 @@ SoundboardManager::SoundboardManager(std::string rootDir, int sampleRate) : Base
         "recordLoopback": true,
         "startAt": 0,
         "endAt": -1,
-        "maxCopies": 1,
-        "volume": 1.0
+        "maxCopies": -1,
+        "volume": 1.0,
+        "editable": true
     })"_json;
     LoadSettings();
 }
@@ -44,10 +45,8 @@ void SoundboardManager::StartEvent(std::string path, int event) {
 }
 
 void SoundboardManager::Record(std::string idx) {
+    if (recording) return;
     json bindSettings = settings["hotkeys"][idx];
-    if ((bindSettings["recordInput"] || bindSettings["recordLoopback"]) &&
-            std::filesystem::exists(rootDir + "samples/" + idx + ".mp3"))
-        std::filesystem::remove(rootDir + "samples/" + idx + ".mp3");
 
     if (bindSettings["recordInput"] && passthrough != nullptr) passthrough->Record(std::stoi(idx));
     if (bindSettings["recordLoopback"] && monitor != nullptr) monitor->Record(std::stoi(idx));
@@ -64,7 +63,7 @@ void SoundboardManager::StopRecording() {
     if (wv != nullptr) wv->refresh(rootDir + "samples/" + currHotkey + ".mp3");
 }
 
-void SoundboardManager::Play(std::string idx, bool recordFallback) {
+void SoundboardManager::Play(std::string idx) {
     if (player != nullptr && !recording) {
         bool playable = player->CanPlay(std::stoi(idx));
         if (this->recordOver || !playable)

@@ -14,7 +14,7 @@ public:
 
     void Record(std::string idx);
     void StopRecording();
-    void Play(std::string idx, bool recordFallback = true);
+    void Play(std::string idx);
     void StopAll();
     void OverrideSound(std::string fname, int idx);
     void SetWaveform(WaveformViewer *wv);

@@ -19,7 +19,7 @@ public:
     ~FXTab();
 
     void setIdx(int idx);
-    void resetIdx() { idx = -1; }
+    void resetIdx() { setIdx(0), idx = -1; }
     QWidget* getParamBox();
     bool isToggled();
 

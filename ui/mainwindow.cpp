@@ -216,6 +216,8 @@ void MainWindow::fadeInMenu()
 void MainWindow::resetAudio()
 {
     mi->Reset();
+    soundboardMenu->reset();
+    fxMenu->reset();
 }
 
 void MainWindow::moveWindow(QMouseEvent *event, int x, int y)

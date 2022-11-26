@@ -37,6 +37,7 @@ private:
     std::string path;
 
     const int itemHeight = 36;
+    int currHotkey = -1;
 };
 
 #endif // HOTKEYLISTWIDGET_H

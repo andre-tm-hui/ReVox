@@ -54,6 +54,7 @@ HotkeyListWidget::HotkeyListWidget(QSize size, std::shared_ptr<BaseManager> bm, 
 
 void HotkeyListWidget::deselect() {
     list->clearSelection();
+    currHotkey = -1;
     remove->setEnabled(false);
 }
 
@@ -64,8 +65,14 @@ void HotkeyListWidget::initializeList() {
 }
 
 void HotkeyListWidget::selectionChanged() {
-    remove->setEnabled(true);
-    emit onSelectionChanged(list->currentRow());
+    if (bm->GetSetting(path + "/" + std::to_string(list->currentRow()) + "/editable").get<bool>())
+        remove->setEnabled(true);
+    else
+        remove->setEnabled(false);
+
+    if (list->currentRow() != currHotkey)
+        emit onSelectionChanged(list->currentRow());
+    currHotkey = list->currentRow();
 }
 
 void HotkeyListWidget::addHotkey(bool isNew) {

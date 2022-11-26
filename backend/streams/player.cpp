@@ -62,7 +62,7 @@ void Player::Play(int keycode, json settings)
     }
 
     // check if the hotkey limit is reached
-    if (settings["maxCopies"] != -1 && files[keycode].size() >= settings["maxCopies"])
+    if (settings["maxCopies"].get<int>() != -1 && files[keycode].size() >= settings["maxCopies"])
     {
         // Cleanup first item of data.files[keycode]
         SNDFILE* clear = files[keycode].front();

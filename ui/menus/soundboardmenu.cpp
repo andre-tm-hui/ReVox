@@ -56,7 +56,7 @@ void SoundboardMenu::setCurrentHotkey(int val) {
     crp->setAudioPath(clipPath, hkSettings);
     ui->mic->setCheckState(hkSettings["recordInput"].get<bool>() ? Qt::Checked : Qt::Unchecked);
     ui->system->setCheckState(hkSettings["recordLoopback"].get<bool>() ? Qt::Checked : Qt::Unchecked);
-    ui->overlap->setCheckState(hkSettings["maxCopies"].get<int>() == -1 ? Qt::Unchecked : Qt::Checked);
+    ui->overlap->setCheckState(hkSettings["maxCopies"].get<int>() == -1 ? Qt::Checked : Qt::Unchecked);
     ui->toggleGroup->setEnabled(true);
     ui->clipVolume->setValue(hkSettings["volume"].get<float>() * 100);
     ui->load->setEnabled(true);
@@ -106,17 +106,17 @@ void SoundboardMenu::setEndTime(int val) {
 
 void SoundboardMenu::setRecMic(bool val) {
     if (currHotkey == -1) return;
-    sm->UpdateSettings<bool>("hotkeys/" + std::to_string(currHotkey) + "/recordInput", val);
+    sm->UpdateSettings<bool>("hotkeys/" + std::to_string(currHotkey) + "/recordInput", ui->mic->checkState() == Qt::CheckState::Checked ? true : false);
 }
 
 void SoundboardMenu::setRecSystem(bool val) {
     if (currHotkey == -1) return;
-    sm->UpdateSettings<bool>("hotkeys/" + std::to_string(currHotkey) + "/recordLoopback", val);
+    sm->UpdateSettings<bool>("hotkeys/" + std::to_string(currHotkey) + "/recordLoopback", ui->system->checkState() == Qt::CheckState::Checked ? true : false);
 }
 
 void SoundboardMenu::setOverlap(bool val) {
     if (currHotkey == -1) return;
-    sm->UpdateSettings<int>("hotkeys/" + std::to_string(currHotkey) + "/maxCopies", val ? -1 : 1);
+    sm->UpdateSettings<int>("hotkeys/" + std::to_string(currHotkey) + "/maxCopies", ui->overlap->checkState() == Qt::CheckState::Checked ? -1 : 1);
 }
 
 void SoundboardMenu::setClipVolume(int val) {

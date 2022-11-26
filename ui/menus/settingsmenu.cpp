@@ -147,8 +147,8 @@ void SettingsMenu::toggleAutostart(int state)
     {
         wchar_t exec[MAX_PATH];
         GetModuleFileName(NULL, exec, MAX_PATH);
-        wchar_t startup[MAX_PATH];
-        std::mbstowcs(startup, path.c_str(), path.length());
+        std::wstring wpath = std::wstring(path.begin(), path.end());
+        const wchar_t *wpath_t = wpath.c_str();
 
         HRESULT hres;
         IShellLinkW *psl;
@@ -163,7 +163,7 @@ void SettingsMenu::toggleAutostart(int state)
             hres = psl->QueryInterface(IID_PPV_ARGS(&ppf));
             if (SUCCEEDED(hres))
             {
-                ppf->Save(startup, TRUE);
+                ppf->Save(wpath_t, TRUE);
                 ppf->Release();
             }
 

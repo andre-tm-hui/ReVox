@@ -2,11 +2,11 @@
 
 FXManager::FXManager(std::string rootDir, int framesPerBuffer, int sampleRate) : BaseManager(rootDir)
 {
-    dataPath = "voicefxSettings.json";
-    settings = R"({
-        "monitor": 100,
-        "hotkeys": {}
-    })"_json;
+    ps.reset(new PitchShift(framesPerBuffer, sampleRate));
+    fxs.insert({"Repitcher", std::unique_ptr<IAudioFX>(new Repitcher(ps))});
+    fxs.insert({"Autotuner", std::unique_ptr<IAudioFX>(new Autotuner(ps))});
+    fxs.insert({"Reverberator", std::unique_ptr<IAudioFX>(new Reverberator(framesPerBuffer))});
+
     defaultObj = R"({
         "keycode": -1,
         "deviceName": "",
@@ -30,6 +30,14 @@ FXManager::FXManager(std::string rootDir, int framesPerBuffer, int sampleRate) :
             "Pitch": 0
         }
     })"_json;
+
+
+    dataPath = "voicefxSettings.json";
+    settings = R"({
+        "monitor": 100,
+        "hotkeys": {}
+    })"_json;
+
     LoadSettings();
 
     if (settings["hotkeys"].size() == 0) {
@@ -38,11 +46,6 @@ FXManager::FXManager(std::string rootDir, int framesPerBuffer, int sampleRate) :
         settings["hotkeys"]["0"]["label"] = "Off";
         SaveSettings();
     }
-
-    ps.reset(new PitchShift(framesPerBuffer, sampleRate));
-    fxs.insert({"Repitcher", std::unique_ptr<IAudioFX>(new Repitcher(ps))});
-    fxs.insert({"Autotuner", std::unique_ptr<IAudioFX>(new Autotuner(ps))});
-    fxs.insert({"Reverberator", std::unique_ptr<IAudioFX>(new Reverberator(framesPerBuffer))});
 }
 
 void FXManager::StartEvent(std::string path, int event) {
