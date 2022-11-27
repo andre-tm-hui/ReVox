@@ -12,6 +12,9 @@ MainInterface::MainInterface() : BaseInterface("")
         if (!std::filesystem::exists(rootDir))
             std::filesystem::create_directories(rootDir + "samples");
         LoadSettings();
+        if (settings["outputDevice"] == "No Device Detected") {
+            UpdateSettings<std::string>("outputDevice", Pa_GetDeviceInfo(Pa_GetDefaultOutputDevice())->name);
+        }
     } else {
         std::cout<<"failed"<<std::endl;
         delete this;
