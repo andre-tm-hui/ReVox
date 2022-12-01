@@ -1,10 +1,9 @@
 # ReVox
+## [Download Here!](https://github.com/onglez/ReVox/releases)
 <p align="center"><image src="https://github.com/andre-tm-hui/ReVox/blob/master/images/intro.gif" width="60%"></image></p>
 
 A Virtual Soundboard, Sampler and Voice Changer packaged into a single program. Get creative in your voice chats/streams.
 
-
-## [Download Here!](https://github.com/onglez/ReVox/releases)
 ### [Get Started](https://github.com/onglez/ReVox/wiki/Installation)
 ### [Join the Discord](https://discord.gg/ugv5aMSm63)
 ### [Follow the Development](https://trello.com/b/cNNxJTYr/revox)
