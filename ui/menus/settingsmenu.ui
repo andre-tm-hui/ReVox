@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>881</width>
+    <width>880</width>
     <height>510</height>
    </rect>
   </property>
@@ -21,8 +21,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>881</width>
-     <height>511</height>
+     <width>880</width>
+     <height>510</height>
     </rect>
    </property>
    <property name="font">
@@ -69,9 +69,9 @@ background: transparent;
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>0</y>
-      <width>877</width>
-      <height>674</height>
+      <y>-225</y>
+      <width>876</width>
+      <height>735</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -634,6 +634,87 @@ color: #F0F0F0;
         </property>
         <property name="text">
          <string>Automatically Check at Startup</string>
+        </property>
+       </widget>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="restartTutorialBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>61</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QGroupBox { border: 0px; border-top: 1px solid #505050;}</string>
+       </property>
+       <property name="title">
+        <string/>
+       </property>
+       <widget class="QLabel" name="label_6">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>20</y>
+          <width>191</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Cascadia Code</family>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;Reset the ReVox audio. Use this to troubleshoot audio issues&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+        <property name="text">
+         <string>Restart Tutorial</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="restartTutorial">
+        <property name="geometry">
+         <rect>
+          <x>600</x>
+          <y>16</y>
+          <width>83</width>
+          <height>29</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Cascadia Code</family>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton { background-color: #007070; border: 2px solid #009090; color: #E0E0E0; border-radius: 3px;}
+
+QPushButton:hover {
+background-color: #008080;
+border-color: #00A0A0;
+color: #FFFFFF;
+}
+
+QPushButton:pressed {
+background-color: #007878;
+border-color: #009898;
+color: #F0F0F0;
+}</string>
+        </property>
+        <property name="text">
+         <string>RESTART</string>
         </property>
        </widget>
       </widget>

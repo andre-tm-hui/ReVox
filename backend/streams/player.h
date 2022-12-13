@@ -16,8 +16,6 @@ public:
            std::string dir,
            float *playbackBuffer);
 
-    //~Player() { done(); }
-
     void Play(int keycode, json settings);
 
     bool CanPlay(int keycode);

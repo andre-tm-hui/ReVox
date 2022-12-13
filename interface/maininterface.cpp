@@ -72,62 +72,49 @@ void MainInterface::WaitForReady()
 
 void MainInterface::GetDeviceSettings()
 {
-    std::map<std::string, int> apiMap;
+    if (std::string("Windows WASAPI").compare(Pa_GetHostApiInfo(Pa_GetDefaultHostApi())->name) != 0)
+        return;
+
     ids = {-1, -1, -1, -1};
     deviceList = {};
     inputDevices = {};
     outputDevices = {};
     loopbackDevices = {};
 
-    // get all available audio APIs on the system
-    for (int i = 0; i < Pa_GetHostApiCount(); i++)
+    for (int i = 0; i < Pa_GetDeviceCount(); i++)
     {
-        apiMap[Pa_GetHostApiInfo(i)->name] = i;
-    }
-
-    // if WASAPI is available, we can check for loopback devices. WASAPI should be available on all modern Win10+ systems.
-    if (apiMap.find("Windows WASAPI") != apiMap.end())
-    {
-        // iterate through all WASAPI devices
-        for (int i = 0; i < Pa_GetHostApiInfo(apiMap["Windows WASAPI"])->deviceCount; i++)
+        // separate normal devices from loopback devices
+        std::string deviceName = Pa_GetDeviceInfo(i)->name;
+        if (deviceName.find("[Loopback]") != std::string::npos)
         {
-            // separate normal devices from loopback devices
-            std::string deviceName = Pa_GetDeviceInfo(Pa_HostApiDeviceIndexToDeviceIndex(apiMap["Windows WASAPI"], i))->name;
-            if (deviceName.find("[Loopback]") != std::string::npos)
+            loopbackDevices[deviceName] = {i, 2};
+            std::string outputDeviceName = deviceName.substr(0, deviceName.size()-11);
+            outputDevices[outputDeviceName] = {deviceList[outputDeviceName], GetChannels(deviceList[outputDeviceName], false)};
+            if (outputDeviceName.find(settings["outputDevice"].get<std::string>()) != std::string::npos)
             {
-                loopbackDevices[deviceName] = {Pa_HostApiDeviceIndexToDeviceIndex(apiMap["Windows WASAPI"], i), 2};
-                std::string outputDeviceName = deviceName.substr(0, deviceName.size()-11);
-                outputDevices[outputDeviceName] = {deviceList[outputDeviceName], GetChannels(deviceList[outputDeviceName], false)};
-                if (outputDeviceName.find(settings["outputDevice"].get<std::string>()) != std::string::npos)
-                {
-                    ids.output = outputDevices[outputDeviceName].id;
-                    settings["outputDevice"] = outputDeviceName;
-                }
-            }
-            else
-            {
-                // add the device to a list of devices if it's not a loopback
-                deviceList[deviceName] = Pa_HostApiDeviceIndexToDeviceIndex(apiMap["Windows WASAPI"], i);
-
-                // set the default virtual input device - assumes the user is using VB-Audio's Virtual Cable https://vb-audio.com/Cable/
-                if (deviceName.find("CABLE Input") != std::string::npos)
-                {
-                    ids.vInput = deviceList[deviceName];
-                }
-                else if (deviceName.find(Pa_GetDeviceInfo(Pa_GetDefaultInputDevice())->name) != std::string::npos)
-                {
-                    ids.input = deviceList[deviceName];
-                }
-                else if (deviceName.find(Pa_GetDeviceInfo(Pa_GetDefaultOutputDevice())->name) != std::string::npos)
-                {
-                    ids.streamOut = deviceList[deviceName];
-                }
+                ids.output = outputDevices[outputDeviceName].id;
+                settings["outputDevice"] = outputDeviceName;
             }
         }
-    }
-    else
-    {
-        //end execution
+        else
+        {
+            // add the device to a list of devices if it's not a loopback
+            deviceList[deviceName] = i;
+
+            // set the default virtual input device - assumes the user is using VB-Audio's Virtual Cable https://vb-audio.com/Cable/
+            if (deviceName.find("CABLE Input") != std::string::npos)
+            {
+                ids.vInput = deviceList[deviceName];
+            }
+            else if (deviceName.find(Pa_GetDeviceInfo(Pa_GetDefaultInputDevice())->name) != std::string::npos)
+            {
+                ids.input = deviceList[deviceName];
+            }
+            else if (deviceName.find(Pa_GetDeviceInfo(Pa_GetDefaultOutputDevice())->name) != std::string::npos)
+            {
+                ids.streamOut = deviceList[deviceName];
+            }
+        }
     }
 
     for (auto const& [name, id] : deviceList)
@@ -231,9 +218,6 @@ void MainInterface::SetupStreams()
 
     soundboardManager->SetStreams(passthrough, monitor, player);
     fxManager->SetStreams(passthrough, monitor);
-
-
-    //fxManager->SetHUD(this->hud);
 }
 
 /* Utility function to convert int deviceIDs to corresponding device-typed objects */
@@ -241,16 +225,15 @@ device MainInterface::GetDeviceByIndex(int i)
 {
     for (auto const& [dName, id] : deviceList)
     {
-        if (id == i)
+        if (id != i) continue;
+
+        if (inputDevices.find(dName) != inputDevices.end())
         {
-            if (inputDevices.find(dName) != inputDevices.end())
-            {
-                return inputDevices[dName];
-            }
-            else if (outputDevices.find(dName) != outputDevices.end())
-            {
-                return outputDevices[dName];
-            }
+            return inputDevices[dName];
+        }
+        else if (outputDevices.find(dName) != outputDevices.end())
+        {
+            return outputDevices[dName];
         }
     }
 

@@ -2,10 +2,7 @@
 #define PASSTHROUGH_H
 
 #include "audiostream.h"
-#include "../nlohmann/json.hpp"
 #include "../../ui/hud.h"
-
-using namespace nlohmann;
 
 class Passthrough : public AudioStream
 {
@@ -27,7 +24,6 @@ public:
     void Stop();
 
     void SetFXList(std::unordered_map<std::string, std::shared_ptr<IAudioFX>> *fxs) { this->data.fxs = fxs; }
-    //void SetFX(json settings);
 
     passthroughData data = {};
 

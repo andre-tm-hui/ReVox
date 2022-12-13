@@ -58,6 +58,8 @@ private slots:
 
     void moveWindow(QMouseEvent *event, int x, int y);
 
+    void restartTutorial();
+
 private:
     Ui::MainWindow *ui;
 
@@ -92,6 +94,8 @@ private:
 
     HUD *hud;
     TitleBar *titleBar;
+
+    Onboarding *onboarding;
 
     int selectedSoundboardHotkey,
         fxHotkey = -1;

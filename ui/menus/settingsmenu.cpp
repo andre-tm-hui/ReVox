@@ -63,6 +63,8 @@ SettingsMenu::SettingsMenu(std::shared_ptr<MainInterface> mi, HUD *hud, QWidget 
         CUpdaterDialog *updater = new CUpdaterDialog((QWidget*)this->parent(), "https://github.com/andre-tm-hui/ReVox", VER_NO, true);
         updater->setStyleSheet("QTextEdit {border: 1px solid #009090;}");
     }
+
+    connect(ui->restartTutorial, SIGNAL(pressed()), this->parentWidget(), SLOT(restartTutorial()));
 }
 
 SettingsMenu::~SettingsMenu()

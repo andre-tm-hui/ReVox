@@ -88,8 +88,7 @@ MainWindow::MainWindow(QWidget *parent)
     settingsMenu->SetDevices(mi->GetOutputDevices(), mi->GetCurrentOutputDevice());
 
     if (mi->GetSetting("firstTime").get<bool>()) {
-        Onboarding *ob = new Onboarding(soundboardMenu, fxMenu, ui->fxButton, mi, this);
-        ob->raise();
+        restartTutorial();
         mi->UpdateSettings<bool>("firstTime", false);
     }
 
@@ -224,4 +223,11 @@ void MainWindow::moveWindow(QMouseEvent *event, int x, int y)
 {
     move(event->globalPosition().x() - x - ui->sidebar->width(),
          event->globalPosition().y() - y);
+}
+
+void MainWindow::restartTutorial() {
+    openMenu(0);
+    onboarding = new Onboarding(soundboardMenu, fxMenu, ui->fxButton, mi, QWidget::window());
+    onboarding->raise();
+    fade(this, onboarding, true, 300);
 }

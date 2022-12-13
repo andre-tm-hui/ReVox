@@ -136,13 +136,6 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../portaudio/msvc/x64/release/ -lportaudio_x64
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../portaudio/msvc/x64/release/ -lportaudio_x64
-
-INCLUDEPATH += $$PWD/../portaudio/include
-DEPENDPATH += $$PWD/../portaudio/msvc/x64/Release
-
-
 RESOURCES += \
     rc.qrc
 
@@ -180,3 +173,8 @@ win32: LIBS += -L$$PWD/'../../C++ Libraries/libsndfile-1.1.0-win64/bin/' -lsndfi
 
 INCLUDEPATH += $$PWD/'../../C++ Libraries/libsndfile-1.1.0-win64/include'
 DEPENDPATH += $$PWD/'../../C++ Libraries/libsndfile-1.1.0-win64/include'
+
+win32: LIBS += -L$$PWD/../portaudio/msvc/x64/Release/ -lportaudio_x64
+
+INCLUDEPATH += $$PWD/../portaudio/include
+DEPENDPATH += $$PWD/../portaudio/include
