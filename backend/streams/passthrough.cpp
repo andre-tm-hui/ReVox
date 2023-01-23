@@ -42,40 +42,16 @@ Passthrough::Passthrough(device inputDevice, device outputDevice, int sampleRate
 
     data.rData = new recordData();
     data.rData->info = {};
+
+    data.pBuf = &pBuf;
+    pBuf.setSize(3 * 48000);
+
     initialSetup = true;
 }
 
-/*void Passthrough::SetFX(json settings)
-{
-    data.reverb->setEnabled(settings["reverb"]["enabled"].get<bool>());
-    if (data.reverb->getEnabled())
-        hud->AddActiveEffect("Reverb");
-    else
-        hud->RemoveActiveEffect("Reverb");
-    data.reverb->setwet(settings["reverb"]["mix"].get<float>());
-    data.reverb->setdry(1.f - settings["reverb"]["mix"].get<float>());
-    data.reverb->setdamp(settings["reverb"]["damp"].get<float>());
-    data.reverb->setroomsize(settings["reverb"]["roomsize"].get<float>());
-    data.reverb->setwidth(settings["reverb"]["width"].get<float>());
-
-    data.pitchShift->setAutotune(settings["autotune"]["enabled"].get<bool>());
-    //data.ps.setSpeed(settings["autotune"]["speed"].get<float>();
-    if (data.pitchShift->getAutotune())
-        hud->AddActiveEffect("Autotune");
-    else
-        hud->RemoveActiveEffect("Autotune");
-
-    data.pitchShift->setPitchshift(settings["pitch"]["enabled"].get<bool>());
-    data.pitchShift->setPitchscale(settings["pitch"]["pitch"].get<float>());
-    if (data.pitchShift->getPitchshift())
-        hud->AddActiveEffect("Pitch Shift");
-    else
-        hud->RemoveActiveEffect("Pitch Shift");
-}*/
-
-
 void Passthrough::Record(int keycode)
 {
+    std::cout<<"recording"<<std::endl;
     if (!recording)
     {
         std::string FILE_NAME = dir + "/samples/" + std::to_string(keycode) + ".mp3";
@@ -88,11 +64,12 @@ void Passthrough::Record(int keycode)
         // open the file
         this->data.rData->file = sf_open(FILE_NAME.c_str(), SFM_WRITE, &this->data.rData->info);
         if (sf_error(this->data.rData->file) != SF_ERR_NO_ERROR) {
-            fprintf(stderr, (sf_strerror(data.rData->file)));
+            fprintf(stderr, "%s", (sf_strerror(data.rData->file)));
             return;
         }
 
         this->data.rData->inUse = true;
+        sf_write_float(this->data.rData->file, pBuf.get(), pBuf.len());
 
         recording = true;
     }

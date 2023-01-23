@@ -57,7 +57,8 @@ SOURCES += \
     ui/widgets/fx/fxkeypicker.cpp \
     ui/widgets/fx/fxparam.cpp \
     ui/widgets/soundboard/clickthroughslider.cpp \
-    ui/widgets/soundboard/waveformviewer.cpp
+    ui/widgets/soundboard/waveformviewer.cpp \
+    util/ringbuffer.cpp
 
 HEADERS += \
     audiofx/iaudiofx.h \
@@ -111,7 +112,8 @@ HEADERS += \
     ui/widgets/fx/fxparam.h \
     ui/widgets/soundboard/clickthroughslider.h \
     ui/widgets/soundboard/waveformviewer.h \
-    nlohmann/json.hpp
+    nlohmann/json.hpp \
+    util/ringbuffer.h
 
 INCLUDEPATH += headers
 
