@@ -2,7 +2,7 @@
 #define MAININTERFACE_H
 
 #ifndef VER_NO
-#define VER_NO "0.2"
+#define VER_NO "0.2.1"
 #endif
 
 #ifndef ROOTNAME

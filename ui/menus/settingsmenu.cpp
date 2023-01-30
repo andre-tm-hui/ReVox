@@ -60,7 +60,7 @@ SettingsMenu::SettingsMenu(std::shared_ptr<MainInterface> mi, HUD *hud, QWidget 
 
     if (mi->GetSetting("autocheckUpdates").get<bool>())
     {
-        CUpdaterDialog *updater = new CUpdaterDialog((QWidget*)this->parent(), "https://github.com/andre-tm-hui/ReVox", VER_NO, true);
+        CUpdaterDialog *updater = new CUpdaterDialog((QWidget*)this->parent(), "https://api.github.com/repos/andre-tm-hui/ReVox/releases/latest", VER_NO, true);
         updater->setStyleSheet("QTextEdit {border: 1px solid #009090;}");
     }
 
@@ -179,7 +179,7 @@ void SettingsMenu::toggleAutostart(int state)
 
 void SettingsMenu::checkForUpdates()
 {
-    CUpdaterDialog *updater = new CUpdaterDialog((QWidget*)this->parent(), "https://github.com/andre-tm-hui/ReVox", VER_NO);
+    CUpdaterDialog *updater = new CUpdaterDialog((QWidget*)this->parent(), "https://api.github.com/repos/andre-tm-hui/ReVox/releases/latest", VER_NO);
     updater->setStyleSheet("QTextEdit {border: 1px solid #009090;}");
 }
 
