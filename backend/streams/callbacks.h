@@ -10,6 +10,7 @@
 #include "../../audiofx/reverberator.h"
 #include "../../audiofx/autotuner.h"
 #include "../../audiofx/repitcher.h"
+#include "../../util/ringbuffer.h"
 
 typedef struct{
     SNDFILE *file;
@@ -40,6 +41,7 @@ typedef struct{
     PitchShift *pitchShift;
     float *buf;
     std::unordered_map<std::string, std::shared_ptr<IAudioFX>> *fxs;
+    RingBuffer<float> *pBuf;
 } passthroughData;
 
 typedef struct{
@@ -48,6 +50,7 @@ typedef struct{
     float *inputBuffer;
     float monitorSamples;
     float *playbackBuffer;
+    RingBuffer<float> *pBuf;
 } monitorData;
 
 int playCallback(const void* inputBuffer, void* outputBuffer,

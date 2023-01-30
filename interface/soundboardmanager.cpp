@@ -8,7 +8,8 @@ SoundboardManager::SoundboardManager(std::string rootDir, int sampleRate) : Base
         "recordOver": {
             "keycode": -1,
             "deviceName": "" },
-        "hotkeys": {}
+        "hotkeys": {},
+        "padding": 0
     })"_json;
     defaultObj = R"({
         "keycode": -1,
@@ -45,7 +46,7 @@ void SoundboardManager::StartEvent(std::string path, int event) {
 }
 
 void SoundboardManager::Record(std::string idx) {
-    if (recording) return;
+    if (recording || stopping) return;
     json bindSettings = settings["hotkeys"][idx];
 
     if (bindSettings["recordInput"] && passthrough != nullptr) passthrough->Record(std::stoi(idx));
@@ -56,11 +57,22 @@ void SoundboardManager::Record(std::string idx) {
 }
 
 void SoundboardManager::StopRecording() {
+    if (recording && !stopping) {
+        stopping = true;
+        std::thread t(&SoundboardManager::StopRecordingAfter, this);
+        t.detach();
+    }
+}
+
+void SoundboardManager::StopRecordingAfter() {
+    Sleep(settings["padding"].get<int>());
+
     if (passthrough != nullptr) passthrough->Stop();
     if (monitor != nullptr) monitor->Stop();
 
+    stopping = false;
     recording = false;
-    if (wv != nullptr) wv->refresh(rootDir + "samples/" + currHotkey + ".mp3");
+    if (wv != nullptr) wv->refresh(rootDir + "samples/" + currHotkey + ".mp3", wv);
 }
 
 void SoundboardManager::Play(std::string idx) {
@@ -180,8 +192,10 @@ void SoundboardManager::SetWaveform(WaveformViewer *wv) {
 
 void SoundboardManager::SetStreams(std::shared_ptr<Passthrough> passthrough, std::shared_ptr<Monitor> monitor, std::shared_ptr<Player> player) {
     this->passthrough = passthrough;
+    passthrough->SetPadding(settings["padding"].get<int>());
     this->monitor = monitor;
     monitor->SetSoundboardMonitorVol(settings["monitor"].get<int>() / 100.f);
+    monitor->SetPadding(settings["padding"].get<int>());
     this->player = player;
 }
 
@@ -194,4 +208,10 @@ void SoundboardManager::ResetStreams() {
 void SoundboardManager::SetMonitoringVol(int n) {
     UpdateSettings<int>("monitor", n);
     monitor->SetSoundboardMonitorVol(settings["monitor"].get<int>() / 100.f);
+}
+
+void SoundboardManager::SetPadding(int ms) {
+    UpdateSettings<int>("padding", ms);
+    passthrough->SetPadding(ms);
+    monitor->SetPadding(ms);
 }

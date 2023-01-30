@@ -23,6 +23,7 @@ public:
     void Record(int keycode);
     void Stop();
 
+    void SetPadding(int padding);
     void SetFXList(std::unordered_map<std::string, std::shared_ptr<IAudioFX>> *fxs) { this->data.fxs = fxs; }
 
     passthroughData data = {};
@@ -30,6 +31,10 @@ public:
     bool recording = false;
 
     HUD *hud;
+
+private:
+    RingBuffer<float> pBuf;
+    int padding = 0;
 };
 
 #endif // PASSTHROUGH_H

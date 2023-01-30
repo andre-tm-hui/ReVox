@@ -13,6 +13,9 @@ Monitor::Monitor(device inputDevice,
     this->data.playbackBuffer = playbackBuffer;
     this->data.rData = new recordData();
     this->data.rData->info = {};
+    this->data.rData->info.samplerate = this->sampleRate;
+    this->data.rData->info.channels = inputParameters.channelCount;
+    this->data.rData->info.format = SF_FORMAT_MPEG | SF_FORMAT_MPEG_LAYER_III;
     this->data.rData->inUse = false;
     this->data.monitorMic = 0.f;
     this->data.monitorSamples = 0.f;
@@ -40,6 +43,8 @@ Monitor::Monitor(device inputDevice,
         done(); return;
     }
 
+    data.pBuf = &pBuf;
+
     initialSetup = true;
 }
 
@@ -47,6 +52,8 @@ Monitor::Monitor(device inputDevice,
 void Monitor::Record(int keycode)
 {
     if (!recording) {
+        recording = true;
+
         // create a filename based on the keycode
         std::string FILE_NAME = dir + "/samples/" + std::to_string(keycode) + "m.mp3";
 
@@ -61,10 +68,12 @@ void Monitor::Record(int keycode)
             fprintf(stderr, (sf_strerror(data.rData->file)));
             return;
         }
-        this->data.rData->inUse = true;
 
-        recording = true;
+        if (pBuf.len() > 0)
+            sf_write_float(this->data.rData->file, pBuf.get(), pBuf.len());
+
         this->keycode = keycode;
+        this->data.rData->inUse = true;
     }
 }
 
@@ -145,4 +154,10 @@ void Monitor::Merge()
         std::filesystem::rename((dir + "/samples/" + std::to_string(keycode) + "out.mp3").c_str(),
                                 (dir + "/samples/" + std::to_string(keycode) + ".mp3").c_str());
     }
+}
+
+void Monitor::SetPadding(int padding)
+{
+    this->padding = padding;
+    pBuf.setSize(this->inputParameters.channelCount * this->padding * (sampleRate / 1000));
 }

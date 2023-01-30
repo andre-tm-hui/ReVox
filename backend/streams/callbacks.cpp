@@ -67,8 +67,7 @@ int passthroughCallback(const void* inputBuffer, void* outputBuffer,
     passthroughData* p_data = (passthroughData*) data;
 
     float* mono = new float[framesPerBuffer];
-    for (int i = 0; i < framesPerBuffer; i++)
-    {
+    for (int i = 0; i < framesPerBuffer; i++) {
         mono[i] = 0.f;
         for (int j = 0; j < p_data->nChannels; ++j) mono[i] += in[p_data->nChannels*i+j];
     }
@@ -78,26 +77,17 @@ int passthroughCallback(const void* inputBuffer, void* outputBuffer,
             if (fx->GetEnabled())
                 fx->Process(mono);
 
-    /*if (p_data->pitchShift->getAutotune() || p_data->pitchShift->getPitchshift())
-    {
-        p_data->pitchShift->repitch(mono);
-    }
-
-    if (p_data->reverb->getEnabled())
-    {
-        p_data->reverb->processmono(mono, mono, framesPerBuffer, 1);
-    }*/
-
-    for (int i = 0; i < (int)framesPerBuffer; i++)
-    {
+    for (int i = 0; i < (int)framesPerBuffer; i++) {
         out[2*i] = mono[i];
         out[2*i+1] = mono[i];
     }
 
     delete[] mono;
-    if (p_data->rData->inUse && p_data->rData->file != nullptr)
-    {
-        sf_write_float(p_data->rData->file, out, framesPerBuffer * p_data->rData->info.channels);
+    if (p_data->rData->inUse) {
+        if (p_data->rData->file != nullptr)
+            sf_write_float(p_data->rData->file, out, framesPerBuffer * p_data->rData->info.channels);
+    } else {
+        p_data->pBuf->write(out, framesPerBuffer * p_data->rData->info.channels);
     }
 
     memcpy(p_data->buf, out, sizeof(float) * framesPerBuffer * 2);
@@ -117,9 +107,11 @@ int monitorCallback(const void* inputBuffer, void* outputBuffer,
     float* out = (float*)outputBuffer;
 
     // record if flag is set
-    if (c_data->rData->inUse && c_data->rData->file != nullptr)
-    {
-        sf_write_float(c_data->rData->file, in, framesPerBuffer * c_data->rData->info.channels);
+    if (c_data->rData->inUse) {
+        if (c_data->rData->file != nullptr)
+            sf_write_float(c_data->rData->file, in, framesPerBuffer * c_data->rData->info.channels);
+    } else {
+        c_data->pBuf->write(in, framesPerBuffer * c_data->rData->info.channels);
     }
 
     // copy the input (loopback) to a shared buffer, going to another stream

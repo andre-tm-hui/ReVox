@@ -19,7 +19,7 @@ public:
     int getLength() { return length; }
     void setTimeLabel(bool loading = false);
     void startTransition(std::string path = "", int delay = 200, int duration = 200);
-    void refresh(std::string path);
+    void refresh(std::string path, WaveformViewer*);
     QString getTimeLabel() { return timeLabel; }
 
 protected:
@@ -29,10 +29,12 @@ protected:
 signals:
     void startRepaint();
     void transitionDone();
+    void signalTransition();
 
 private slots:
     void slotRepaint() { this->update(); }
     void cleanup();
+    void slotTransition() { startTransition(this->path); }
 
 private:
     static void transition(std::string path, int duration, int delay,

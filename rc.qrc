@@ -61,5 +61,9 @@
         <file>rc/onboarding/21.bmp</file>
         <file>rc/onboarding/22.bmp</file>
         <file>rc/onboarding/arrow.png</file>
+        <file>rc/common/down_arrow_off.png</file>
+        <file>rc/common/down_arrow_on.png</file>
+        <file>rc/common/up_arrow_off.png</file>
+        <file>rc/common/up_arrow_on.png</file>
     </qresource>
 </RCC>

@@ -42,42 +42,21 @@ Passthrough::Passthrough(device inputDevice, device outputDevice, int sampleRate
 
     data.rData = new recordData();
     data.rData->info = {};
+    data.rData->info.samplerate = this->sampleRate;
+    data.rData->info.channels = inputParameters.channelCount;
+    data.rData->info.format = SF_FORMAT_MPEG | SF_FORMAT_MPEG_LAYER_III;
+
+    data.pBuf = &pBuf;
+
     initialSetup = true;
 }
-
-/*void Passthrough::SetFX(json settings)
-{
-    data.reverb->setEnabled(settings["reverb"]["enabled"].get<bool>());
-    if (data.reverb->getEnabled())
-        hud->AddActiveEffect("Reverb");
-    else
-        hud->RemoveActiveEffect("Reverb");
-    data.reverb->setwet(settings["reverb"]["mix"].get<float>());
-    data.reverb->setdry(1.f - settings["reverb"]["mix"].get<float>());
-    data.reverb->setdamp(settings["reverb"]["damp"].get<float>());
-    data.reverb->setroomsize(settings["reverb"]["roomsize"].get<float>());
-    data.reverb->setwidth(settings["reverb"]["width"].get<float>());
-
-    data.pitchShift->setAutotune(settings["autotune"]["enabled"].get<bool>());
-    //data.ps.setSpeed(settings["autotune"]["speed"].get<float>();
-    if (data.pitchShift->getAutotune())
-        hud->AddActiveEffect("Autotune");
-    else
-        hud->RemoveActiveEffect("Autotune");
-
-    data.pitchShift->setPitchshift(settings["pitch"]["enabled"].get<bool>());
-    data.pitchShift->setPitchscale(settings["pitch"]["pitch"].get<float>());
-    if (data.pitchShift->getPitchshift())
-        hud->AddActiveEffect("Pitch Shift");
-    else
-        hud->RemoveActiveEffect("Pitch Shift");
-}*/
-
 
 void Passthrough::Record(int keycode)
 {
     if (!recording)
     {
+        recording = true;
+
         std::string FILE_NAME = dir + "/samples/" + std::to_string(keycode) + ".mp3";
 
         // set the sndfile info to be a .mp3 file
@@ -88,13 +67,14 @@ void Passthrough::Record(int keycode)
         // open the file
         this->data.rData->file = sf_open(FILE_NAME.c_str(), SFM_WRITE, &this->data.rData->info);
         if (sf_error(this->data.rData->file) != SF_ERR_NO_ERROR) {
-            fprintf(stderr, (sf_strerror(data.rData->file)));
+            fprintf(stderr, "%s", (sf_strerror(data.rData->file)));
             return;
         }
 
-        this->data.rData->inUse = true;
+        if (pBuf.len() > 0)
+            sf_write_float(this->data.rData->file, pBuf.get(), pBuf.len());
 
-        recording = true;
+        this->data.rData->inUse = true;
     }
 }
 
@@ -110,4 +90,10 @@ void Passthrough::Stop()
 
         recording = false;
     }
+}
+
+void Passthrough::SetPadding(int padding)
+{
+    this->padding = padding;
+    pBuf.setSize(this->inputParameters.channelCount * this->padding * (sampleRate / 1000));
 }

@@ -111,7 +111,8 @@ HEADERS += \
     ui/widgets/fx/fxparam.h \
     ui/widgets/soundboard/clickthroughslider.h \
     ui/widgets/soundboard/waveformviewer.h \
-    nlohmann/json.hpp
+    nlohmann/json.hpp \
+    util/ringbuffer.h
 
 INCLUDEPATH += headers
 

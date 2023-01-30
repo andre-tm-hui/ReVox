@@ -31,7 +31,7 @@
     <rect>
      <x>215</x>
      <y>275</y>
-     <width>600</width>
+     <width>470</width>
      <height>215</height>
     </rect>
    </property>
@@ -46,68 +46,13 @@
      <rect>
       <x>0</x>
       <y>50</y>
-      <width>600</width>
+      <width>470</width>
       <height>111</height>
      </rect>
     </property>
     <property name="styleSheet">
      <string notr="true">background: #080808;</string>
     </property>
-   </widget>
-   <widget class="QGroupBox" name="modifierGroup">
-    <property name="geometry">
-     <rect>
-      <x>398</x>
-      <y>11</y>
-      <width>191</width>
-      <height>30</height>
-     </rect>
-    </property>
-    <property name="toolTip">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Hold this key along with any hotkey to begin recording, overriding an existing clip&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">QGroupBox { border-radius: 0px; border: 0px; background-color: transparent; }</string>
-    </property>
-    <property name="title">
-     <string/>
-    </property>
-    <widget class="QLabel" name="modifierLabel">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>-11</y>
-       <width>80</width>
-       <height>51</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-       <bold>false</bold>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">QWidget {color: #A0A0A0;}
-QWidget:disabled {color: #707070;}</string>
-     </property>
-     <property name="text">
-      <string>Modifier Key</string>
-     </property>
-    </widget>
-    <widget class="QWidget" name="modifierPlaceholder" native="true">
-     <property name="geometry">
-      <rect>
-       <x>80</x>
-       <y>0</y>
-       <width>110</width>
-       <height>30</height>
-      </rect>
-     </property>
-    </widget>
    </widget>
    <widget class="QGroupBox" name="toggleGroup">
     <property name="enabled">
@@ -304,7 +249,7 @@ QToolButton:disabled { background-color: #303030;}
     </property>
     <property name="geometry">
      <rect>
-      <x>454</x>
+      <x>330</x>
       <y>180</y>
       <width>125</width>
       <height>16</height>
@@ -340,7 +285,7 @@ QSlider::sub-page:horizontal { background-color: #00D0D0; border-radius: 2px; }<
    <widget class="QGroupBox" name="mediaButtonBox">
     <property name="geometry">
      <rect>
-      <x>270</x>
+      <x>200</x>
       <y>174</y>
       <width>60</width>
       <height>30</height>
@@ -430,6 +375,215 @@ QToolButton:disabled { border-image: url(&quot;:/rc/soundboardMenu/stopDisabled.
    <property name="toolTip">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Hear your own clips&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
+  </widget>
+  <widget class="QGroupBox" name="extraSettings">
+   <property name="geometry">
+    <rect>
+     <x>695</x>
+     <y>275</y>
+     <width>120</width>
+     <height>215</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QGroupBox { border: 0px; background-color: #181818; border-radius: 10px; }</string>
+   </property>
+   <property name="title">
+    <string/>
+   </property>
+   <widget class="QGroupBox" name="modifierGroup">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>25</y>
+      <width>120</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Hold this key along with any hotkey to begin recording, overriding an existing clip&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QGroupBox { border-radius: 0px; border: 0px; background-color: transparent; }</string>
+    </property>
+    <property name="title">
+     <string/>
+    </property>
+    <widget class="QLabel" name="modifierLabel">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>120</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QWidget {color: #A0A0A0;}
+QWidget:disabled {color: #707070;}</string>
+     </property>
+     <property name="text">
+      <string>Modifier Key</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QWidget" name="modifierPlaceholder" native="true">
+     <property name="geometry">
+      <rect>
+       <x>7</x>
+       <y>25</y>
+       <width>106</width>
+       <height>35</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="paddingGroup">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>120</y>
+      <width>120</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Record an extra few seconds before and after you press/release a hotkey.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QGroupBox { border-radius: 0px; border: 0px; background-color: transparent; }</string>
+    </property>
+    <property name="title">
+     <string/>
+    </property>
+    <widget class="QLabel" name="paddingLabel">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>120</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QWidget {color: #A0A0A0;}
+QWidget:disabled {color: #707070;}</string>
+     </property>
+     <property name="text">
+      <string>Padding (s)</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="padding">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>27</y>
+       <width>100</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>11</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QDoubleSpinBox {
+	background-color: #303030;
+	border: 0px;
+	border-radius: 3px;
+	padding: 3px 25px 3px 8px;
+	padding-right: 25px;
+}
+
+QDoubleSpinBox::up-button {
+	subcontrol-origin: border;
+	subcontrol-origin: top right;
+	width: 25px;
+	border: 0px;
+	margin-bottom: -1px;
+	border-top-right-radius: 3px;
+}
+
+QDoubleSpinBox::up-button:hover {
+	background-color: #505050;
+}
+
+QDoubleSpinBox::up-button:pressed {
+	background-color: #484848;
+}
+
+QDoubleSpinBox::up-arrow {
+	image: url(&quot;:/rc/common/up_arrow_on.png&quot;);
+	width: 12px;
+	height: 12px;
+}
+
+QDoubleSpinBox::up-arrow:disabled, QDoubleSpinBox::up-arrow:off {
+	image: url(&quot;:/rc/common/up_arrow_off.png&quot;);
+}
+
+QDoubleSpinBox::down-button {
+	subcontrol-origin: border;
+	subcontrol-origin: bottom right;
+	width: 25px;
+	border: 0px;
+	margin-top: -1px;
+	border-bottom-right-radius: 3px;
+}
+
+QDoubleSpinBox::down-button:hover {
+	background-color: #505050;
+}
+
+QDoubleSpinBox::down-button:pressed {
+	background-color: #484848;
+}
+
+QDoubleSpinBox::down-arrow {
+	image: url(&quot;:/rc/common/down_arrow_on.png&quot;);
+	width: 12px;
+	height: 12px;
+}
+
+QDoubleSpinBox::down-arrow:disabled, QDoubleSpinBox::down-arrow:off {
+	image: url(&quot;:/rc/common/down_arrow_off.png&quot;);
+}</string>
+     </property>
+     <property name="decimals">
+      <number>3</number>
+     </property>
+     <property name="maximum">
+      <double>5.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.050000000000000</double>
+     </property>
+    </widget>
+   </widget>
   </widget>
  </widget>
  <customwidgets>
