@@ -6,6 +6,7 @@ WaveformViewer::WaveformViewer(QWidget *parent)
     smallest = largest = rms = std::vector<float>(this->width(), 0);
     connect(this, SIGNAL(startRepaint()), this, SLOT(slotRepaint()), Qt::ConnectionType::QueuedConnection);
     connect(this, SIGNAL(transitionDone()), this, SLOT(cleanup()), Qt::ConnectionType::QueuedConnection);
+    connect(this, SIGNAL(signalTransition()), this, SLOT(slotTransition()), Qt::ConnectionType::QueuedConnection);
 }
 
 void WaveformViewer::paintEvent(QPaintEvent *event)
@@ -128,8 +129,8 @@ void WaveformViewer::startTransition(std::string path, int delay, int duration) 
     t.detach();
 }
 
-void WaveformViewer::refresh(std::string path) {
-    if (path == this->path) startTransition(path);
+void WaveformViewer::refresh(std::string path, WaveformViewer *wv) {
+    if (path == this->path) emit wv->signalTransition();
 }
 
 QString WaveformViewer::currentTime() {

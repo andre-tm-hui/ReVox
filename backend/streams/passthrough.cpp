@@ -44,7 +44,7 @@ Passthrough::Passthrough(device inputDevice, device outputDevice, int sampleRate
     data.rData->info = {};
 
     data.pBuf = &pBuf;
-    pBuf.setSize(3 * 48000);
+    pBuf.setSize(this->padding * (sampleRate / 1000));
 
     initialSetup = true;
 }
@@ -69,7 +69,8 @@ void Passthrough::Record(int keycode)
         }
 
         this->data.rData->inUse = true;
-        sf_write_float(this->data.rData->file, pBuf.get(), pBuf.len());
+        if (pBuf.len() > 0)
+            sf_write_float(this->data.rData->file, pBuf.get(), pBuf.len());
 
         recording = true;
     }
@@ -87,4 +88,10 @@ void Passthrough::Stop()
 
         recording = false;
     }
+}
+
+void Passthrough::SetPadding(int padding)
+{
+    this->padding = padding;
+    pBuf.setSize(this->padding * (sampleRate / 1000));
 }

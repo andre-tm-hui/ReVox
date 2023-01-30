@@ -19,9 +19,12 @@ public:
     void Merge();
     void SetFXMonitorVol(float val) { data.monitorMic = val; }
     void SetSoundboardMonitorVol(float val) { data.monitorSamples = val; }
+    void SetPadding(int padding);
 
 private:
-    int keycode;
+    RingBuffer<float> pBuf;
+    int keycode,
+        padding = 0;
     bool recording = false;
 
     monitorData data;

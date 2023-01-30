@@ -23,7 +23,7 @@ public:
     void Record(int keycode);
     void Stop();
 
-    void SetPadding(int padding) { this->padding = padding; }
+    void SetPadding(int padding);
     void SetFXList(std::unordered_map<std::string, std::shared_ptr<IAudioFX>> *fxs) { this->data.fxs = fxs; }
 
     passthroughData data = {};

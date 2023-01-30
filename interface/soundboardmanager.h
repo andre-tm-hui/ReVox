@@ -1,6 +1,7 @@
 #ifndef SOUNDBOARDMANAGER_H
 #define SOUNDBOARDMANAGER_H
 
+#include <chrono>
 #include "basemanager.h"
 #include "../ui/widgets/soundboard/waveformviewer.h"
 #include "../backend/streams/passthrough.h"
@@ -24,9 +25,11 @@ public:
                     std::shared_ptr<Player> player);
     void ResetStreams();
     void SetMonitoringVol(int n) override;
+    void SetPadding(int ms);
 
 private:
     void StartEvent(std::string path, int event) override;
+    void StopRecordingAfter();
 
     std::shared_ptr<Passthrough> passthrough;
     std::shared_ptr<Monitor> monitor;

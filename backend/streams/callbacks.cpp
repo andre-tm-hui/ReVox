@@ -111,7 +111,7 @@ int monitorCallback(const void* inputBuffer, void* outputBuffer,
         sf_write_float(c_data->rData->file, in, framesPerBuffer * c_data->rData->info.channels);
     }
 
-    //c_data->pBuf->write(out, framesPerBuffer * c_data->rData->info.channels);
+    c_data->pBuf->write(out, framesPerBuffer * c_data->rData->info.channels);
 
     // copy the input (loopback) to a shared buffer, going to another stream
     memset(out, 0, sizeof(float) * framesPerBuffer * 2);

@@ -40,6 +40,9 @@ Monitor::Monitor(device inputDevice,
         done(); return;
     }
 
+    data.pBuf = &pBuf;
+    pBuf.setSize(this->padding * (sampleRate / 1000));
+
     initialSetup = true;
 }
 
@@ -62,6 +65,8 @@ void Monitor::Record(int keycode)
             return;
         }
         this->data.rData->inUse = true;
+        if (pBuf.len() > 0)
+            sf_write_float(this->data.rData->file, pBuf.get(), pBuf.len());
 
         recording = true;
         this->keycode = keycode;
@@ -145,4 +150,10 @@ void Monitor::Merge()
         std::filesystem::rename((dir + "/samples/" + std::to_string(keycode) + "out.mp3").c_str(),
                                 (dir + "/samples/" + std::to_string(keycode) + ".mp3").c_str());
     }
+}
+
+void Monitor::SetPadding(int padding)
+{
+    this->padding = padding;
+    pBuf.setSize(this->padding * (sampleRate / 1000));
 }

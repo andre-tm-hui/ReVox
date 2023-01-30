@@ -41,6 +41,7 @@ T* RingBuffer<T>::operator[](int i) {
 
 template <class T>
 void RingBuffer<T>::write(float* buf, int n) {
+    if (size == 0) return;
     for (int i = 0; i < n; i++, pointer++) {
         pointer = pointer % size;
         this->buf[pointer] = buf[i];
@@ -49,6 +50,7 @@ void RingBuffer<T>::write(float* buf, int n) {
 
 template <class T>
 T* RingBuffer<T>::get() {
+    if (size == 0) return nullptr;
     if (tBuf != nullptr) delete[] tBuf;
     tBuf = new T[size];
     int startPos = (pointer+1) % size;
