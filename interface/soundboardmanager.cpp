@@ -46,7 +46,7 @@ void SoundboardManager::StartEvent(std::string path, int event) {
 }
 
 void SoundboardManager::Record(std::string idx) {
-    if (recording) return;
+    if (recording || stopping) return;
     json bindSettings = settings["hotkeys"][idx];
 
     if (bindSettings["recordInput"] && passthrough != nullptr) passthrough->Record(std::stoi(idx));
@@ -57,16 +57,20 @@ void SoundboardManager::Record(std::string idx) {
 }
 
 void SoundboardManager::StopRecording() {
-    std::thread t(&SoundboardManager::StopRecordingAfter, this);
-    t.detach();
+    if (recording && !stopping) {
+        stopping = true;
+        std::thread t(&SoundboardManager::StopRecordingAfter, this);
+        t.detach();
+    }
 }
 
 void SoundboardManager::StopRecordingAfter() {
-    std::this_thread::sleep_for(std::chrono::milliseconds(settings["padding"].get<int>()));
+    Sleep(settings["padding"].get<int>());
 
     if (passthrough != nullptr) passthrough->Stop();
     if (monitor != nullptr) monitor->Stop();
 
+    stopping = false;
     recording = false;
     if (wv != nullptr) wv->refresh(rootDir + "samples/" + currHotkey + ".mp3", wv);
 }

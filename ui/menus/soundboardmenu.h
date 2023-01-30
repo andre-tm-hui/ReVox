@@ -36,6 +36,7 @@ private slots:
     void setOverlap(bool val);
     void setClipVolume(int val);
     void setMonitorVolume(int val);
+    void setPadding(double val);
     void play();
     void stop();
     void loadFile();

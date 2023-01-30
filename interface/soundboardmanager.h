@@ -36,6 +36,7 @@ private:
     std::shared_ptr<Player> player;
     WaveformViewer *wv = nullptr;
     bool recording = false,
+         stopping = false,
          recordOver = false;
     int sampleRate = 0;
     std::string currHotkey = "";

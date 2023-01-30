@@ -17,6 +17,7 @@ SoundboardMenu::SoundboardMenu(std::shared_ptr<SoundboardManager> sm, QWidget *p
     modKey->resize(ui->modifierPlaceholder->size());
     ui->monitorSlider->setValue(sm->GetSetting("monitor").get<int>());
     ui->monitorSlider->setLabel(":/rc/soundboardMenu/soundboardMonitorLabel.png");
+    ui->padding->setValue(sm->GetSetting("padding").get<int>() / 1000.0);
 
     connect(hkl, SIGNAL(onSelectionChanged(int)), this, SLOT(setCurrentHotkey(int)));
     connect(hkl, SIGNAL(hotkeyRemoved()), this, SLOT(resetAll()));
@@ -32,6 +33,7 @@ SoundboardMenu::SoundboardMenu(std::shared_ptr<SoundboardManager> sm, QWidget *p
     connect(ui->monitorSlider, SIGNAL(valueChanged(int)), this, SLOT(setMonitorVolume(int)));
     connect(ui->play, SIGNAL(clicked(bool)), this, SLOT(play()));
     connect(ui->stop, SIGNAL(clicked(bool)), this, SLOT(stop()));
+    connect(ui->padding, SIGNAL(valueChanged(double)), this, SLOT(setPadding(double)));
 
     connect(hkl, &HotkeyListWidget::hotkeyAdded, this, [=]() { emit itemAdded(); });
     connect(crp, &Cropper::onClipChanged, this, [=]() { emit clipRecorded(); });
@@ -126,6 +128,10 @@ void SoundboardMenu::setClipVolume(int val) {
 
 void SoundboardMenu::setMonitorVolume(int val) {
     sm->SetMonitoringVol(val);
+}
+
+void SoundboardMenu::setPadding(double val) {
+    sm->SetPadding((int)(val * 1000));
 }
 
 void SoundboardMenu::play() {

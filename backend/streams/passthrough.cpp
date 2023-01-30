@@ -44,16 +44,16 @@ Passthrough::Passthrough(device inputDevice, device outputDevice, int sampleRate
     data.rData->info = {};
 
     data.pBuf = &pBuf;
-    pBuf.setSize(this->padding * (sampleRate / 1000));
 
     initialSetup = true;
 }
 
 void Passthrough::Record(int keycode)
 {
-    std::cout<<"recording"<<std::endl;
     if (!recording)
     {
+        recording = true;
+
         std::string FILE_NAME = dir + "/samples/" + std::to_string(keycode) + ".mp3";
 
         // set the sndfile info to be a .mp3 file
@@ -68,11 +68,10 @@ void Passthrough::Record(int keycode)
             return;
         }
 
-        this->data.rData->inUse = true;
         if (pBuf.len() > 0)
             sf_write_float(this->data.rData->file, pBuf.get(), pBuf.len());
 
-        recording = true;
+        this->data.rData->inUse = true;
     }
 }
 
@@ -93,5 +92,5 @@ void Passthrough::Stop()
 void Passthrough::SetPadding(int padding)
 {
     this->padding = padding;
-    pBuf.setSize(this->padding * (sampleRate / 1000));
+    pBuf.setSize(this->inputParameters.channelCount * this->padding * (sampleRate / 1000));
 }
