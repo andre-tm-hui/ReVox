@@ -13,6 +13,9 @@ Monitor::Monitor(device inputDevice,
     this->data.playbackBuffer = playbackBuffer;
     this->data.rData = new recordData();
     this->data.rData->info = {};
+    this->data.rData->info.samplerate = this->sampleRate;
+    this->data.rData->info.channels = inputParameters.channelCount;
+    this->data.rData->info.format = SF_FORMAT_MPEG | SF_FORMAT_MPEG_LAYER_III;
     this->data.rData->inUse = false;
     this->data.monitorMic = 0.f;
     this->data.monitorSamples = 0.f;

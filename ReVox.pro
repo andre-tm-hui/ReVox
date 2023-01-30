@@ -57,8 +57,7 @@ SOURCES += \
     ui/widgets/fx/fxkeypicker.cpp \
     ui/widgets/fx/fxparam.cpp \
     ui/widgets/soundboard/clickthroughslider.cpp \
-    ui/widgets/soundboard/waveformviewer.cpp \
-    util/ringbuffer.cpp
+    ui/widgets/soundboard/waveformviewer.cpp
 
 HEADERS += \
     audiofx/iaudiofx.h \

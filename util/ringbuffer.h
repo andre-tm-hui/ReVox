@@ -2,6 +2,7 @@
 #define RINGBUFFER_H
 
 #include <vector>
+#include <iostream>
 
 template <class T>
 class RingBuffer

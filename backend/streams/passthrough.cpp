@@ -42,6 +42,9 @@ Passthrough::Passthrough(device inputDevice, device outputDevice, int sampleRate
 
     data.rData = new recordData();
     data.rData->info = {};
+    data.rData->info.samplerate = this->sampleRate;
+    data.rData->info.channels = inputParameters.channelCount;
+    data.rData->info.format = SF_FORMAT_MPEG | SF_FORMAT_MPEG_LAYER_III;
 
     data.pBuf = &pBuf;
 

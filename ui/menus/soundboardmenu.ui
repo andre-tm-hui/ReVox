@@ -441,9 +441,9 @@ QWidget:disabled {color: #707070;}</string>
     <widget class="QWidget" name="modifierPlaceholder" native="true">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>7</x>
        <y>25</y>
-       <width>100</width>
+       <width>106</width>
        <height>35</height>
       </rect>
      </property>
