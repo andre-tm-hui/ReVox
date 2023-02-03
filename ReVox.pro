@@ -13,6 +13,7 @@ RC_ICONS = icon.ico
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    audiofx/lib/pitchshift/pitchshifter.cpp \
     main.cpp \
     audiofx/autotuner.cpp \
     audiofx/repitcher.cpp \
@@ -62,6 +63,7 @@ SOURCES += \
 HEADERS += \
     audiofx/iaudiofx.h \
     audiofx/autotuner.h \
+    audiofx/lib/pitchshift/pitchshifter.h \
     audiofx/repitcher.h \
     audiofx/reverberator.h \
     audiofx/lib/pitchshift/frequency.h \

@@ -34,6 +34,7 @@ void FXDial::setValue(int val) {
     updateDisplay(val);
     QPropertyAnimation *anim = slideToValue(ui->dial, val, 100);
     connect(anim, SIGNAL(finished()), this, SLOT(reEnableUpdates()));
+    fm->ApplyFXSettings({{fx, {{param, val}}}});
 }
 
 void FXDial::onValueChanged() {

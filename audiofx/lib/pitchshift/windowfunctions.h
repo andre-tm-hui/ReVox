@@ -14,17 +14,18 @@ namespace Window
     {
         for (int i = 0; i < n; i++)
         {
-            out[i] = in[i] * 0.5f * (1.f - cos(2.f * M_PI * (float)i / (float)n));
+            out[i] = in[i] * 0.5f * (1.f - cos(2.f * M_PI * (float)i / ((float)n - 1.f)));
         }
         //fprintf(stdout, "\nhann\n"); fflush(stdout);
     }
 
     static std::vector<float> Hann(std::vector<float> in)
     {
-        int n = in.size();
-        for (int i = 0; i < n; i++)
+        int L = in.size();
+        float N = L - 1.f;
+        for (int n = 0; n <= N; n++)
         {
-            in[i] = in[i] * 0.5 * (1 - cos(2 * M_PI * i / n));
+            in[n] *= 0.5f * (1.f - cos(2.f * M_PI * (float)n / N));
         }
         return in;
     }

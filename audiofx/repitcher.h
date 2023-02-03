@@ -2,12 +2,12 @@
 #define REPITCHER_H
 
 #include "iaudiofx.h"
-#include "lib/pitchshift/pitchshift.h"
+#include "lib/pitchshift/pitchshifter.h"
 
 class Repitcher : public IAudioFX
 {
 public:
-    Repitcher(std::shared_ptr<PitchShift> ps);
+    Repitcher(std::shared_ptr<PitchShifter> ps);
 
     void Process(float *buf) override;
     void Reset() override;
@@ -17,7 +17,7 @@ public:
     void SetEnabled(bool enabled) override;
 
 private:
-    std::shared_ptr<PitchShift> ps;
+    std::shared_ptr<PitchShifter> ps;
 };
 
 #endif // REPITCHER_H

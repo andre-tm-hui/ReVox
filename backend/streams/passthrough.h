@@ -16,8 +16,7 @@ public:
 
     ~Passthrough()
     {
-        delete data.reverb;
-        delete data.autotune;
+        delete data.rData;
     }
 
     void Record(int keycode);
