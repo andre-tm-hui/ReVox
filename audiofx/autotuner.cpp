@@ -17,7 +17,7 @@ void Autotuner::Reset() {
 
 float Autotuner::Get(std::string item) {
     if (item == "Notes") {
-        std::vector<bool> notes = ps->getNotes();
+        std::vector<bool> notes = ps->getAutotuneNotes();
         int bitmask = 0, inc = 1;
         for (bool note : notes) {
             if (note) bitmask += inc;
@@ -42,8 +42,9 @@ void Autotuner::Set(std::string item, int val) {
             inc /= 2;
         }
         ps->setAutotuneNotes(notes);
-    } else if (item == "Speed") {}
+    } else if (item == "Speed") {
         ps->setRetuneSpeed(val);
+    }
 }
 
 bool Autotuner::GetEnabled() {

@@ -33,7 +33,7 @@ public:
     int getRetuneSpeed() { return retuneSpeed; }
 
     void setAutotuneNotes(std::vector<bool> notes) { validNotes = notes; }
-    std::vector<bool> getNotes() { return validNotes; }
+    std::vector<bool> getAutotuneNotes() { return validNotes; }
 
     void reset();
 
@@ -43,16 +43,16 @@ private:
 
     float getTargetFreqFactor(float period);
 
-    std::vector<int> getMarkers(float period, float *input);
+    std::vector<float> getMarkers(float period, float *input);
 
-    std::vector<int> synthesizeMarkers(float period, float factor, std::vector<int> markers);
+    std::vector<float> synthesizeMarkers(float period, float factor, std::vector<float> markers);
 
-    std::vector<std::vector<float>> getWindows(float *buffer, float period, std::vector<int> markers, float factor = 1.f);
-    std::vector<float> getWindow(float *buf, float period, int marker, float factor);
+    std::vector<std::vector<float>> getWindows(float *buffer, float period, std::vector<float> markers, float factor = 1.f);
+    std::vector<float> getWindow(float *buf, float period, float marker, float factor);
     std::vector<float> resample(std::vector<float> input, float factor);
 
-    void overlapAdd(std::vector<std::vector<float>> windows, std::vector<int> markers, std::vector<int> synthesizedMarkers);
-    void addWindow(std::vector<float> window, int marker);
+    void overlapAdd(std::vector<std::vector<float>> windows, std::vector<float> markers, std::vector<float> synthesizedMarkers);
+    void addWindow(std::vector<float> window, float marker);
 
     void cleanup(float factor, float period);
 

@@ -1,9 +1,9 @@
 #include "frequency.h"
 
-Frequency::Frequency(float bufSize)
+Frequency::Frequency(float bufSize, int resampleFactor) : bufSize(bufSize), resampleFactor(resampleFactor)
 {
     this->bufSize = bufSize;
-    inputSize = bufSize + bufSize; // The size of the autocorrelation is N + N - 1, so we double the buffer size to get the input size
+    inputSize = 2 * resampleFactor * bufSize; // The size of the autocorrelation is N + N - 1, so we double the buffer size to get the input size
     fftSize = inputSize / 2 + 1;
     in = new float[inputSize];
     // We set the input array to 0, effectively padding the input array with 0s
@@ -17,9 +17,20 @@ Frequency::Frequency(float bufSize)
 
 float Frequency::GetPeriod(float *buf)
 {
-    //fprintf(stdout, "period\n"); fflush(stdout);
+    // Resample input buffer
+    int err;
+    SRC_STATE *src = src_new(SRC_SINC_FASTEST, 1, &err);
+    SRC_DATA *dat = new SRC_DATA();
+    dat->data_in = buf;
+    dat->data_out = in;
+    dat->input_frames = bufSize;
+    dat->output_frames = bufSize * resampleFactor;
+    dat->src_ratio = resampleFactor;
+    memset(in, 0, sizeof(float) * inputSize);
+    src_process(src, dat);
+
     // FFT the input buffer
-    memcpy(in, buf, sizeof(float) * bufSize); // copy the input buffer to the input array, writing over the first N elements of the input array, leaving the rest of the 0s unaffected
+    //memcpy(in, buf, sizeof(float) * bufSize); // copy the input buffer to the input array, writing over the first N elements of the input array, leaving the rest of the 0s unaffected
     fftwf_execute(forward);
     //fprintf(stdout, "forward\n"); fflush(stdout);
 
@@ -50,5 +61,5 @@ float Frequency::GetPeriod(float *buf)
         }
     }
     //fprintf(stdout, "period found\n"); fflush(stdout);
-    return (float)maxIx; // fundamental frequency = sample rate / period
+    return (float)maxIx / (float)resampleFactor; // fundamental frequency = sample rate / period
 }
