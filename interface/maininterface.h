@@ -23,6 +23,7 @@ struct deviceIDs {
     int output;
     int streamOut;
     int vInput;
+    int vOutput;
 };
 
 class MainInterface : public BaseInterface
@@ -58,7 +59,7 @@ private:
     void WaitForReady();
 
     bool blocked = false;
-    float *inputBuffer, *playbackBuffer;
+    std::queue<float> *inputQueue, *playbackQueue;
 
     std::shared_ptr<SoundboardManager> soundboardManager;
     std::shared_ptr<FXManager> fxManager;

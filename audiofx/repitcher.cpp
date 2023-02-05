@@ -10,7 +10,7 @@ void Repitcher::Process(float *buf) {
         ps->process(buf);
 }
 
-void Repitcher::Reset() {
+void Repitcher::Reset(int framesPerBuffer) {
     ps->reset();
 }
 

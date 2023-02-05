@@ -1,6 +1,6 @@
 #include "fxmanager.h"
 
-FXManager::FXManager(std::string rootDir, int framesPerBuffer, int sampleRate) : BaseManager(rootDir)
+FXManager::FXManager(std::string rootDir, int framesPerBuffer, int sampleRate) : BaseManager(rootDir), framesPerBuffer(framesPerBuffer), sampleRate(sampleRate)
 {
     ps.reset(new PitchShifter(2048, framesPerBuffer, sampleRate));
     /*SF_INFO info = {};
@@ -51,7 +51,7 @@ FXManager::FXManager(std::string rootDir, int framesPerBuffer, int sampleRate) :
         },
         "Autotuner": {
             "enabled": false,
-            "Speed": 50,
+            "Speed": 0,
             "Notes": 2741
         },
         "Repitcher": {
@@ -140,4 +140,11 @@ void FXManager::ApplyFXSettings(json obj) {
         } else
             return;
     }
+}
+
+void FXManager::SetFramesPerBuffer(int framesPerBuffer) {
+    this->framesPerBuffer = framesPerBuffer;
+    ps.reset(new PitchShifter(2048, framesPerBuffer, sampleRate));
+    for (auto [k,v] : fxs)
+        v->Reset(framesPerBuffer);
 }

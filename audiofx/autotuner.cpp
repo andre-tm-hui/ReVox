@@ -11,7 +11,7 @@ void Autotuner::Process(float *buf) {
         ps->process(buf);
 }
 
-void Autotuner::Reset() {
+void Autotuner::Reset(int framesPerBuffer) {
     ps->reset();
 }
 

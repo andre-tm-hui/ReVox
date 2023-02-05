@@ -5,6 +5,7 @@
 #include <iostream>
 #include <chrono>
 #include <map>
+#include <queue>
 #include "portaudio.h"
 #include "sndfile.h"
 #include "../../audiofx/reverberator.h"
@@ -26,28 +27,28 @@ typedef struct{
 } soundData;
 
 typedef struct{
+    recordData *rData;
+    RingBuffer<float> *pBuf;
     std::map<SNDFILE*, soundData> timers;
     std::vector<SNDFILE*> *queue;
     SF_INFO info;
     float maxFileLength;
-    float *buf;
+    std::queue<float> *bufQueue;
 } playData;
 
 typedef struct{
     recordData *rData;
     int nChannels;
-    float *buf;
-    std::unordered_map<std::string, std::shared_ptr<IAudioFX>> *fxs;
+    std::queue<float> *bufQueue;
     RingBuffer<float> *pBuf;
+    std::unordered_map<std::string, std::shared_ptr<IAudioFX>> *fxs;
 } passthroughData;
 
 typedef struct{
-    recordData *rData;
     float monitorMic;
-    float *inputBuffer;
     float monitorSamples;
-    float *playbackBuffer;
-    RingBuffer<float> *pBuf;
+    std::queue<float> *inputQueue;
+    std::queue<float> *playbackQueue;
 } monitorData;
 
 int playCallback(const void* inputBuffer, void* outputBuffer,

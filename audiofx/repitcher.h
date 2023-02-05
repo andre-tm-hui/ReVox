@@ -10,7 +10,7 @@ public:
     Repitcher(std::shared_ptr<PitchShifter> ps);
 
     void Process(float *buf) override;
-    void Reset() override;
+    void Reset(int framesPerBuffer = -1) override;
     float Get(std::string item) override;
     void Set(std::string item, int val) override;
     bool GetEnabled() override;

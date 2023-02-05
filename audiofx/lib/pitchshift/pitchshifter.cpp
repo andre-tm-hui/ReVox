@@ -21,21 +21,20 @@ void PitchShifter::process(float *buf) {
     //memset(output + outputPos + framesWritten, 0, sizeof(float) * inputSize);
     // increment the framesWritten
     framesWritten += inputSize;
-    if (framesWritten >= bufSize)
+    while (framesWritten >= bufSize)
     {
         auto time = std::chrono::steady_clock::now().time_since_epoch();
-        framesWritten %= bufSize;
+        framesWritten -= bufSize;
+
         std::thread t(&PitchShifter::processRepitch, this, time);
         t.detach();
     }
 }
 
 void PitchShifter::processRepitch(std::chrono::nanoseconds startTime) {
-    // move the output start position pointer
-    //outputPos += bufSize;
-    //outputPos %= 3 * bufSize;
     memcpy(output, output + bufSize, sizeof(float) * bufSize * 2);
     memset(output + bufSize * 2, 0, sizeof(float) * bufSize);
+
     // get a copy of the input buffer, temporally ordered
     float *tempInput = input.get();
 

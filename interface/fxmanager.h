@@ -23,6 +23,7 @@ public:
     void SetMonitoringVol(int n) override;
 
     void ApplyFXSettings(json obj);
+    void SetFramesPerBuffer(int framesPerBuffer);
 
     std::unordered_map<std::string, std::shared_ptr<IAudioFX>>* GetFXs() { return &fxs; }
 
@@ -36,6 +37,7 @@ private:
     std::unordered_map<std::string, std::shared_ptr<IAudioFX>> fxs = {};
 
     std::shared_ptr<PitchShifter> ps;
+    int sampleRate, framesPerBuffer;
 };
 
 #endif // FXMANAGER_H
