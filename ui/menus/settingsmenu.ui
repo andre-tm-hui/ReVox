@@ -69,9 +69,9 @@ background: transparent;
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>-225</y>
+      <y>0</y>
       <width>876</width>
-      <height>735</height>
+      <height>796</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -152,6 +152,66 @@ background: transparent;
         </property>
         <property name="text">
          <string>Output Device</string>
+        </property>
+       </widget>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="bufferSizeBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>61</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QGroupBox { border: 0px; border-bottom: 1px solid #505050;}</string>
+       </property>
+       <property name="title">
+        <string/>
+       </property>
+       <widget class="QComboBox" name="bufferSizes">
+        <property name="geometry">
+         <rect>
+          <x>450</x>
+          <y>16</y>
+          <width>231</width>
+          <height>28</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: #FFFFFF;</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_12">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>20</y>
+          <width>191</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Cascadia Code</family>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set this to your headphones/audio interface. To separate the audio you hear from the audio your recording software hears, see the wiki&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+        <property name="text">
+         <string>Buffer Size</string>
         </property>
        </widget>
       </widget>

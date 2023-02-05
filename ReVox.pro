@@ -19,8 +19,6 @@ SOURCES += \
     audiofx/repitcher.cpp \
     audiofx/reverberator.cpp \
     audiofx/lib/pitchshift/frequency.cpp \
-    audiofx/lib/pitchshift/pitchshift.cpp \
-    audiofx/lib/pitchshift/stft.cpp \
     audiofx/lib/reverb/allpass.cpp \
     audiofx/lib/reverb/comb.cpp \
     audiofx/lib/reverb/revmodel.cpp \
@@ -67,10 +65,6 @@ HEADERS += \
     audiofx/repitcher.h \
     audiofx/reverberator.h \
     audiofx/lib/pitchshift/frequency.h \
-    audiofx/lib/pitchshift/pitchshift.h \
-    audiofx/lib/pitchshift/stft.h \
-    audiofx/lib/pitchshift/pvdat.h \
-    audiofx/lib/pitchshift/windowfunctions.h \
     audiofx/lib/reverb/allpass.h \
     audiofx/lib/reverb/comb.h \
     audiofx/lib/reverb/revmodel.h \

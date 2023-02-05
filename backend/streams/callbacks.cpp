@@ -83,14 +83,15 @@ int passthroughCallback(const void* inputBuffer, void* outputBuffer,
     }
 
     delete[] mono;
+    memcpy(p_data->buf, out, sizeof(float) * framesPerBuffer * 2);
+
+    //memcpy(out, in, sizeof(float) * p_data->nChannels * framesPerBuffer);
     if (p_data->rData->inUse) {
         if (p_data->rData->file != nullptr)
             sf_write_float(p_data->rData->file, out, framesPerBuffer * p_data->rData->info.channels);
     } else {
         p_data->pBuf->write(out, framesPerBuffer * p_data->rData->info.channels);
     }
-
-    memcpy(p_data->buf, out, sizeof(float) * framesPerBuffer * 2);
     return paContinue;
 }
 

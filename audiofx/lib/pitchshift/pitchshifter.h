@@ -1,15 +1,14 @@
 #ifndef PITCHSHIFTER_H
 #define PITCHSHIFTER_H
+#define _USE_MATH_DEFINES
 
 #include <thread>
 #include <future>
 #include <cmath>
 #include <chrono>
+#include <fftw3.h>
 #include "frequency.h"
 #include "../../../util/ringbuffer.h"
-#include "windowfunctions.h"
-#include <fftw3.h>
-
 
 class PitchShifter
 {

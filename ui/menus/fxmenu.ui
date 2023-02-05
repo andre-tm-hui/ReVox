@@ -115,7 +115,7 @@ QTabBar::tab:!selected { border-color: #181818; color: #707070; margin-top: 2px;
      <x>215</x>
      <y>301</y>
      <width>600</width>
-     <height>187</height>
+     <height>189</height>
     </rect>
    </property>
    <property name="styleSheet">

@@ -123,7 +123,6 @@ float PitchShifter::getTargetFreqFactor(float ffreq) {
     // Adjust target with respects to retune speed
     float targetSemitone = closest - 12 + octaveOffset * 12;
     if (retuneSpeed == 0) return targetSemitone;
-    std::cout<<"target: "<<targetSemitone<<std::endl;
     /*if (abs(semitoneOffset - targetSemitone) > abs(lastTargetSemitone - targetSemitone))
         semitoneOffset = lastTargetSemitone;
     if (abs(semitoneOffset - targetSemitone) > maxJump)
