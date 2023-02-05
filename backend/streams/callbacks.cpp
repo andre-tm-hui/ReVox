@@ -100,6 +100,8 @@ int passthroughCallback(const void* inputBuffer, void* outputBuffer,
     for (int i = 0; i < (int)framesPerBuffer; i++) {
         p_data->bufQueue->push(mono[i]);
         p_data->bufQueue->push(mono[i]);
+        out[2*i] = mono[i];
+        out[2*i+1] = mono[i];
     }
 
     delete[] mono;
