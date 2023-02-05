@@ -1,13 +1,14 @@
 #include "audiofx/autotuner.h"
 
-Autotuner::Autotuner(std::shared_ptr<PitchShift> ps) : IAudioFX(), ps(ps)
+Autotuner::Autotuner(std::shared_ptr<PitchShifter> ps) : IAudioFX(), ps(ps)
 {
     paramMap["Notes"] = {"FXKeyPicker", "", "Set which notes to tune to", 0, 0};
+    paramMap["Speed"] = {"FXDial", "ms", "Set the time to tune a full semitone", 0, 500};
 }
 
 void Autotuner::Process(float *buf) {
-    if ((!ps->getPitchshift() && ps->getAutotune()) || (ps->getPitchshift() && ps->getAutotune()))
-        ps->repitch(buf);
+    if ((!ps->getRepitchActive() && ps->getAutotuneActive()) || (ps->getRepitchActive() && ps->getAutotuneActive()))
+        ps->process(buf);
 }
 
 void Autotuner::Reset() {
@@ -16,7 +17,7 @@ void Autotuner::Reset() {
 
 float Autotuner::Get(std::string item) {
     if (item == "Notes") {
-        std::vector<bool> notes = ps->getNotes();
+        std::vector<bool> notes = ps->getAutotuneNotes();
         int bitmask = 0, inc = 1;
         for (bool note : notes) {
             if (note) bitmask += inc;
@@ -24,7 +25,7 @@ float Autotuner::Get(std::string item) {
         }
         return bitmask; // will need to be rounded when received on the other end
     } else if (item == "Speed") {
-        //return ps->getSpeed();
+        return ps->getRetuneSpeed();
     }
     return 0.f;
 }
@@ -40,15 +41,16 @@ void Autotuner::Set(std::string item, int val) {
             }
             inc /= 2;
         }
-        ps->setNotes(notes);
-    } else if (item == "Speed") {}
-        //ps->setSpeed(val / 100.f);
+        ps->setAutotuneNotes(notes);
+    } else if (item == "Speed") {
+        ps->setRetuneSpeed(val);
+    }
 }
 
 bool Autotuner::GetEnabled() {
-    return ps->getAutotune();
+    return ps->getAutotuneActive();
 }
 
 void Autotuner::SetEnabled(bool enabled) {
-    ps->setAutotune(enabled);
+    ps->setAutotuneActive(enabled);
 }

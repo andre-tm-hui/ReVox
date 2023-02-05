@@ -52,6 +52,7 @@ FXKeyPicker::~FXKeyPicker()
 }
 
 void FXKeyPicker::setValue(int val) {
+    fm->ApplyFXSettings({{fx, {{param, val}}}});
     for (int i = 11; i >= 0; i--) {
         int dec = pow(2, i);
         if (val >= dec) {
@@ -73,7 +74,7 @@ void FXKeyPicker::onKeyToggle(int key) {
     std::string path = getPath();
     int newVal = fm->GetSetting(path), diff = pow(2, key);
     newVal = noteCheckboxes[key]->checkState() == Qt::CheckState::Checked ? newVal - diff : newVal + diff;
-    fm->ApplyFXSettings({fx, {param, newVal}});
+    fm->ApplyFXSettings({{fx, {{param, newVal}}}});
     fm->UpdateSettings(path, newVal);
 }
 

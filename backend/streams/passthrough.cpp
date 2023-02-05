@@ -36,10 +36,6 @@ Passthrough::Passthrough(device inputDevice, device outputDevice, int sampleRate
 
     data.nChannels = inputParameters.channelCount;
 
-    data.reverb = new revmodel();
-
-    data.pitchShift = new PitchShift(framesPerBuffer, sampleRate);
-
     data.rData = new recordData();
     data.rData->info = {};
     data.rData->info.samplerate = this->sampleRate;

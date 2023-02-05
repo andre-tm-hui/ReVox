@@ -32,6 +32,7 @@ private slots:
     void toggleAutostart(int state);
     void toggleAutocheck(int state);
     void checkForUpdates();
+    void setNewBufferSize(QString sizeStr);
 
 private:
     void populateDevices();

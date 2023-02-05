@@ -87,7 +87,7 @@ QTabBar::tab:!selected { border-color: #181818; color: #707070; margin-top: 2px;
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <property name="iconSize">
     <size>
@@ -113,9 +113,9 @@ QTabBar::tab:!selected { border-color: #181818; color: #707070; margin-top: 2px;
    <property name="geometry">
     <rect>
      <x>215</x>
-     <y>299</y>
+     <y>301</y>
      <width>600</width>
-     <height>191</height>
+     <height>189</height>
     </rect>
    </property>
    <property name="styleSheet">

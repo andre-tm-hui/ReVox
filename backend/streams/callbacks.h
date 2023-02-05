@@ -36,9 +36,6 @@ typedef struct{
 typedef struct{
     recordData *rData;
     int nChannels;
-    revmodel *reverb;
-    PitchShift *autotune;
-    PitchShift *pitchShift;
     float *buf;
     std::unordered_map<std::string, std::shared_ptr<IAudioFX>> *fxs;
     RingBuffer<float> *pBuf;

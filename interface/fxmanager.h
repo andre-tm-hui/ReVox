@@ -35,7 +35,7 @@ private:
 
     std::unordered_map<std::string, std::shared_ptr<IAudioFX>> fxs = {};
 
-    std::shared_ptr<PitchShift> ps;
+    std::shared_ptr<PitchShifter> ps;
 };
 
 #endif // FXMANAGER_H

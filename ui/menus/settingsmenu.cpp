@@ -64,6 +64,14 @@ SettingsMenu::SettingsMenu(std::shared_ptr<MainInterface> mi, HUD *hud, QWidget 
         updater->setStyleSheet("QTextEdit {border: 1px solid #009090;}");
     }
 
+    int bufferSize = 1;
+    for (int i = 1; i < 12; i++) {
+        bufferSize *= 2;
+        ui->bufferSizes->addItem(QString::number(bufferSize));
+    }
+    ui->bufferSizes->setCurrentText(QString::number(mi->GetSetting("framesPerBuffer").get<int>()));
+    connect(ui->bufferSizes, SIGNAL(currentTextChanged(QString)), this, SLOT(setNewBufferSize(QString)));
+
     connect(ui->restartTutorial, SIGNAL(pressed()), this->parentWidget(), SLOT(restartTutorial()));
 }
 
@@ -186,4 +194,9 @@ void SettingsMenu::checkForUpdates()
 void SettingsMenu::toggleAutocheck(int state)
 {
     mi->UpdateSettings<bool>("autocheckUpdates", state == 0 ? false : true);
+}
+
+void SettingsMenu::setNewBufferSize(QString sizeStr) {
+    mi->UpdateSettings("framesPerBuffer", sizeStr.toInt());
+    mi->Reset();
 }
