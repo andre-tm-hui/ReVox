@@ -3,35 +3,6 @@
 FXManager::FXManager(std::string rootDir, int framesPerBuffer, int sampleRate) : BaseManager(rootDir), framesPerBuffer(framesPerBuffer), sampleRate(sampleRate)
 {
     ps.reset(new PitchShifter(2048, framesPerBuffer, sampleRate));
-    /*SF_INFO info = {};
-    info.format = 0;
-    SNDFILE *inputFile = sf_open((rootDir + "/samples/3.mp3").c_str(), SFM_READ, &info);
-    SF_INFO outInfo = {};
-    outInfo.channels = 1;
-    outInfo.samplerate = info.samplerate;
-    outInfo.format = info.format;
-    SNDFILE *outputFile = sf_open((rootDir + "/samples/3-autotuned.mp3").c_str(), SFM_WRITE, &outInfo);
-    sf_count_t count = 0;
-    float *in = new float[4096], *out = new float[2048];
-    int total = 0;
-    while (true) {
-        count = sf_read_float(inputFile, in, 4096);
-        for (int i = 0; i < 2048; i++) {
-            out[i] = in[2*i] + in[2*i+1];
-        }
-        ps->process(out);
-        //std::cout<<count<<std::endl;
-        std::this_thread::sleep_for(std::chrono::milliseconds(80));
-        if (total >= 2048 * 3) {
-            sf_write_float(outputFile, out, count / 2);
-        } else {
-            total+=2048;
-        }
-        //std::cout<<count<<std::endl;
-        if (count < 4096) break;
-    }
-    sf_close(inputFile);
-    sf_close(outputFile);*/
     fxs.insert({"Repitcher", std::unique_ptr<IAudioFX>(new Repitcher(ps))});
     fxs.insert({"Autotuner", std::unique_ptr<IAudioFX>(new Autotuner(ps))});
     fxs.insert({"Reverberator", std::unique_ptr<IAudioFX>(new Reverberator(framesPerBuffer))});

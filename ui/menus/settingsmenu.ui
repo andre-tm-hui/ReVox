@@ -14,7 +14,44 @@
    <string>Form</string>
   </property>
   <property name="styleSheet">
-   <string notr="true"/>
+   <string notr="true">QComboBox {
+	background-color: #282828;
+	border: 0px;
+	border-radius: 3px;
+	padding: 2px 33px 2px 5px;
+}
+
+QComboBox:editable {
+	background: #101010;
+}
+
+QComboBox::drop-down {
+	subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 30px;
+	background-color: #303030;
+    border-top-right-radius: 3px; /* same radius as the QComboBox */
+    border-bottom-right-radius: 3px;
+}
+
+QComboBox::drop-down:hover {
+	background-color: #383838;
+}
+
+QComboBox::down-arrow {
+	image: url(&quot;:/rc/common/down_arrow_on.png&quot;);
+	top: 2px;
+	width: 16px;
+	height: 16px;
+}
+
+QComboBox QAbstractItemView {
+	border: 0px;
+	border-top: 1px solid #282828;
+	background-color: #282828;
+	selection-background-color: #383838;
+}
+</string>
   </property>
   <widget class="QScrollArea" name="scrollArea">
    <property name="geometry">

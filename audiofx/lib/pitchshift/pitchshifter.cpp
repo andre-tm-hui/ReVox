@@ -54,7 +54,9 @@ void PitchShifter::processRepitch(std::chrono::nanoseconds startTime) {
     }
 
     // repitch if enabled
-    if (repitch) factor *= repitchFactor;
+    if (repitch) {
+        factor *= repitchFactor;
+    }
 
     // autotune if enabled
     if (autotune) {

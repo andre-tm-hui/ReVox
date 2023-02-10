@@ -23,7 +23,7 @@ float Repitcher::Get(std::string item) {
 
 void Repitcher::Set(std::string item, int val) {
     if (item == "Pitch")
-        ps->setRepitchFactor(pow(2, val / 12)); // convert val (semitones) to frequency scalar
+        ps->setRepitchFactor(pow(2, (float)val / 12.f)); // convert val (semitones) to frequency scalar
 }
 
 bool Repitcher::GetEnabled() {

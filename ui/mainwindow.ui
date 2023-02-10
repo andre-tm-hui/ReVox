@@ -40,7 +40,8 @@
   <property name="styleSheet">
    <string notr="true">background-color: #101010;
 color: #D0D0D0;
-font-family: &quot;Segoe UI&quot;;</string>
+font-family: &quot;Segoe UI&quot;;
+</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QGroupBox" name="sidebar">
