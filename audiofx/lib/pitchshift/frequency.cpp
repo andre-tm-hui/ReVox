@@ -19,7 +19,7 @@ float Frequency::GetPeriod(float *buf)
 {
     // Resample input buffer
     int err;
-    SRC_STATE *src = src_new(SRC_SINC_FASTEST, 1, &err);
+    SRC_STATE *src = src_new(SRC_LINEAR, 1, &err);
     SRC_DATA *dat = new SRC_DATA();
     dat->data_in = buf;
     dat->data_out = in;

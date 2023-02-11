@@ -50,7 +50,7 @@ void SoundboardManager::Record(std::string idx) {
     json bindSettings = settings["hotkeys"][idx];
 
     if (bindSettings["recordInput"] && passthrough != nullptr) passthrough->Record(std::stoi(idx));
-    if (bindSettings["recordLoopback"] && monitor != nullptr) monitor->Record(std::stoi(idx));
+    if (bindSettings["recordLoopback"] && player != nullptr) player->Record(std::stoi(idx));
 
     currHotkey = idx;
     recording = true;
@@ -68,7 +68,7 @@ void SoundboardManager::StopRecordingAfter() {
     Sleep(settings["padding"].get<int>());
 
     if (passthrough != nullptr) passthrough->Stop();
-    if (monitor != nullptr) monitor->Stop();
+    if (monitor != nullptr) player->Stop();
 
     stopping = false;
     recording = false;
@@ -195,8 +195,8 @@ void SoundboardManager::SetStreams(std::shared_ptr<Passthrough> passthrough, std
     passthrough->SetPadding(settings["padding"].get<int>());
     this->monitor = monitor;
     monitor->SetSoundboardMonitorVol(settings["monitor"].get<int>() / 100.f);
-    monitor->SetPadding(settings["padding"].get<int>());
     this->player = player;
+    player->SetPadding(settings["padding"].get<int>());
 }
 
 void SoundboardManager::ResetStreams() {
@@ -213,5 +213,5 @@ void SoundboardManager::SetMonitoringVol(int n) {
 void SoundboardManager::SetPadding(int ms) {
     UpdateSettings<int>("padding", ms);
     passthrough->SetPadding(ms);
-    monitor->SetPadding(ms);
+    player->SetPadding(ms);
 }

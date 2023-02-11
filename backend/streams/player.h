@@ -10,11 +10,12 @@ using namespace nlohmann;
 class Player : public AudioStream
 {
 public:
-    Player(device outputDevice,
+    Player(device inputDevice,
+           device outputDevice,
            int sampleRate,
            int framesPerBuffer,
            std::string dir,
-           float *playbackBuffer);
+           std::queue<float> *bufQueue);
 
     void Play(int keycode, json settings);
 
@@ -24,12 +25,22 @@ public:
 
     void Rename(int keycodeFrom, int keycodeTo);
 
-    int maxLiveSamples;
-
-    playData data = {};
+    void Record(int keycode);
+    void Stop();
+    void Merge();
+    void SetPadding(int padding);
 
 private:
     std::map<int, std::queue<SNDFILE*>> files;
+
+    RingBuffer<float> pBuf;
+    int keycode,
+        padding = 0;
+    bool recording = false;
+
+    int maxLiveSamples;
+
+    playData data = {};
 };
 
 #endif // PLAYER_H

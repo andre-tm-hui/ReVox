@@ -12,7 +12,7 @@ public:
                 int sampleRate,
                 int framesPerBuffer,
                 std::string dir,
-                float *inputBuffer);
+                std::queue<float> *bufQueue);
 
     ~Passthrough()
     {

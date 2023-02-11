@@ -11,7 +11,7 @@
 class Frequency
 {
 public:
-    Frequency(float bufSize, int resampleFactor = 8);
+    Frequency(float bufSize, int resampleFactor = 4);
     ~Frequency()
     {
         delete[] in;

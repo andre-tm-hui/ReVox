@@ -2,12 +2,12 @@
 
 /* The passthrough stream object, writes audio from the input device directly to the output device. */
 
-Passthrough::Passthrough(device inputDevice, device outputDevice, int sampleRate, int framesPerBuffer, std::string dir, float *inputBuffer)
+Passthrough::Passthrough(device inputDevice, device outputDevice, int sampleRate, int framesPerBuffer, std::string dir, std::queue<float> *bufQueue)
     : AudioStream(inputDevice, outputDevice, sampleRate, framesPerBuffer, dir)
 {
     initialSetup = false;
 
-    this->data.buf = inputBuffer;
+    this->data.bufQueue = bufQueue;
 
     // start a stream on creation of this object, since audio from the default input should always be written to the virtual cable input
     this->err = Pa_OpenStream(

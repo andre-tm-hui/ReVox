@@ -71,6 +71,7 @@ SettingsMenu::SettingsMenu(std::shared_ptr<MainInterface> mi, HUD *hud, QWidget 
     }
     ui->bufferSizes->setCurrentText(QString::number(mi->GetSetting("framesPerBuffer").get<int>()));
     connect(ui->bufferSizes, SIGNAL(currentTextChanged(QString)), this, SLOT(setNewBufferSize(QString)));
+    ui->bufferSizeBox->hide();
 
     connect(ui->restartTutorial, SIGNAL(pressed()), this->parentWidget(), SLOT(restartTutorial()));
 }

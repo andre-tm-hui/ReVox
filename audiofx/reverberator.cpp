@@ -14,7 +14,8 @@ void Reverberator::Process(float *buf) {
     rev->processmono(buf, buf, bufSize, 1);
 }
 
-void Reverberator::Reset() {
+void Reverberator::Reset(int framesPerBuffer) {
+    if (framesPerBuffer > 0) this->bufSize = framesPerBuffer;
     rev->mute();
 }
 

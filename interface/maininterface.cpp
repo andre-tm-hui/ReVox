@@ -28,8 +28,8 @@ MainInterface::MainInterface() : BaseInterface("")
 }
 
 MainInterface::~MainInterface() {
-    delete[] inputBuffer;
-    delete[] playbackBuffer;
+    delete inputQueue;
+    delete playbackQueue;
 }
 
 void MainInterface::SetCurrentOutputDevice(int id) {
@@ -106,6 +106,10 @@ void MainInterface::GetDeviceSettings()
             {
                 ids.vInput = deviceList[deviceName];
             }
+            else if (deviceName.find("CABLE Output") != std::string::npos)
+            {
+                ids.vOutput = deviceList[deviceName];
+            }
             else if (deviceName.find(Pa_GetDeviceInfo(Pa_GetDefaultInputDevice())->name) != std::string::npos)
             {
                 ids.input = deviceList[deviceName];
@@ -160,6 +164,7 @@ int MainInterface::GetCorrespondingLoopbackDevice(int i)
 void MainInterface::Reset(bool devicesChanged)
 {
     ResetStreams();
+    fxManager->SetFramesPerBuffer(settings["framesPerBuffer"].get<int>());
 
     Pa_Terminate();
     Pa_Initialize();
@@ -185,29 +190,30 @@ void MainInterface::ResetStreams() {
 
 void MainInterface::SetupStreams()
 {
-    inputBuffer = new float[settings["framesPerBuffer"].get<int>() * 2 * 3];
-    playbackBuffer = new float[settings["framesPerBuffer"].get<int>() * 2 * 3];
+    inputQueue = new std::queue<float>();
+    playbackQueue = new std::queue<float>();
     int loopbackdevice = GetCorrespondingLoopbackDevice(ids.streamOut);
 
     noiseGen.reset(       new NoiseGenerator(GetDeviceByIndex(ids.streamOut),
                                              settings["sampleRate"].get<int>()));
-    monitor.reset(        new Monitor(       GetDeviceByIndex(loopbackdevice),
+    monitor.reset(        new Monitor(       GetDeviceByIndex(ids.input),
                                              GetDeviceByIndex(ids.output),
                                              settings["sampleRate"].get<int>(),
                                              settings["framesPerBuffer"].get<int>(),
                                              rootDir,
-                                             inputBuffer, playbackBuffer));
-    player.reset(         new Player(        GetDeviceByIndex(ids.vInput),
+                                             inputQueue, playbackQueue));
+    player.reset(         new Player(        GetDeviceByIndex(loopbackdevice),
+                                             GetDeviceByIndex(ids.vInput),
                                              settings["sampleRate"].get<int>(),
                                              settings["framesPerBuffer"].get<int>(),
                                              rootDir,
-                                             playbackBuffer));
+                                             playbackQueue));
     passthrough.reset(    new Passthrough(   GetDeviceByIndex(ids.input),
                                              GetDeviceByIndex(ids.vInput),
                                              settings["sampleRate"].get<int>(),
                                              settings["framesPerBuffer"].get<int>(),
                                              rootDir,
-                                             inputBuffer));
+                                             inputQueue));
     if (ids.streamOut != ids.output)
         cleanOutput.reset( new CleanOutput(  GetDeviceByIndex(loopbackdevice),
                                              GetDeviceByIndex(ids.output),

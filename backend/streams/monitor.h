@@ -11,22 +11,13 @@ public:
             int sampleRate,
             int framesPerBuffer,
             std::string dir,
-            float *inputBuffer,
-            float *playbackBuffer);
+            std::queue<float> *inputQueue,
+            std::queue<float> *playbackQueue);
 
-    void Record(int keycode);
-    void Stop();
-    void Merge();
     void SetFXMonitorVol(float val) { data.monitorMic = val; }
     void SetSoundboardMonitorVol(float val) { data.monitorSamples = val; }
-    void SetPadding(int padding);
 
 private:
-    RingBuffer<float> pBuf;
-    int keycode,
-        padding = 0;
-    bool recording = false;
-
     monitorData data;
 };
 

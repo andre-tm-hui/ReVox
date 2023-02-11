@@ -18,7 +18,7 @@ class IAudioFX {
 public:
     IAudioFX() {};
     virtual void Process(float *buf) {}
-    virtual void Reset() {}
+    virtual void Reset(int framesPerBuffer = -1) {}
     virtual float Get(std::string item) { return 0; }
     virtual void Set(std::string item, int val) {}
     virtual bool GetEnabled() { return false; }
@@ -27,6 +27,7 @@ public:
 
 protected:
     std::unordered_map<std::string, paramType> paramMap;
+    int framesPerBuffer;
 };
 
 #endif // IAUDIOFX_H
