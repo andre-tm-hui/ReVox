@@ -15,8 +15,6 @@ struct RebindData {
     int keycode;
 };
 
-//template <typename T> {};
-
 class BaseManager : public BaseInterface
 {
 public:

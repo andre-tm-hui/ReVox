@@ -37,7 +37,7 @@ protected:
     std::string rootDir = "";
     std::string dataPath = "";
     json settings = NULL;
-    //json defaultObj = R"({})"_json;
+    //sjson defaultObj = R"({})"_json;
 };
 
 #endif // BASEINTERFACE_H

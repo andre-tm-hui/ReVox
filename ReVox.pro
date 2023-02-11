@@ -48,6 +48,7 @@ SOURCES += \
     ui/util/qttransitions.cpp \
     ui/widgets/bindablebutton.cpp \
     ui/widgets/customdial.cpp \
+    ui/widgets/fx/fxswitch.cpp \
     ui/widgets/hotkeylistitemwidget.cpp \
     ui/widgets/hotkeylistwidget.cpp \
     ui/widgets/monitorslider.cpp \
@@ -97,6 +98,7 @@ HEADERS += \
     ui/util/qttransitions.h \
     ui/widgets/bindablebutton.h \
     ui/widgets/customdial.h \
+    ui/widgets/fx/fxswitch.h \
     ui/widgets/hotkeylistitemwidget.h \
     ui/widgets/hotkeylistwidget.h \
     ui/widgets/monitorslider.h \
@@ -121,6 +123,7 @@ FORMS += \
     ui/titlebar.ui \
     ui/components/fxtab.ui \
     ui/menus/settingsmenu.ui \
+    ui/widgets/fx/fxswitch.ui \
     ui/widgets/monitorslider.ui \
     ui/widgets/fx/fxdial.ui \
     ui/widgets/fx/fxkeypicker.ui

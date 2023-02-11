@@ -54,7 +54,9 @@ void PitchShifter::processRepitch(std::chrono::nanoseconds startTime) {
     }
 
     // repitch if enabled
-    if (repitch) factor *= repitchFactor;
+    if (repitch) {
+        factor *= repitchFactor;
+    }
 
     // autotune if enabled
     if (autotune) {
@@ -225,9 +227,8 @@ std::vector<float> PitchShifter::getWindow(float *buf, float period, float marke
     for (int i = 0; i < windowSize; i++, startIdx++)
         window.push_back(std::lerp(buf[startIdx], buf[startIdx + 1], lerpDistance) *
                 0.5f * (1.f - cos(2.f * M_PI * (float)i / (float)(windowSize - 1))));
-    //window = Window::Hann(window);
 
-    //if (factor != 1.f) window = resample(window, factor);
+    if (repitch && resampleWindows && factor != 1.f) window = resample(window, factor);
     return window;
 }
 

@@ -7,6 +7,7 @@
 #include "../widgets/hotkeylistwidget.h"
 #include "../widgets/fx/fxdial.h"
 #include "../widgets/fx/fxkeypicker.h"
+#include "../widgets/fx/fxswitch.h"
 #include "../interface/fxmanager.h"
 
 namespace Ui {

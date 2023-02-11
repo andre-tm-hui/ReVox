@@ -24,8 +24,6 @@ public:
 
     void setValue(int val) override;
 
-signals:
-
 protected:
     void resizeEvent(QResizeEvent *event) override;
 

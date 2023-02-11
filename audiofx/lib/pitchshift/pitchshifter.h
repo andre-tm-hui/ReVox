@@ -34,6 +34,9 @@ public:
     void setAutotuneNotes(std::vector<bool> notes) { validNotes = notes; }
     std::vector<bool> getAutotuneNotes() { return validNotes; }
 
+    void setRepitchResample(bool resample) { resampleWindows = resample; }
+    bool getRepitchResample() { return resampleWindows; }
+
     void reset();
 
 private:
@@ -73,7 +76,8 @@ private:
             repitchFactor = 1.f;
     bool    setupFlag = false,
             autotune = false,
-            repitch = false;
+            repitch = false,
+            resampleWindows = false;
 
     std::vector<bool> validNotes = {true, false, true, false, true, true, false, true, false, true, false, true};
 };
