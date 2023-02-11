@@ -12,6 +12,10 @@ json BaseInterface::GetSetting(std::string path) {
         obj = obj[path.substr(0, path.find('/'))];
         path = path.substr(path.find('/') + 1);
     }
+    if (obj[path].is_null()) {
+        obj[path] = 0;
+        SaveSettings();
+    }
 
     return obj[path];
 }

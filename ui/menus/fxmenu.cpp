@@ -24,6 +24,8 @@ FXMenu::FXMenu(std::shared_ptr<FXManager> fm, QWidget *parent) :
                 fxp = new FXDial(fm, fx, param, widget.unit, nullptr, widget.min, widget.max);
             else if (widget.type == "FXKeyPicker")
                 fxp = new FXKeyPicker(fm, fx, param, nullptr);
+            else if (widget.type == "FXSwitch")
+                fxp = new FXSwitch(fm, fx, param, nullptr);
 
             if (fxp != nullptr) {
                 fxp->setToolTip(QString::fromStdString(widget.toolTip));

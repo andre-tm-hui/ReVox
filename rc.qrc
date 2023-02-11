@@ -65,5 +65,7 @@
         <file>rc/common/down_arrow_on.png</file>
         <file>rc/common/up_arrow_off.png</file>
         <file>rc/common/up_arrow_on.png</file>
+        <file>rc/fxMenu/toggleBasicOff.png</file>
+        <file>rc/fxMenu/toggleBasicOn.png</file>
     </qresource>
 </RCC>

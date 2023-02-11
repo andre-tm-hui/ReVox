@@ -27,7 +27,8 @@ FXManager::FXManager(std::string rootDir, int framesPerBuffer, int sampleRate) :
         },
         "Repitcher": {
             "enabled": false,
-            "Pitch": 0
+            "Pitch": 0,
+            "Resample": 0
         }
     })"_json;
 
