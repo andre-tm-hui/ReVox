@@ -17,6 +17,7 @@ This can possibly be fixed with money, but this is a non-profit passion project 
   - Realtime recording of audio from:
     - An input device (microphone, audio interface, headset etc.)
     - System audio (web browser, Discord etc.)
+    - Pre-recording buffer - record up to 5 extra seconds before pressing the record button
   - Output to voice chat and recording apps
   - Adding/removing/rebinding hotkeys
   - Runs in background
@@ -32,7 +33,7 @@ This can possibly be fixed with money, but this is a non-profit passion project 
   - Monitor your own audio
 
 ## Requirements
-  - Windows 10 (not tested on Windows 11)
+  - Windows 10/11
   - [VB-Audio Virtual Cable](https://vb-audio.com/Cable/)
   - [Microsoft Visual C++ Redistributable](https://aka.ms/vs/17/release/vc_redist.x64.exe)
 
@@ -48,6 +49,7 @@ This can possibly be fixed with money, but this is a non-profit passion project 
 ### Instructions:
 1. Clone the repo
 2. In ReVox.pro, relink the above libraries to your local libraries/binaries
+  a. Copy the nlohmann headers folder into the root of the project folder, or relink them in the ReVox.pro file
 3. Build using MinGW
 
 ## Credits
