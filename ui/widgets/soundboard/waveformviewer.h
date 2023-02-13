@@ -1,57 +1,57 @@
 #ifndef WAVEFORMVIEWER_H
 #define WAVEFORMVIEWER_H
 
-#include <QWidget>
+#include <samplerate.h>
+#include <sndfile.h>
+
 #include <QPainter>
 #include <QPen>
 #include <QTime>
-#include <sndfile.h>
-#include <filesystem>
-#include <samplerate.h>
+#include <QWidget>
 #include <cmath>
+#include <filesystem>
 #include <thread>
 
-class WaveformViewer : public QWidget
-{
-    Q_OBJECT
-public:
-    explicit WaveformViewer(QWidget *parent = nullptr);
-    int getLength() { return length; }
-    void setTimeLabel(bool loading = false);
-    void startTransition(std::string path = "", int delay = 200, int duration = 200);
-    void refresh(std::string path, WaveformViewer*);
-    QString getTimeLabel() { return timeLabel; }
+#include "../../../util/loggableobject.h"
 
-protected:
-    void paintEvent(QPaintEvent*) override;
-    void resizeEvent(QResizeEvent *event) override;
+class WaveformViewer : public QWidget, public LoggableObject {
+  Q_OBJECT
+ public:
+  explicit WaveformViewer(QWidget *parent = nullptr);
+  int getLength() { return length; }
+  void setTimeLabel(bool loading = false);
+  void startTransition(std::string path = "", int delay = 200,
+                       int duration = 200);
+  void refresh(std::string path, WaveformViewer *);
+  QString getTimeLabel() { return timeLabel; }
 
-signals:
-    void startRepaint();
-    void transitionDone();
-    void signalTransition();
+ protected:
+  void paintEvent(QPaintEvent *) override;
+  void resizeEvent(QResizeEvent *event) override;
 
-private slots:
-    void slotRepaint() { this->update(); }
-    void cleanup();
-    void slotTransition() { startTransition(this->path); }
+ signals:
+  void startRepaint();
+  void transitionDone();
+  void signalTransition();
 
-private:
-    static void transition(std::string path, int duration, int delay,
-                           std::vector<float> *smallest,
-                           std::vector<float> *largest,
-                           std::vector<float> *rms,
-                           WaveformViewer *wv,
-                           int *length,
-                           int *sampleRate);
-    QString currentTime();
-    QString timeLabel = "--:--";
+ private slots:
+  void slotRepaint() { this->update(); }
+  void cleanup();
+  void slotTransition() { startTransition(this->path); }
 
-    std::string path;
+ private:
+  static void transition(std::string path, int duration, int delay,
+                         std::vector<float> *smallest,
+                         std::vector<float> *largest, std::vector<float> *rms,
+                         WaveformViewer *wv, int *length, int *sampleRate);
+  QString currentTime();
+  QString timeLabel = "--:--";
 
-    std::vector<float> smallest, largest, rms;
+  std::string path;
 
-    int length = 0, sampleRate = 48000;
+  std::vector<float> smallest, largest, rms;
+
+  int length = 0, sampleRate = 48000;
 };
 
-#endif // WAVEFORMVIEWER_H
+#endif  // WAVEFORMVIEWER_H

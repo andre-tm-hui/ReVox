@@ -3,24 +3,23 @@
 
 #include <QSlider>
 
-class ClickthroughSlider : public QSlider
-{
-    Q_OBJECT
+class ClickthroughSlider : public QSlider {
+  Q_OBJECT
 
-public:
-    ClickthroughSlider(QWidget *parent);
-    void setDirection(bool leftToRight);
-    bool getDirection() { return leftToRight; }
+ public:
+  ClickthroughSlider(QWidget *parent);
+  void setDirection(bool leftToRight);
+  bool getDirection() { return leftToRight; }
 
-protected:
-    void resizeEvent(QResizeEvent *event);
-    void sliderChange(SliderChange change);
+ protected:
+  void resizeEvent(QResizeEvent *event);
+  void sliderChange(SliderChange change);
 
-private:
-    void resetMasks();
+ private:
+  void resetMasks();
 
-    bool leftToRight = true;
-    int offset = 4;
+  bool leftToRight = true;
+  int offset = 4;
 };
 
-#endif // CLICKTHROUGHSLIDER_H
+#endif  // CLICKTHROUGHSLIDER_H

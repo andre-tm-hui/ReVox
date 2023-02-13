@@ -14,8 +14,8 @@ class FXManager : public BaseManager {
   FXManager(std::string rootDir, int framesPerBuffer, int sampleRate);
 
   void SetHUD(HUD* hud) { this->hud = hud; };
-  json GetFXOff();
-  json* GetFXOffPointer();
+  json GetFXOff() { return defaultObj; }
+  json* GetFXOffPointer() { return &defaultObj; }
 
   void SetStreams(std::shared_ptr<Passthrough> passthrough,
                   std::shared_ptr<Monitor> monitor);

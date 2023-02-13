@@ -47,6 +47,7 @@ SOURCES += \
     ui/util/keypresseater.cpp \
     ui/util/qttransitions.cpp \
     ui/widgets/bindablebutton.cpp \
+    ui/widgets/customdial.cpp \
     ui/widgets/fx/fxswitch.cpp \
     ui/widgets/hotkeylistitemwidget.cpp \
     ui/widgets/hotkeylistwidget.cpp \
@@ -196,6 +197,7 @@ HEADERS += \
     ui/util/keypresseater.h \
     ui/util/qttransitions.h \
     ui/widgets/bindablebutton.h \
+    ui/widgets/customdial.h \
     ui/widgets/fx/fxswitch.h \
     ui/widgets/hotkeylistitemwidget.h \
     ui/widgets/hotkeylistwidget.h \

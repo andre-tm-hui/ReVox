@@ -3,11 +3,11 @@
 
 #include <Windows.h>
 #include <cfgmgr32.h>
-#include <devpkey.h>
 #include <hidsdi.h>
 #include <initguid.h>
 
 #include "../interface/maininterface.h"
+#include "devpkey.h"
 
 class KeyboardListener {
  public:

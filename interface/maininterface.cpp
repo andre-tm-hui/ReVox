@@ -12,6 +12,8 @@ MainInterface::MainInterface()
     try {
       auto l = spdlog::rotating_logger_mt<spdlog::async_factory>(
           "logger", rootDir + "logs/logs.txt", 1024 * 1024 * 5, 3);
+      spdlog::flush_on(spdlog::level::warn);
+      spdlog::flush_every(std::chrono::seconds(5));
     } catch (const spdlog::spdlog_ex& ex) {
       std::cout << "Log init failed: " << ex.what() << std::endl;
     }
