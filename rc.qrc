@@ -1,21 +1,27 @@
 <RCC>
     <qresource prefix="/">
+        <file>rc/common/down_arrow_off.png</file>
+        <file>rc/common/down_arrow_on.png</file>
+        <file>rc/common/up_arrow_off.png</file>
+        <file>rc/common/up_arrow_on.png</file>
         <file>rc/fxMenu/FXOff.png</file>
         <file>rc/fxMenu/FXOn.png</file>
+        <file>rc/fxMenu/micMonitorLabel.png</file>
+        <file>rc/fxMenu/toggleBasicOff.png</file>
+        <file>rc/fxMenu/toggleBasicOn.png</file>
         <file>rc/fxMenu/toggleOff.png</file>
         <file>rc/fxMenu/toggleOn.png</file>
         <file>rc/hotkeyList/addDisabled.png</file>
         <file>rc/hotkeyList/addHover.png</file>
         <file>rc/hotkeyList/addIdle.png</file>
-        <file>rc/fxMenu/micMonitorLabel.png</file>
+        <file>rc/hotkeyList/masks/hotkeylist.bmp</file>
         <file>rc/hotkeyList/removeDisabled.png</file>
         <file>rc/hotkeyList/removeHover.png</file>
         <file>rc/hotkeyList/removeIdle.png</file>
-        <file>rc/hotkeyList/masks/hotkeylist.bmp</file>
-        <file>rc/icon/icon.png</file>
         <file>rc/icon/icon-16.png</file>
-        <file>rc/icon/icon-32.png</file>
         <file>rc/icon/icon-256.png</file>
+        <file>rc/icon/icon-32.png</file>
+        <file>rc/icon/icon.png</file>
         <file>rc/main/close.png</file>
         <file>rc/main/fx.png</file>
         <file>rc/main/question.png</file>
@@ -24,6 +30,30 @@
         <file>rc/monitor/monitorOff.png</file>
         <file>rc/monitor/monitorOn.png</file>
         <file>rc/monitor/slider.png</file>
+        <file>rc/onboarding/1.bmp</file>
+        <file>rc/onboarding/10.bmp</file>
+        <file>rc/onboarding/11.bmp</file>
+        <file>rc/onboarding/12.bmp</file>
+        <file>rc/onboarding/13.bmp</file>
+        <file>rc/onboarding/14.bmp</file>
+        <file>rc/onboarding/15.bmp</file>
+        <file>rc/onboarding/16.bmp</file>
+        <file>rc/onboarding/17.bmp</file>
+        <file>rc/onboarding/18.bmp</file>
+        <file>rc/onboarding/19.bmp</file>
+        <file>rc/onboarding/2.bmp</file>
+        <file>rc/onboarding/20.bmp</file>
+        <file>rc/onboarding/21.bmp</file>
+        <file>rc/onboarding/22.bmp</file>
+        <file>rc/onboarding/23.bmp</file>
+        <file>rc/onboarding/3.bmp</file>
+        <file>rc/onboarding/4.bmp</file>
+        <file>rc/onboarding/5.bmp</file>
+        <file>rc/onboarding/6.bmp</file>
+        <file>rc/onboarding/7.bmp</file>
+        <file>rc/onboarding/8.bmp</file>
+        <file>rc/onboarding/9.bmp</file>
+        <file>rc/onboarding/arrow.png</file>
         <file>rc/settingsMenu/hud.png</file>
         <file>rc/soundboardMenu/deleteDisabled.png</file>
         <file>rc/soundboardMenu/deleteHover.png</file>
@@ -38,34 +68,5 @@
         <file>rc/soundboardMenu/stopDisabled.png</file>
         <file>rc/soundboardMenu/stopHover.png</file>
         <file>rc/soundboardMenu/stopIdle.png</file>
-        <file>rc/onboarding/1.bmp</file>
-        <file>rc/onboarding/2.bmp</file>
-        <file>rc/onboarding/3.bmp</file>
-        <file>rc/onboarding/4.bmp</file>
-        <file>rc/onboarding/5.bmp</file>
-        <file>rc/onboarding/6.bmp</file>
-        <file>rc/onboarding/7.bmp</file>
-        <file>rc/onboarding/8.bmp</file>
-        <file>rc/onboarding/9.bmp</file>
-        <file>rc/onboarding/10.bmp</file>
-        <file>rc/onboarding/11.bmp</file>
-        <file>rc/onboarding/12.bmp</file>
-        <file>rc/onboarding/13.bmp</file>
-        <file>rc/onboarding/14.bmp</file>
-        <file>rc/onboarding/15.bmp</file>
-        <file>rc/onboarding/16.bmp</file>
-        <file>rc/onboarding/17.bmp</file>
-        <file>rc/onboarding/18.bmp</file>
-        <file>rc/onboarding/19.bmp</file>
-        <file>rc/onboarding/20.bmp</file>
-        <file>rc/onboarding/21.bmp</file>
-        <file>rc/onboarding/22.bmp</file>
-        <file>rc/onboarding/arrow.png</file>
-        <file>rc/common/down_arrow_off.png</file>
-        <file>rc/common/down_arrow_on.png</file>
-        <file>rc/common/up_arrow_off.png</file>
-        <file>rc/common/up_arrow_on.png</file>
-        <file>rc/fxMenu/toggleBasicOff.png</file>
-        <file>rc/fxMenu/toggleBasicOn.png</file>
     </qresource>
 </RCC>

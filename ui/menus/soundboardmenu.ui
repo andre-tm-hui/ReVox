@@ -25,6 +25,9 @@
      <height>215</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
   </widget>
   <widget class="QGroupBox" name="settingsContainer">
    <property name="geometry">
