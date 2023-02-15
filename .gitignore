@@ -75,5 +75,7 @@ builds/
 *.xcf
 .vs/
 nlohmann/
+spdlog/
+singleapplication/
 deprecated/
 docs/

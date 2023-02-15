@@ -1,29 +1,26 @@
 #ifndef KEYBOARDLISTENER_H
 #define KEYBOARDLISTENER_H
 
-//#include "audiomanager.h"
-#include "../interface/maininterface.h"
 #include <Windows.h>
-#include <hidsdi.h>
 #include <cfgmgr32.h>
+#include <hidsdi.h>
 #include <initguid.h>
-#include <devpkey.h>
 
-class KeyboardListener
-{
-public:
-    KeyboardListener();
+#include "../interface/maininterface.h"
+#include "devpkey.h"
 
-    LRESULT static CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+class KeyboardListener {
+ public:
+  KeyboardListener();
 
-    int Start(HWND hWnd = NULL);
+  LRESULT static CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam,
+                                  LPARAM lParam);
 
-    RAWINPUTDEVICE rid;
+  int Start(HWND hWnd = NULL);
 
-    //static AudioManager* audioManager;
-    static MainInterface* mi;
+  RAWINPUTDEVICE rid;
+
+  static MainInterface* mi;
 };
 
-
-
-#endif // KEYBOARDLISTENER_H
+#endif  // KEYBOARDLISTENER_H

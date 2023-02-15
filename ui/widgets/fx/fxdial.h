@@ -8,32 +8,27 @@ namespace Ui {
 class FXDial;
 }
 
-class FXDial : public FXParam
-{
-    Q_OBJECT
+class FXDial : public FXParam {
+  Q_OBJECT
 
-public:
-    explicit FXDial(std::shared_ptr<FXManager> fm,
-                    std::string fx,
-                    std::string param,
-                    std::string unit,
-                    QWidget *parent = nullptr,
-                    int min = 0,
-                    int max = 100);
-    ~FXDial();
+ public:
+  explicit FXDial(std::shared_ptr<FXManager> fm, std::string fx,
+                  std::string param, std::string unit,
+                  QWidget *parent = nullptr, int min = 0, int max = 100);
+  ~FXDial();
 
-    void setValue(int val) override;
+  void setValue(int val) override;
 
-protected:
-    void resizeEvent(QResizeEvent *event) override;
+ protected:
+  void resizeEvent(QResizeEvent *event) override;
 
-private slots:
-    void onValueChanged();
-    void updateDisplay(int val);
-    void reEnableUpdates();
+ private slots:
+  void onValueChanged();
+  void updateDisplay(int val);
+  void reEnableUpdates();
 
-private:
-    Ui::FXDial *ui;
+ private:
+  Ui::FXDial *ui;
 };
 
-#endif // FXDIAL_H
+#endif  // FXDIAL_H

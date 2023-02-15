@@ -1,43 +1,41 @@
 #ifndef BASEINTERFACE_H
 #define BASEINTERFACE_H
 
-#include <string>
+#include "../nlohmann/json.hpp"
 #include <filesystem>
 #include <fstream>
-#include "../nlohmann/json.hpp"
+#include <string>
 
 using namespace nlohmann;
 
-class BaseInterface
-{
+class BaseInterface {
 public:
-    BaseInterface(std::string rootDir);
-    virtual ~BaseInterface() {};
+  BaseInterface(std::string rootDir);
+  virtual ~BaseInterface(){};
 
-    template <typename T>
-    void UpdateSettings(std::string path, T val) {
-        json *obj = &settings;
+  template <typename T> void UpdateSettings(std::string path, T val) {
+    json *obj = &settings;
 
-        while (path.find('/') != path.npos) {
-            obj = &((*obj)[path.substr(0, path.find('/'))]);
-            path = path.substr(path.find('/') + 1);
-        }
-        (*obj)[path] = val;
-
-        SaveSettings();
+    while (path.find('/') != path.npos) {
+      obj = &((*obj)[path.substr(0, path.find('/'))]);
+      path = path.substr(path.find('/') + 1);
     }
+    (*obj)[path] = val;
 
-    json GetSetting(std::string path);
-    std::string GetRootDir() { return rootDir; }
+    SaveSettings();
+  }
+
+  json GetSetting(std::string path);
+  std::string GetRootDir() { return rootDir; }
 
 protected:
-    virtual bool LoadSettings();
-    void SaveSettings();
+  virtual bool LoadSettings();
+  void SaveSettings();
 
-    std::string rootDir = "";
-    std::string dataPath = "";
-    json settings = NULL;
-    //sjson defaultObj = R"({})"_json;
+  std::string rootDir = "";
+  std::string dataPath = "";
+  json settings = NULL;
+  // sjson defaultObj = R"({})"_json;
 };
 
 #endif // BASEINTERFACE_H

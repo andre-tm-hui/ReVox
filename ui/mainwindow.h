@@ -1,106 +1,94 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-#include <QMouseEvent>
-#include <QMenu>
-#include <QListWidget>
+#include <QAudioDevice>
 #include <QHBoxLayout>
+#include <QListWidget>
+#include <QMainWindow>
+#include <QMediaDevices>
+#include <QMenu>
+#include <QMessageBox>
+#include <QMouseEvent>
 #include <QSignalMapper>
 #include <QSystemTrayIcon>
-#include <QMediaDevices>
-#include <QAudioDevice>
-#include <QMessageBox>
-#include "ui_mainwindow.h"
+
 #include "../backend/keyboardlistener.h"
 #include "../interface/maininterface.h"
-#include "menus/soundboardmenu.h"
 #include "menus/fxmenu.h"
 #include "menus/settingsmenu.h"
+#include "menus/soundboardmenu.h"
+#include "onboarding.h"
+#include "titlebar.h"
+#include "ui_mainwindow.h"
 #include "util/keypresseater.h"
 #include "util/qttransitions.h"
-#include "titlebar.h"
-#include "onboarding.h"
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
+namespace Ui {
+class MainWindow;
+}
 QT_END_NAMESPACE
 
-class MainWindow : public QMainWindow
-{
-    Q_OBJECT
+class MainWindow : public QMainWindow, public LoggableObject {
+  Q_OBJECT
 
-public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+ public:
+  MainWindow(QWidget *parent = nullptr);
+  ~MainWindow();
 
-    static MainInterface* mi;
-    static KeyboardListener* keyboardListener;
+  static MainInterface *mi;
+  static KeyboardListener *keyboardListener;
 
-    void setVisible(bool visible) override;
-    std::map<std::string, QCheckBox*> checkboxes = {};
+  void setVisible(bool visible) override;
+  std::map<std::string, QCheckBox *> checkboxes = {};
 
-protected:
-    bool event(QEvent *event) override;
+ protected:
+  bool event(QEvent *event) override;
 
-private slots:
-    void iconActivated(QSystemTrayIcon::ActivationReason reason);
+ private slots:
+  void iconActivated(QSystemTrayIcon::ActivationReason reason);
 
-    void close();
+  void close();
 
-    void devicesChanged();
+  void devicesChanged();
 
-    void openMenu(int menu);
+  void openMenu(int menu);
 
-    void fadeInMenu();
+  void fadeInMenu();
 
-    void resetAudio();
+  void resetAudio();
 
-    void moveWindow(QMouseEvent *event, int x, int y);
+  void moveWindow(QMouseEvent *event, int x, int y);
 
-    void restartTutorial();
+  void restartTutorial();
 
-private:
-    Ui::MainWindow *ui;
+ private:
+  Ui::MainWindow *ui;
 
-    enum Menu {
-        settings = -1,
-        soundboard = 0,
-        fx = 1,
-        voice = 2
-    };
+  enum Menu { settings = -1, soundboard = 0, fx = 1, voice = 2 };
 
-    QListWidget *keybinds;
-    QAction *minimizeAction,
-            *maximizeAction,
-            *restoreAction,
-            *resetAction,
-            *quitAction;
-    QSystemTrayIcon *trayIcon;
-    QMenu *trayIconMenu;
-    QSignalMapper mapper_add,
-                  mapper_remove,
-                  mapper_fx,
-                  mapper_menu;
-    QMediaDevices *devices;
-    QWidget *activeMenu,
-            *nextMenu;
+  QListWidget *keybinds;
+  QAction *minimizeAction, *maximizeAction, *restoreAction, *resetAction,
+      *quitAction;
+  QSystemTrayIcon *trayIcon;
+  QMenu *trayIconMenu;
+  QSignalMapper mapper_add, mapper_remove, mapper_fx, mapper_menu;
+  QMediaDevices *devices;
+  QWidget *activeMenu, *nextMenu;
 
-    KeyPressEater *keyPressEater;
+  KeyPressEater *keyPressEater;
 
-    SoundboardMenu *soundboardMenu;
-    FXMenu *fxMenu;
-    SettingsMenu *settingsMenu;
+  SoundboardMenu *soundboardMenu;
+  FXMenu *fxMenu;
+  SettingsMenu *settingsMenu;
 
-    HUD *hud;
-    TitleBar *titleBar;
+  HUD *hud;
+  TitleBar *titleBar;
 
-    Onboarding *onboarding;
+  Onboarding *onboarding;
 
-    int selectedSoundboardHotkey,
-        fxHotkey = -1;
+  int selectedSoundboardHotkey, fxHotkey = -1;
 
-    bool setup = false,
-         dragging = false;
+  bool setup = false, dragging = false;
 };
-#endif // MAINWINDOW_H
+#endif  // MAINWINDOW_H

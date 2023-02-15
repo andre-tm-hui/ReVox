@@ -3,10 +3,9 @@
 
 #include "audiostream.h"
 
-class NoiseGenerator : public AudioStream
-{
-public:
-    NoiseGenerator(device outputDevice, int sampleRate);
+class NoiseGenerator : public AudioStream {
+ public:
+  NoiseGenerator(device outputDevice, int sampleRate);
 };
 
-#endif // NOISEGENERATOR_H
+#endif  // NOISEGENERATOR_H
