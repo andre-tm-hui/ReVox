@@ -642,125 +642,6 @@ QPushButton:hover { color: #C0C0C0; }</string>
     <zorder>next_09</zorder>
    </widget>
   </widget>
-  <widget class="QGroupBox" name="slide_10">
-   <property name="geometry">
-    <rect>
-     <x>960</x>
-     <y>0</y>
-     <width>960</width>
-     <height>540</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background: transparent;
-border: 0px;</string>
-   </property>
-   <property name="title">
-    <string/>
-   </property>
-   <widget class="QGroupBox" name="instruction_10">
-    <property name="geometry">
-     <rect>
-      <x>460</x>
-      <y>250</y>
-      <width>270</width>
-      <height>70</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">QGroupBox { background: #B0000000; border-radius: 10px; }</string>
-    </property>
-    <property name="title">
-     <string/>
-    </property>
-    <widget class="QPushButton" name="next_10">
-     <property name="geometry">
-      <rect>
-       <x>210</x>
-       <y>45</y>
-       <width>60</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">QPushButton { color: #808080; }
-QPushButton:hover { color: #C0C0C0; }</string>
-     </property>
-     <property name="text">
-      <string>Next ►</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_10">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>250</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Crop your clips by dragging the barriers on either side of the display below.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
-    </widget>
-    <zorder>label_10</zorder>
-    <zorder>next_10</zorder>
-   </widget>
-   <widget class="QLabel" name="arrowLeft_10">
-    <property name="geometry">
-     <rect>
-      <x>275</x>
-      <y>370</y>
-      <width>20</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>System</family>
-      <pointsize>-1</pointsize>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font-family: System;
-font-size: 14px;</string>
-    </property>
-    <property name="text">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;►&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="arrowRight_10">
-    <property name="geometry">
-     <rect>
-      <x>895</x>
-      <y>370</y>
-      <width>20</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>System</family>
-      <pointsize>-1</pointsize>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font-family: System;
-font-size: 14px;</string>
-    </property>
-    <property name="text">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;◄&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-    </property>
-   </widget>
-  </widget>
   <widget class="QGroupBox" name="slide_11">
    <property name="geometry">
     <rect>
@@ -780,8 +661,8 @@ border: 0px;</string>
    <widget class="QGroupBox" name="instruction_11">
     <property name="geometry">
      <rect>
-      <x>203</x>
-      <y>370</y>
+      <x>460</x>
+      <y>250</y>
       <width>270</width>
       <height>70</height>
      </rect>
@@ -819,7 +700,7 @@ QPushButton:hover { color: #C0C0C0; }</string>
       </rect>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Load&lt;/span&gt; a clip from an .mp3 or .wav file. &lt;span style=&quot; font-weight:700;&quot;&gt;Delete&lt;/span&gt; the currently selected clip.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Crop your clips by dragging the barriers on either side of the display below.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -830,6 +711,54 @@ QPushButton:hover { color: #C0C0C0; }</string>
     </widget>
     <zorder>label_11</zorder>
     <zorder>next_11</zorder>
+   </widget>
+   <widget class="QLabel" name="arrowLeft_11">
+    <property name="geometry">
+     <rect>
+      <x>275</x>
+      <y>370</y>
+      <width>20</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>System</family>
+      <pointsize>-1</pointsize>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font-family: System;
+font-size: 14px;</string>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;►&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="arrowRight_11">
+    <property name="geometry">
+     <rect>
+      <x>895</x>
+      <y>370</y>
+      <width>20</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>System</family>
+      <pointsize>-1</pointsize>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font-family: System;
+font-size: 14px;</string>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;◄&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
    </widget>
   </widget>
   <widget class="QGroupBox" name="slide_12">
@@ -851,10 +780,10 @@ border: 0px;</string>
    <widget class="QGroupBox" name="instruction_12">
     <property name="geometry">
      <rect>
-      <x>677</x>
-      <y>380</y>
+      <x>203</x>
+      <y>370</y>
       <width>270</width>
-      <height>60</height>
+      <height>70</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -867,7 +796,7 @@ border: 0px;</string>
      <property name="geometry">
       <rect>
        <x>210</x>
-       <y>35</y>
+       <y>45</y>
        <width>60</width>
        <height>20</height>
       </rect>
@@ -883,14 +812,14 @@ QPushButton:hover { color: #C0C0C0; }</string>
     <widget class="QLabel" name="label_12">
      <property name="geometry">
       <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>270</width>
+       <x>10</x>
+       <y>10</y>
+       <width>250</width>
        <height>40</height>
       </rect>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Change the &lt;span style=&quot; font-weight:700;&quot;&gt;volume&lt;/span&gt; of the selected clip.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Load&lt;/span&gt; a clip from an .mp3 or .wav file. &lt;span style=&quot; font-weight:700;&quot;&gt;Delete&lt;/span&gt; the currently selected clip.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -922,10 +851,10 @@ border: 0px;</string>
    <widget class="QGroupBox" name="instruction_13">
     <property name="geometry">
      <rect>
-      <x>560</x>
-      <y>220</y>
+      <x>677</x>
+      <y>380</y>
       <width>270</width>
-      <height>70</height>
+      <height>60</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -938,7 +867,7 @@ border: 0px;</string>
      <property name="geometry">
       <rect>
        <x>210</x>
-       <y>45</y>
+       <y>35</y>
        <width>60</width>
        <height>20</height>
       </rect>
@@ -954,14 +883,14 @@ QPushButton:hover { color: #C0C0C0; }</string>
     <widget class="QLabel" name="label_13">
      <property name="geometry">
       <rect>
-       <x>9</x>
-       <y>10</y>
-       <width>251</width>
+       <x>0</x>
+       <y>0</y>
+       <width>270</width>
        <height>40</height>
       </rect>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;To remove a hotkey, select it and press the &lt;span style=&quot; font-weight:700;&quot;&gt;'-'&lt;/span&gt; button.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Change the &lt;span style=&quot; font-weight:700;&quot;&gt;volume&lt;/span&gt; of the selected clip.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -993,10 +922,10 @@ border: 0px;</string>
    <widget class="QGroupBox" name="instruction_14">
     <property name="geometry">
      <rect>
-      <x>90</x>
-      <y>90</y>
-      <width>120</width>
-      <height>60</height>
+      <x>560</x>
+      <y>220</y>
+      <width>270</width>
+      <height>70</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -1005,17 +934,34 @@ border: 0px;</string>
     <property name="title">
      <string/>
     </property>
+    <widget class="QPushButton" name="next_14">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>45</y>
+       <width>60</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton { color: #808080; }
+QPushButton:hover { color: #C0C0C0; }</string>
+     </property>
+     <property name="text">
+      <string>Next ►</string>
+     </property>
+    </widget>
     <widget class="QLabel" name="label_14">
      <property name="geometry">
       <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>120</width>
-       <height>60</height>
+       <x>9</x>
+       <y>10</y>
+       <width>251</width>
+       <height>40</height>
       </rect>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Let's move to the &lt;span style=&quot; font-weight:700;&quot;&gt;Voice Changer.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;To remove a hotkey, select it and press the &lt;span style=&quot; font-weight:700;&quot;&gt;'-'&lt;/span&gt; button.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -1024,6 +970,8 @@ border: 0px;</string>
       <bool>true</bool>
      </property>
     </widget>
+    <zorder>label_14</zorder>
+    <zorder>next_14</zorder>
    </widget>
   </widget>
   <widget class="QGroupBox" name="slide_15">
@@ -1045,10 +993,10 @@ border: 0px;</string>
    <widget class="QGroupBox" name="instruction_15">
     <property name="geometry">
      <rect>
-      <x>280</x>
-      <y>145</y>
+      <x>90</x>
+      <y>90</y>
       <width>120</width>
-      <height>250</height>
+      <height>60</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -1057,41 +1005,25 @@ border: 0px;</string>
     <property name="title">
      <string/>
     </property>
-    <widget class="QPushButton" name="next_15">
-     <property name="geometry">
-      <rect>
-       <x>60</x>
-       <y>225</y>
-       <width>60</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">QPushButton { color: #808080; }
-QPushButton:hover { color: #C0C0C0; }</string>
-     </property>
-     <property name="text">
-      <string>Next ►</string>
-     </property>
-    </widget>
     <widget class="QLabel" name="label_15">
      <property name="geometry">
       <rect>
-       <x>9</x>
-       <y>30</y>
-       <width>101</width>
-       <height>190</height>
+       <x>0</x>
+       <y>0</y>
+       <width>120</width>
+       <height>60</height>
       </rect>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;On the left is your&lt;span style=&quot; font-weight:700;&quot;&gt; Voice Monitoring&lt;/span&gt; slider. Use this to mute/hear your own voice.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Let's move to the &lt;span style=&quot; font-weight:700;&quot;&gt;Voice Changer.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
      </property>
     </widget>
-    <zorder>label_15</zorder>
-    <zorder>next_15</zorder>
    </widget>
   </widget>
   <widget class="QGroupBox" name="slide_16">
@@ -1113,10 +1045,10 @@ border: 0px;</string>
    <widget class="QGroupBox" name="instruction_16">
     <property name="geometry">
      <rect>
-      <x>460</x>
-      <y>100</y>
-      <width>270</width>
-      <height>70</height>
+      <x>280</x>
+      <y>145</y>
+      <width>120</width>
+      <height>250</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -1128,8 +1060,8 @@ border: 0px;</string>
     <widget class="QPushButton" name="next_16">
      <property name="geometry">
       <rect>
-       <x>210</x>
-       <y>45</y>
+       <x>60</x>
+       <y>225</y>
        <width>60</width>
        <height>20</height>
       </rect>
@@ -1145,17 +1077,14 @@ QPushButton:hover { color: #C0C0C0; }</string>
     <widget class="QLabel" name="label_16">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>251</width>
-       <height>40</height>
+       <x>9</x>
+       <y>30</y>
+       <width>101</width>
+       <height>190</height>
       </rect>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This is your &amp;quot;Off&amp;quot; hotkey, for turning off all active effects. This one can't be edited.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;On the left is your&lt;span style=&quot; font-weight:700;&quot;&gt; Voice Monitoring&lt;/span&gt; slider. Use this to mute/hear your own voice.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
@@ -1185,9 +1114,9 @@ border: 0px;</string>
     <property name="geometry">
      <rect>
       <x>460</x>
-      <y>280</y>
+      <y>100</y>
       <width>270</width>
-      <height>61</height>
+      <height>70</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -1196,17 +1125,34 @@ border: 0px;</string>
     <property name="title">
      <string/>
     </property>
+    <widget class="QPushButton" name="next_17">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>45</y>
+       <width>60</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton { color: #808080; }
+QPushButton:hover { color: #C0C0C0; }</string>
+     </property>
+     <property name="text">
+      <string>Next ►</string>
+     </property>
+    </widget>
     <widget class="QLabel" name="label_17">
      <property name="geometry">
       <rect>
-       <x>9</x>
+       <x>10</x>
        <y>10</y>
        <width>251</width>
        <height>40</height>
       </rect>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Try adding your a hotkey on your own, and select it when you're done!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This is your &amp;quot;Off&amp;quot; hotkey, for turning off all active effects. This one can't be edited.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -1215,6 +1161,8 @@ border: 0px;</string>
       <bool>true</bool>
      </property>
     </widget>
+    <zorder>label_17</zorder>
+    <zorder>next_17</zorder>
    </widget>
   </widget>
   <widget class="QGroupBox" name="slide_18">
@@ -1236,10 +1184,10 @@ border: 0px;</string>
    <widget class="QGroupBox" name="instruction_18">
     <property name="geometry">
      <rect>
-      <x>630</x>
-      <y>220</y>
+      <x>460</x>
+      <y>280</y>
       <width>270</width>
-      <height>70</height>
+      <height>61</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -1248,34 +1196,17 @@ border: 0px;</string>
     <property name="title">
      <string/>
     </property>
-    <widget class="QPushButton" name="next_18">
-     <property name="geometry">
-      <rect>
-       <x>210</x>
-       <y>45</y>
-       <width>60</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">QPushButton { color: #808080; }
-QPushButton:hover { color: #C0C0C0; }</string>
-     </property>
-     <property name="text">
-      <string>Next ►</string>
-     </property>
-    </widget>
     <widget class="QLabel" name="label_18">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>9</x>
        <y>10</y>
-       <width>250</width>
+       <width>251</width>
        <height>40</height>
       </rect>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Edit the effects assigned to the selected hotkey down here.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Try adding your a hotkey on your own, and select it when you're done!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -1284,8 +1215,6 @@ QPushButton:hover { color: #C0C0C0; }</string>
       <bool>true</bool>
      </property>
     </widget>
-    <zorder>label_18</zorder>
-    <zorder>next_18</zorder>
    </widget>
   </widget>
   <widget class="QGroupBox" name="slide_19">
@@ -1307,10 +1236,10 @@ border: 0px;</string>
    <widget class="QGroupBox" name="instruction_19">
     <property name="geometry">
      <rect>
-      <x>320</x>
-      <y>213</y>
+      <x>630</x>
+      <y>220</y>
       <width>270</width>
-      <height>51</height>
+      <height>70</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -1323,7 +1252,7 @@ border: 0px;</string>
      <property name="geometry">
       <rect>
        <x>210</x>
-       <y>25</y>
+       <y>45</y>
        <width>60</width>
        <height>20</height>
       </rect>
@@ -1339,14 +1268,14 @@ QPushButton:hover { color: #C0C0C0; }</string>
     <widget class="QLabel" name="label_19">
      <property name="geometry">
       <rect>
-       <x>0</x>
-       <y>-1</y>
-       <width>221</width>
-       <height>41</height>
+       <x>10</x>
+       <y>10</y>
+       <width>250</width>
+       <height>40</height>
       </rect>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Pick the effect to edit here.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Edit the effects assigned to the selected hotkey down here.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -1378,10 +1307,10 @@ border: 0px;</string>
    <widget class="QGroupBox" name="instruction_20">
     <property name="geometry">
      <rect>
-      <x>450</x>
-      <y>210</y>
-      <width>290</width>
-      <height>80</height>
+      <x>320</x>
+      <y>213</y>
+      <width>270</width>
+      <height>51</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -1393,8 +1322,8 @@ border: 0px;</string>
     <widget class="QPushButton" name="next_20">
      <property name="geometry">
       <rect>
-       <x>230</x>
-       <y>55</y>
+       <x>210</x>
+       <y>25</y>
        <width>60</width>
        <height>20</height>
       </rect>
@@ -1410,14 +1339,14 @@ QPushButton:hover { color: #C0C0C0; }</string>
     <widget class="QLabel" name="label_20">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>270</width>
-       <height>51</height>
+       <x>0</x>
+       <y>-1</y>
+       <width>221</width>
+       <height>41</height>
       </rect>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Toggle whether or not the selected effect is active on the left. Change effect-specific parameters on the right.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Pick the effect to edit here.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -1449,10 +1378,10 @@ border: 0px;</string>
    <widget class="QGroupBox" name="instruction_21">
     <property name="geometry">
      <rect>
-      <x>139</x>
-      <y>155</y>
-      <width>140</width>
-      <height>230</height>
+      <x>450</x>
+      <y>210</y>
+      <width>290</width>
+      <height>80</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -1464,8 +1393,8 @@ border: 0px;</string>
     <widget class="QPushButton" name="next_21">
      <property name="geometry">
       <rect>
-       <x>80</x>
-       <y>205</y>
+       <x>230</x>
+       <y>55</y>
        <width>60</width>
        <height>20</height>
       </rect>
@@ -1482,13 +1411,13 @@ QPushButton:hover { color: #C0C0C0; }</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>19</y>
-       <width>120</width>
-       <height>191</height>
+       <y>10</y>
+       <width>270</width>
+       <height>51</height>
       </rect>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Press a hotkey once, or select the hotkey in the list, to enable the effects assigned to that hotkey.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Toggle whether or not the selected effect is active on the left. Change effect-specific parameters on the right.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -1520,6 +1449,77 @@ border: 0px;</string>
    <widget class="QGroupBox" name="instruction_22">
     <property name="geometry">
      <rect>
+      <x>139</x>
+      <y>155</y>
+      <width>140</width>
+      <height>230</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QGroupBox { background: #B0000000; border-radius: 10px; }</string>
+    </property>
+    <property name="title">
+     <string/>
+    </property>
+    <widget class="QPushButton" name="next_22">
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>205</y>
+       <width>60</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton { color: #808080; }
+QPushButton:hover { color: #C0C0C0; }</string>
+     </property>
+     <property name="text">
+      <string>Next ►</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_22">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>19</y>
+       <width>120</width>
+       <height>191</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Press a hotkey once, or select the hotkey in the list, to enable the effects assigned to that hotkey.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <zorder>label_22</zorder>
+    <zorder>next_22</zorder>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="slide_23">
+   <property name="geometry">
+    <rect>
+     <x>960</x>
+     <y>0</y>
+     <width>960</width>
+     <height>540</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background: transparent;
+border: 0px;</string>
+   </property>
+   <property name="title">
+    <string/>
+   </property>
+   <widget class="QGroupBox" name="instruction_23">
+    <property name="geometry">
+     <rect>
       <x>280</x>
       <y>145</y>
       <width>400</width>
@@ -1532,7 +1532,7 @@ border: 0px;</string>
     <property name="title">
      <string/>
     </property>
-    <widget class="QPushButton" name="next_22">
+    <widget class="QPushButton" name="next_23">
      <property name="geometry">
       <rect>
        <x>329</x>
@@ -1549,7 +1549,7 @@ QPushButton:hover { color: #C0C0C0; }</string>
       <string>Finish ►</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_22">
+    <widget class="QLabel" name="label_23">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -1565,8 +1565,8 @@ QPushButton:hover { color: #C0C0C0; }</string>
       <bool>true</bool>
      </property>
     </widget>
-    <zorder>label_22</zorder>
-    <zorder>next_22</zorder>
+    <zorder>label_23</zorder>
+    <zorder>next_23</zorder>
    </widget>
   </widget>
   <widget class="QWidget" name="bg" native="true">
@@ -1582,6 +1582,75 @@ QPushButton:hover { color: #C0C0C0; }</string>
     <string notr="true">background: #80000000;</string>
    </property>
   </widget>
+  <widget class="QGroupBox" name="slide_10">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>960</width>
+     <height>540</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background: transparent;
+border: 0px;</string>
+   </property>
+   <property name="title">
+    <string/>
+   </property>
+   <widget class="QGroupBox" name="instruction_10">
+    <property name="geometry">
+     <rect>
+      <x>653</x>
+      <y>310</y>
+      <width>270</width>
+      <height>70</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QGroupBox { background: #B0000000; border-radius: 10px; }</string>
+    </property>
+    <property name="title">
+     <string/>
+    </property>
+    <widget class="QPushButton" name="next_10">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>45</y>
+       <width>60</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton { color: #808080; }
+QPushButton:hover { color: #C0C0C0; }</string>
+     </property>
+     <property name="text">
+      <string>Next ►</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_10">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>250</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Use padding to pre-record up to 5 seconds of audio before pressing the record button.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </widget>
+  </widget>
   <zorder>bg</zorder>
   <zorder>slide_01</zorder>
   <zorder>slide_02</zorder>
@@ -1592,7 +1661,6 @@ QPushButton:hover { color: #C0C0C0; }</string>
   <zorder>slide_07</zorder>
   <zorder>slide_08</zorder>
   <zorder>slide_09</zorder>
-  <zorder>slide_10</zorder>
   <zorder>slide_11</zorder>
   <zorder>slide_12</zorder>
   <zorder>slide_13</zorder>
@@ -1605,7 +1673,9 @@ QPushButton:hover { color: #C0C0C0; }</string>
   <zorder>slide_20</zorder>
   <zorder>slide_21</zorder>
   <zorder>slide_22</zorder>
+  <zorder>slide_23</zorder>
   <zorder>skip</zorder>
+  <zorder>slide_10</zorder>
  </widget>
  <resources/>
  <connections/>

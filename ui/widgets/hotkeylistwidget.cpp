@@ -32,7 +32,7 @@ HotkeyListWidget::HotkeyListWidget(QSize size, std::shared_ptr<BaseManager> bm,
   add->setToolTip("Add a new hotkey");
   add->setStyleSheet(
       "QToolButton {background-color: #202020; border: 0px; border-left: 1px "
-      "solid #181818;}"
+      "solid #181818; border-bottom-right-radius: 10px; }"
       "QToolButton:hover {background-color: #303030;}");
   QIcon addIcon = QIcon();
   addIcon.addFile(":/rc/hotkeyList/addIdle.png", QSize(13, 13), QIcon::Normal);
