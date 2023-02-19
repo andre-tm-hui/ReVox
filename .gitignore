@@ -81,5 +81,5 @@ deprecated/
 docs/
 inputblocker/x64
 inputblocker/.vs
-inputblocker/*.vcxproj.filters
-inputblocker/*.vcxproj.user
+inputblocker/InputBlockerDLL.vcxproj.filters
+inputblocker/InputBlockerDLL.vcxproj.user
