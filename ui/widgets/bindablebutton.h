@@ -5,6 +5,7 @@
 #include <thread>
 
 #include "../../interface/basemanager.h"
+#include "../../util/friendlyDeviceName.h"
 #include "../backend/vkcodenames.h"
 
 class BindableButton : public QPushButton, public LoggableObject {

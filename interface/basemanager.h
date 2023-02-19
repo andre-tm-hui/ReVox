@@ -33,8 +33,11 @@ class BaseManager : public BaseInterface, public LoggableObject {
 
   json GetDefaultHotkey() { return defaultObj; }
 
-  bool KeybindExists(int keycode, std::string deviceName) {
-    return FindFromKeycode(keycode, deviceName).empty() ? false : true;
+  bool KeybindExists(int keycode, std::string deviceName,
+                     bool ignoreDeviceName) {
+    return FindFromKeycode(keycode, deviceName, ignoreDeviceName).empty()
+               ? false
+               : true;
   }
 
  protected:
@@ -45,7 +48,8 @@ class BaseManager : public BaseInterface, public LoggableObject {
  private:
   virtual void StartEvent(std::string path, int event) {}
   json* GetObj(std::string path);
-  std::string FindFromKeycode(int keycode, std::string deviceName);
+  std::string FindFromKeycode(int keycode, std::string deviceName,
+                              bool ignoreDeviceName = true);
 
   RebindData rebindData;
   json* rebindItem = nullptr;

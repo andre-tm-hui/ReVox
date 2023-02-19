@@ -13,6 +13,8 @@
 #endif
 #endif
 
+#include <functional>
+
 #include "../backend/streams/cleanoutput.h"
 #include "../backend/streams/noisegenerator.h"
 #include "../util/loggableobject.h"
@@ -35,7 +37,7 @@ class MainInterface : public BaseInterface, public LoggableObject {
   MainInterface();
   ~MainInterface() override;
 
-  void KeyEvent(int keycode, std::string deviceName, int event);
+  bool KeyEvent(int keycode, std::string deviceName, int event);
   void Reset(bool devicesChanged = false);
 
   int GetCurrentOutputDevice() { return ids.output; }
@@ -52,6 +54,9 @@ class MainInterface : public BaseInterface, public LoggableObject {
   std::map<std::string, device> GetLoopbackDevices() { return loopbackDevices; }
 
   void SetBlocked(bool blocked) { this->blocked = blocked; }
+  int GetLastKeycode() { return lastKeycode; }
+  void SetLastKeycode(int keycode) { lastKeycode = keycode; }
+  std::function<bool(bool)> ToggleInputBlocking;
 
  private:
   void SetupStreams();
@@ -64,6 +69,7 @@ class MainInterface : public BaseInterface, public LoggableObject {
   void WaitForReady();
 
   bool blocked = false;
+  int lastKeycode = -1;
   std::queue<float> *inputQueue, *playbackQueue;
 
   std::shared_ptr<SoundboardManager> soundboardManager;
@@ -89,7 +95,9 @@ class MainInterface : public BaseInterface, public LoggableObject {
             "hudPosition": -1,
             "startWithWindows": false,
             "autocheckUpdates": false,
-            "firstTime": true
+            "firstTime": true,
+            "blockInputs": false,
+            "detectKeyboard": true
         })"_json;
 };
 

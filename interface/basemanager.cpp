@@ -50,16 +50,19 @@ void BaseManager::RemoveBind(int idx) {
   log(INFO, "Removed bind " + std::to_string(idx));
 }
 
-std::string BaseManager::FindFromKeycode(int keycode, std::string deviceName) {
+std::string BaseManager::FindFromKeycode(int keycode, std::string deviceName,
+                                         bool ignoreDeviceName) {
   for (auto const& [id, obj] : settings.items()) {
     if (id != "hotkeys" && obj.type() == json::value_t::object &&
         obj.find("keycode") != obj.end()) {
-      if (obj["keycode"] == keycode && obj["deviceName"] == deviceName)
+      if (obj["keycode"] == keycode &&
+          (ignoreDeviceName ? true : obj["deviceName"] == deviceName))
         return id;
     }
   }
   for (auto const& [idx, obj] : settings["hotkeys"].items()) {
-    if (obj["keycode"] == keycode && obj["deviceName"] == deviceName)
+    if (obj["keycode"] == keycode &&
+        (ignoreDeviceName ? true : obj["deviceName"] == deviceName))
       return "hotkeys/" + idx;
   }
 

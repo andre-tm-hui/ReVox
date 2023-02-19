@@ -30,6 +30,8 @@ class SettingsMenu : public QWidget, public LoggableObject {
  private slots:
   void deviceChanged();
   void hudPositionChanged(int item);
+  void toggleKeyboardDetector(int state);
+  void toggleInputBlocker(int state);
   void toggleAutostart(int state);
   void toggleAutocheck(int state);
   void checkForUpdates();
@@ -37,6 +39,7 @@ class SettingsMenu : public QWidget, public LoggableObject {
 
  private:
   void populateDevices();
+  void setupSwitch(Switch **s, QWidget *parent, int offset = 0);
 
   Ui::SettingsMenu *ui;
   std::shared_ptr<MainInterface> mi;
@@ -45,7 +48,8 @@ class SettingsMenu : public QWidget, public LoggableObject {
   std::map<std::string, device> devices;
   int currentDevice = 0;
 
-  Switch *autostartSwitch, *autocheckSwitch;
+  Switch *keyboardDetectorSwitch, *blockInputsSwitch, *autostartSwitch,
+      *autocheckSwitch;
 
   std::vector<QString> positionLabels = {
       "Top Left",    "Top",    "Top Right",    "Left", "Right",

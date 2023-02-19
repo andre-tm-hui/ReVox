@@ -59,7 +59,8 @@ void BindableButton::cleanUp() {
   else
     this->setText("None");
 
-  this->setToolTip(QString::fromStdString(data.deviceName));
+  this->setToolTip(
+      QString::fromStdString(GetFriendlyDeviceName(data.deviceName)));
 
   QWidget::window()->setEnabled(true);
   log(INFO, "Rebind complete");
@@ -80,5 +81,6 @@ void BindableButton::updateSelf() {
     this->setText(vkCodenames[keycode]);
   else
     this->setText("None");
-  this->setToolTip(QString::fromStdString(settings["deviceName"]));
+  this->setToolTip(
+      QString::fromStdString(GetFriendlyDeviceName(settings["deviceName"])));
 }

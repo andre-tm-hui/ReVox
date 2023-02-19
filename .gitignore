@@ -79,3 +79,7 @@ spdlog/
 singleapplication/
 deprecated/
 docs/
+inputblocker/x64
+inputblocker/.vs
+inputblocker/*.vcxproj.filters
+inputblocker/*.vcxproj.user

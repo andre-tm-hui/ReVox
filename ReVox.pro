@@ -14,6 +14,7 @@ RC_ICONS = icon.ico
 
 SOURCES += \
     audiofx/lib/pitchshift/pitchshifter.cpp \
+    backend/processwatcher.cpp \
     main.cpp \
     audiofx/autotuner.cpp \
     audiofx/repitcher.cpp \
@@ -58,6 +59,7 @@ SOURCES += \
     ui/widgets/fx/fxparam.cpp \
     ui/widgets/soundboard/clickthroughslider.cpp \
     ui/widgets/soundboard/waveformviewer.cpp \
+    util/friendlyDeviceName.cpp \
     util/loggableobject.cpp
 
 HEADERS += \
@@ -73,6 +75,7 @@ HEADERS += \
     audiofx/lib/reverb/denormals.h \
     audiofx/lib/reverb/revtuning.h \
     backend/keyboardlistener.h \
+    backend/processwatcher.h \
     backend/vkcodenames.h \
     backend/streams/audiostream.h \
     backend/streams/callbacks.h \
@@ -210,6 +213,7 @@ HEADERS += \
     ui/widgets/soundboard/clickthroughslider.h \
     ui/widgets/soundboard/waveformviewer.h \
     nlohmann/json.hpp \
+    util/friendlyDeviceName.h \
     util/loggableobject.h \
     util/ringbuffer.h
 
@@ -282,3 +286,4 @@ DEPENDPATH += $$PWD/../portaudio/include
 DISTFILES += \
   README.md \
   spdlog/fmt/bundled/fmt.license.rst
+
