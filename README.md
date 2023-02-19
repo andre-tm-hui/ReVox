@@ -31,6 +31,9 @@ This can possibly be fixed with money, but this is a non-profit passion project 
       - FX specific settings
       - Mix and match FX - toggle multiple FXs through a single hotkey
   - Monitor your own audio
+  - [Input Blocking](https://github.com/onglez/ReVox/wiki/Usage#input-blocking) - press a hotkey and only have the sound play/FX activate. Bind hotkeys freely without worrying about what the original key does.
+    - *Requires separate add-on
+    - **May not work with every game
 
 ## Requirements
   - Windows 10/11
