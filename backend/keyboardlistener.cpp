@@ -1,9 +1,14 @@
 #include "keyboardlistener.h"
 
 std::deque<DecisionRecord> KeyboardListener::decisionBuffer({});
+DecisionRecord KeyboardListener::decision(0, false);
 HWND KeyboardListener::hWnd = 0;
 
 KeyboardListener::KeyboardListener() : LoggableObject("KeyboardListener") {}
+
+const LPCWSTR KeyboardListener::blockingDllName = L"InputBlockerDLL.dll";
+HINSTANCE KeyboardListener::blockingDllLib =
+    LoadLibraryW(KeyboardListener::blockingDllName);
 
 LRESULT CALLBACK KeyboardListener::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam,
                                            LPARAM lParam) {
@@ -33,6 +38,7 @@ LRESULT CALLBACK KeyboardListener::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam,
       std::wstring ws(ridDeviceName);
       block = mi->KeyEvent(code, std::string(ws.begin(), ws.end()), event);
       decisionBuffer.push_back(DecisionRecord(code, block));
+      decision = DecisionRecord(code, block);
       break;
     }
 
@@ -72,6 +78,22 @@ LRESULT CALLBACK KeyboardListener::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam,
         return 1;
       }
       return 0;
+
+      /*if (decision.decision && decision.virtualKeyCode == virtualKeyCode) {
+        decision.decision = false;
+        return 1;
+      }
+      return 0;*/
+    }
+    case WM_INSTALLHOOK: {
+      PIH InstallHook = (PIH)GetProcAddress(blockingDllLib, "InstallHook");
+      if (InstallHook != NULL) InstallHook(hWnd);
+      break;
+    }
+    case WM_UNINSTALLHOOK: {
+      PUH UninstallHook = (PUH)GetProcAddress(blockingDllLib, "UninstallHook");
+      if (UninstallHook != NULL) UninstallHook();
+      break;
     }
   }
 
@@ -120,6 +142,20 @@ int KeyboardListener::Start(HWND hWnd) {
   return 0;
 }
 
+DWORD WINAPI KeyboardListener::MessageThreadProc(LPVOID lpParameter) {
+  HANDLE hExitEvent = (HANDLE)lpParameter;
+  MSG msg;
+
+  while (GetMessage(&msg, NULL, 0, 0)) {
+    switch (msg.message) {
+      case WM_QUIT: {
+        SetEvent(hExitEvent);
+        return 0;
+      }
+    }
+  }
+}
+
 void KeyboardListener::EnableBlocking() {
   RegisterHook();
   p.start();
@@ -144,11 +180,11 @@ bool KeyboardListener::ToggleInputBlocking(bool enabled) {
 }
 
 void KeyboardListener::RegisterHook() {
-  InstallHook(hWnd);
+  SendMessage(hWnd, WM_INSTALLHOOK, 0, 0);
   log(INFO, "Hook registered");
 }
 
 void KeyboardListener::UnregisterHook() {
-  UninstallHook();
+  SendMessage(hWnd, WM_UNINSTALLHOOK, 0, 0);
   log(INFO, "Hook unregistered");
 }

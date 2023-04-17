@@ -16,8 +16,9 @@ class SoundboardManager : public BaseManager {
 
   void Record(std::string idx);
   void StopRecording();
-  void Play(std::string idx);
+  void Play(std::string idx, int ev = 0);
   void StopAll();
+  void Stop(std::string idx);
   void OverrideSound(std::string fname, int idx);
   void SetWaveform(WaveformViewer *wv);
 
@@ -36,8 +37,8 @@ class SoundboardManager : public BaseManager {
   std::shared_ptr<Monitor> monitor;
   std::shared_ptr<Player> player;
   WaveformViewer *wv = nullptr;
-  bool recording = false, stopping = false, recordOver = false;
-  int sampleRate = 0;
+  bool recording = false, stopping = false, modifier = false;
+  int sampleRate = 0, holding = 0;
   std::string currHotkey = "";
 
   std::shared_ptr<spdlog::logger> logger;

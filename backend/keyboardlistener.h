@@ -7,6 +7,8 @@
 #include "processwatcher.h"
 
 UINT const WM_HOOK = WM_APP + 1;
+UINT const WM_INSTALLHOOK = WM_HOOK + 1;
+UINT const WM_UNINSTALLHOOK = WM_INSTALLHOOK + 1;
 
 typedef bool(WINAPI* PIH)(HWND);
 typedef bool(WINAPI* PUH)();
@@ -25,6 +27,7 @@ class KeyboardListener : public LoggableObject {
 
   LRESULT static CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam,
                                   LPARAM lParam);
+  static DWORD WINAPI MessageThreadProc(LPVOID lpParameter);
 
   int Start(HWND hWnd = NULL);
   void EnableBlocking();
@@ -37,6 +40,7 @@ class KeyboardListener : public LoggableObject {
   static MainInterface* mi;
   static HWND hWnd;
   static std::deque<DecisionRecord> decisionBuffer;
+  static DecisionRecord decision;
 
  private:
   void RegisterHook();
@@ -47,8 +51,8 @@ class KeyboardListener : public LoggableObject {
 
   ProcessWatcher p;
 
-  const LPCWSTR blockingDllName = L"InputBlockerDLL.dll";
-  HINSTANCE blockingDllLib;
+  static const LPCWSTR blockingDllName;
+  static HINSTANCE blockingDllLib;
 };
 
 #endif  // KEYBOARDLISTENER_H

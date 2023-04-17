@@ -33,16 +33,27 @@ void SoundboardManager::StartEvent(std::string path, int event) {
     std::string idx = path.substr(path.find("/") + 1);
     json bindSettings = settings["hotkeys"][idx];
     if (bindSettings.empty()) return;
-    if (event == 0)
-      Play(idx);
-    else if (recording)
-      StopRecording();
+    if (event == 0) {
+        holding++;
+        Play(idx, event);
+    }
+    else {
+        holding = 0;
+        if (recording) {
+            StopRecording();
+        }
+        else if (modifier) {
+            Stop(idx);
+        }
+    }
   } else {
     if (path == "recordOver") {
-      if (event == 0)
-        recordOver = true;
-      else
-        recordOver = false;
+        if (event == 0) {
+            modifier = true;
+        }
+        else {
+            modifier = false;
+        }
     }
   }
 }
@@ -85,12 +96,12 @@ void SoundboardManager::StopRecordingAfter() {
     wv->refresh(rootDir + "samples/" + currHotkey + ".mp3", wv);
 }
 
-void SoundboardManager::Play(std::string idx) {
+void SoundboardManager::Play(std::string idx, int ev) {
   if (player != nullptr && !recording) {
     bool playable = player->CanPlay(std::stoi(idx));
-    if (this->recordOver || !playable)
+    if (modifier && holding > 1 || !playable)
       Record(idx);
-    else if (playable) {
+    else if (!modifier && playable) {
       log(INFO, "Sample " + idx + " - Playing");
       player->Play(std::stoi(idx), settings["hotkeys"][idx]);
     }
@@ -100,6 +111,11 @@ void SoundboardManager::Play(std::string idx) {
 void SoundboardManager::StopAll() {
   log(INFO, "Stopping all playback");
   player->StopAll();
+}
+
+void SoundboardManager::Stop(std::string idx) {
+    log(INFO, "Stopping sample " + idx);
+    player->StopPlaying(std::stoi(idx));
 }
 
 void SoundboardManager::OverrideSound(std::string fname, int idx) {

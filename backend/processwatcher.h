@@ -36,7 +36,10 @@ class ProcessWatcher : LoggableObject {
   // the games seem to run fine regardless. Valorant won't run well if the hook
   // isn't disabled.
   std::unordered_set<std::string> runningBlacklistedProcesses,
-      blacklistedProcesses = {"RiotClientCrashHandler.exe"};
+      blacklistedProcesses = {"RiotClientCrashHandler.exe",
+                              "RiotClientServices.exe", "VALORANT.exe",
+                              "UnrealCEFSubProcess.exe",
+                              "VALORANT-Win64-Shipping.exe"};
   std::unordered_set<DWORD> runningProcesses;
   std::atomic<bool> running = false;
 

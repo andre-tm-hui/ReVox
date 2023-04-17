@@ -22,6 +22,8 @@ HWND hwndServer = NULL;
 HINSTANCE instanceHandle;
 HHOOK hookHandle;
 
+DWORD_PTR dwResult;
+
 BOOL APIENTRY DllMain (HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
 {
 	switch (ul_reason_for_call)
@@ -47,14 +49,20 @@ static LRESULT CALLBACK KeyboardProc (int code, WPARAM wParam, LPARAM lParam)
 	}
 	
 	// Report the event to the main window. If the return value is 1, block the input; otherwise pass it along the Hook Chain
-	if (SendMessage (hwndServer, WM_HOOK, wParam, lParam))
-	{
+	DWORD res = SendMessageTimeout(hwndServer, WM_HOOK, wParam, lParam, SMTO_ABORTIFHUNG, 100, &dwResult);
+	if (res != 0 && dwResult != 0)
+	{	
+		dwResult = 0;
 		return 1;
 	}
 
+	/*if (SendMessage(hwndServer, WM_HOOK, wParam, lParam)) {
+		return 1;
+	}*/
+	
 	return CallNextHookEx (hookHandle, code, wParam, lParam);
-}asdf
-asdf
+}
+
 BOOL InstallHook (HWND hwndParent)
 {
 	if (hwndServer != NULL)

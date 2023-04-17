@@ -150,7 +150,7 @@ void SettingsMenu::hudPositionChanged(int item) {
 }
 
 void SettingsMenu::toggleKeyboardDetector(int state) {
-  bool enabled = state == 0 ? false : true;
+  bool enabled = state == 0 ? true : false;
   mi->UpdateSettings<bool>("detectKeyboard", enabled);
   log(INFO,
       "Keyboard detection " + std::string(enabled ? "enabled" : "disabled"));
