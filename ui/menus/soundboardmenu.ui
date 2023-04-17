@@ -404,7 +404,7 @@ QToolButton:disabled { border-image: url(&quot;:/rc/soundboardMenu/stopDisabled.
      </rect>
     </property>
     <property name="toolTip">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Hold this key along with any hotkey to begin recording, overriding an existing clip&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Hold this key along and tap a hotkey to stop playback of that sample. Hold the hotkey to begin recording, overriding existing clips.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
     <property name="styleSheet">
      <string notr="true">QGroupBox { border-radius: 0px; border: 0px; background-color: transparent; }</string>

@@ -18,6 +18,7 @@ class Player : public AudioStream {
   bool CanPlay(int idx);
 
   void StopAll();
+  void StopPlaying(int idx);
 
   void Rename(int idxFrom, int idxTo);
 

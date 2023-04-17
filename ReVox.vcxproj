@@ -1,0 +1,579 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{2BD12BC2-3306-3A55-9D89-753F9F56FC12}</ProjectGuid>
+    <RootNamespace>ReVox</RootNamespace>
+    <Keyword>QtVS_v304</Keyword>
+    <WindowsTargetPlatformVersion>10.0.22621.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformMinVersion>10.0.22621.0</WindowsTargetPlatformMinVersion>
+    <QtMsBuild Condition="'$(QtMsBuild)'=='' or !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <PlatformToolset>v142</PlatformToolset>
+    <OutputDirectory>release\</OutputDirectory>
+    <ATLMinimizesCRunTimeLibraryUsage>false</ATLMinimizesCRunTimeLibraryUsage>
+    <CharacterSet>NotSet</CharacterSet>
+    <ConfigurationType>Application</ConfigurationType>
+    <IntermediateDirectory>release\</IntermediateDirectory>
+    <PrimaryOutput>ReVox</PrimaryOutput>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <PlatformToolset>v142</PlatformToolset>
+    <OutputDirectory>debug\</OutputDirectory>
+    <ATLMinimizesCRunTimeLibraryUsage>false</ATLMinimizesCRunTimeLibraryUsage>
+    <CharacterSet>NotSet</CharacterSet>
+    <ConfigurationType>Application</ConfigurationType>
+    <IntermediateDirectory>debug\</IntermediateDirectory>
+    <PrimaryOutput>ReVox</PrimaryOutput>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
+    <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />
+  </Target>
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')">
+    <Import Project="$(QtMsBuild)\qt_defaults.props" />
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>debug\</OutDir>
+    <IntDir>debug\</IntDir>
+    <TargetName>ReVox</TargetName>
+    <IgnoreImportLibrary>true</IgnoreImportLibrary>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>release\</OutDir>
+    <IntDir>release\</IntDir>
+    <TargetName>ReVox</TargetName>
+    <IgnoreImportLibrary>true</IgnoreImportLibrary>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <QtInstall>6.4.1_msvc2019_64</QtInstall>
+    <QtModules>core;gui;network;widgets;multimedia</QtModules>
+  </PropertyGroup>
+  <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <QtInstall>6.4.1_msvc2019_64</QtInstall>
+    <QtModules>core;gui;network;widgets;multimedia</QtModules>
+  </PropertyGroup>
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.props')">
+    <Import Project="$(QtMsBuild)\qt.props" />
+  </ImportGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>GeneratedFiles\$(ConfigurationName);GeneratedFiles;.;headers;singleapplication;E:\C++ Libraries\fftw;E:\C++ Libraries\libsamplerate-0.2.2-win64\include;E:\GitHub\github-releases-autoupdater\src;E:\GitHub\github-releases-autoupdater\src\updaterUI;E:\C++ Libraries\libsndfile-1.1.0-win64\include;E:\GitHub\portaudio\include;release;/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>release\</AssemblerListingLocation>
+      <BrowseInformation>false</BrowseInformation>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <DisableSpecificWarnings>4577;4467;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <ObjectFileName>release\</ObjectFileName>
+      <Optimization>MaxSpeed</Optimization>
+      <PreprocessorDefinitions>_WINDOWS;UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QAPPLICATION_CLASS=QApplication;NDEBUG;QT_QML_DEBUG;QT_NO_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <ProgramDataBaseFileName>
+      </ProgramDataBaseFileName>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>Advapi32.lib;"E:\C++ Libraries\fftw\libfftw3f-3.lib";"E:\C++ Libraries\libsamplerate-0.2.2-win64\lib\samplerate.lib";ole32.lib;user32.lib;cfgmgr32.lib;E:\GitHub\bin\release\x64\autoupdater.lib;hid.lib;"E:\C++ Libraries\libsndfile-1.1.0-win64\bin\sndfile.lib";E:\GitHub\portaudio\msvc\x64\Release\portaudio_x64.lib;$(QTDIR)\lib\Qt6EntryPoint.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>E:\C++ Libraries\fftw;E:\C++ Libraries\libsamplerate-0.2.2-win64\lib;E:\GitHub\bin\release\x64;E:\C++ Libraries\libsndfile-1.1.0-win64\bin;E:\GitHub\portaudio\msvc\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
+      <DataExecutionPrevention>true</DataExecutionPrevention>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreImportLibrary>true</IgnoreImportLibrary>
+      <LinkIncremental>false</LinkIncremental>
+      <OptimizeReferences>true</OptimizeReferences>
+      <OutputFile>$(OutDir)\ReVox.exe</OutputFile>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
+      <SubSystem>Windows</SubSystem>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Link>
+    <Midl>
+      <DefaultCharType>Unsigned</DefaultCharType>
+      <EnableErrorChecks>None</EnableErrorChecks>
+      <WarningLevel>0</WarningLevel>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_WINDOWS;UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QAPPLICATION_CLASS=QApplication;NDEBUG;QT_QML_DEBUG;QT_NO_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <QtMoc>
+      <CompilerFlavor>msvc</CompilerFlavor>
+      <Include>./$(Configuration)/moc_predefs.h</Include>
+      <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
+      <DynamicSource>output</DynamicSource>
+      <QtMocDir>$(Configuration)</QtMocDir>
+      <QtMocFileName>moc_%(Filename).cpp</QtMocFileName>
+    </QtMoc>
+    <QtRcc>
+      <ExecutionDescription>Rcc'ing %(Identity)...</ExecutionDescription>
+      <NoZstd>true</NoZstd>
+      <Compression>default</Compression>
+      <QtRccDir>$(Configuration)</QtRccDir>
+      <QtRccFileName>qrc_%(Filename).cpp</QtRccFileName>
+    </QtRcc>
+    <QtUic>
+      <ExecutionDescription>Uic'ing %(Identity)...</ExecutionDescription>
+      <QtUicDir>$(ProjectDir)</QtUicDir>
+      <QtUicFileName>ui_%(Filename).h</QtUicFileName>
+    </QtUic>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>GeneratedFiles\$(ConfigurationName);GeneratedFiles;.;headers;singleapplication;E:\C++ Libraries\fftw;E:\C++ Libraries\libsamplerate-0.2.2-win64\include;E:\GitHub\github-releases-autoupdater\src;E:\GitHub\github-releases-autoupdater\src\updaterUI;E:\C++ Libraries\libsndfile-1.1.0-win64\include;E:\GitHub\portaudio\include;debug;/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>debug\</AssemblerListingLocation>
+      <BrowseInformation>false</BrowseInformation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4577;4467;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <ObjectFileName>debug\</ObjectFileName>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_WINDOWS;UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QAPPLICATION_CLASS=QApplication;QT_QML_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>Advapi32.lib;"E:\C++ Libraries\fftw\libfftw3f-3.lib";"E:\C++ Libraries\libsamplerate-0.2.2-win64\lib\samplerate.lib";ole32.lib;user32.lib;cfgmgr32.lib;E:\GitHub\bin\debug\x64\autoupdater.lib;hid.lib;"E:\C++ Libraries\libsndfile-1.1.0-win64\bin\sndfile.lib";E:\GitHub\portaudio\msvc\x64\Release\portaudio_x64.lib;$(QTDIR)\lib\Qt6EntryPointd.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>E:\C++ Libraries\fftw;E:\C++ Libraries\libsamplerate-0.2.2-win64\lib;E:\GitHub\bin\debug\x64;E:\C++ Libraries\libsndfile-1.1.0-win64\bin;E:\GitHub\portaudio\msvc\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>/DEBUG "/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
+      <DataExecutionPrevention>true</DataExecutionPrevention>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreImportLibrary>true</IgnoreImportLibrary>
+      <OutputFile>$(OutDir)\ReVox.exe</OutputFile>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
+      <SubSystem>Windows</SubSystem>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Link>
+    <Midl>
+      <DefaultCharType>Unsigned</DefaultCharType>
+      <EnableErrorChecks>None</EnableErrorChecks>
+      <WarningLevel>0</WarningLevel>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_WINDOWS;UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QAPPLICATION_CLASS=QApplication;QT_QML_DEBUG;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <QtRcc>
+      <ExecutionDescription>Rcc'ing %(Identity)...</ExecutionDescription>
+      <NoZstd>true</NoZstd>
+      <Compression>default</Compression>
+      <QtRccDir>$(Configuration)</QtRccDir>
+      <QtRccFileName>qrc_%(Filename).cpp</QtRccFileName>
+    </QtRcc>
+    <QtMoc>
+      <CompilerFlavor>msvc</CompilerFlavor>
+      <Include>./$(Configuration)/moc_predefs.h</Include>
+      <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
+      <DynamicSource>output</DynamicSource>
+      <QtMocDir>$(Configuration)</QtMocDir>
+      <QtMocFileName>moc_%(Filename).cpp</QtMocFileName>
+    </QtMoc>
+    <QtUic>
+      <ExecutionDescription>Uic'ing %(Identity)...</ExecutionDescription>
+      <QtUicDir>$(ProjectDir)</QtUicDir>
+      <QtUicFileName>ui_%(Filename).h</QtUicFileName>
+    </QtUic>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="audiofx\lib\reverb\allpass.cpp" />
+    <ClCompile Include="backend\streams\audiostream.cpp" />
+    <ClCompile Include="audiofx\autotuner.cpp" />
+    <ClCompile Include="interface\baseinterface.cpp" />
+    <ClCompile Include="interface\basemanager.cpp" />
+    <ClCompile Include="ui\widgets\bindablebutton.cpp" />
+    <ClCompile Include="backend\streams\callbacks.cpp" />
+    <ClCompile Include="backend\streams\cleanoutput.cpp" />
+    <ClCompile Include="ui\widgets\soundboard\clickthroughslider.cpp" />
+    <ClCompile Include="audiofx\lib\reverb\comb.cpp" />
+    <ClCompile Include="ui\components\cropper.cpp" />
+    <ClCompile Include="ui\widgets\customdial.cpp" />
+    <ClCompile Include="audiofx\lib\pitchshift\frequency.cpp" />
+    <ClCompile Include="util\friendlyDeviceName.cpp" />
+    <ClCompile Include="ui\widgets\fx\fxdial.cpp" />
+    <ClCompile Include="ui\widgets\fx\fxkeypicker.cpp" />
+    <ClCompile Include="interface\fxmanager.cpp" />
+    <ClCompile Include="ui\menus\fxmenu.cpp" />
+    <ClCompile Include="ui\widgets\fx\fxparam.cpp" />
+    <ClCompile Include="ui\widgets\fx\fxswitch.cpp" />
+    <ClCompile Include="ui\components\fxtab.cpp" />
+    <ClCompile Include="ui\widgets\hotkeylistitemwidget.cpp" />
+    <ClCompile Include="ui\widgets\hotkeylistwidget.cpp" />
+    <ClCompile Include="ui\hud.cpp" />
+    <ClCompile Include="backend\keyboardlistener.cpp" />
+    <ClCompile Include="ui\util\keypresseater.cpp" />
+    <ClCompile Include="util\loggableobject.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="interface\maininterface.cpp" />
+    <ClCompile Include="ui\mainwindow.cpp" />
+    <ClCompile Include="backend\streams\monitor.cpp" />
+    <ClCompile Include="ui\widgets\monitorslider.cpp" />
+    <ClCompile Include="backend\streams\noisegenerator.cpp" />
+    <ClCompile Include="ui\onboarding.cpp" />
+    <ClCompile Include="backend\streams\passthrough.cpp" />
+    <ClCompile Include="audiofx\lib\pitchshift\pitchshifter.cpp" />
+    <ClCompile Include="backend\streams\player.cpp" />
+    <ClCompile Include="backend\processwatcher.cpp" />
+    <ClCompile Include="ui\util\qttransitions.cpp" />
+    <ClCompile Include="audiofx\repitcher.cpp" />
+    <ClCompile Include="audiofx\reverberator.cpp" />
+    <ClCompile Include="audiofx\lib\reverb\revmodel.cpp" />
+    <ClCompile Include="ui\menus\settingsmenu.cpp" />
+    <ClCompile Include="singleapplication\singleapplication.cpp" />
+    <ClCompile Include="singleapplication\singleapplication_p.cpp" />
+    <ClCompile Include="interface\soundboardmanager.cpp" />
+    <ClCompile Include="ui\menus\soundboardmenu.cpp" />
+    <ClCompile Include="ui\widgets\switch.cpp" />
+    <ClCompile Include="ui\titlebar.cpp" />
+    <ClCompile Include="ui\widgets\soundboard\waveformviewer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="singleapplication\SingleApplication" />
+    <ClInclude Include="audiofx\lib\reverb\allpass.h" />
+    <ClInclude Include="spdlog\sinks\android_sink.h" />
+    <ClInclude Include="spdlog\sinks\ansicolor_sink-inl.h" />
+    <ClInclude Include="spdlog\sinks\ansicolor_sink.h" />
+    <ClInclude Include="spdlog\fmt\bundled\args.h" />
+    <ClInclude Include="spdlog\cfg\argv.h" />
+    <ClInclude Include="spdlog\async.h" />
+    <ClInclude Include="spdlog\async_logger-inl.h" />
+    <ClInclude Include="spdlog\async_logger.h" />
+    <ClInclude Include="backend\streams\audiostream.h" />
+    <ClInclude Include="audiofx\autotuner.h" />
+    <ClInclude Include="spdlog\details\backtracer-inl.h" />
+    <ClInclude Include="spdlog\details\backtracer.h" />
+    <ClInclude Include="spdlog\sinks\base_sink-inl.h" />
+    <ClInclude Include="spdlog\sinks\base_sink.h" />
+    <ClInclude Include="interface\baseinterface.h" />
+    <ClInclude Include="interface\basemanager.h" />
+    <ClInclude Include="spdlog\sinks\basic_file_sink-inl.h" />
+    <ClInclude Include="spdlog\sinks\basic_file_sink.h" />
+    <ClInclude Include="spdlog\fmt\bin_to_hex.h" />
+    <QtMoc Include="ui\widgets\bindablebutton.h">
+    </QtMoc>
+    <ClInclude Include="backend\streams\callbacks.h" />
+    <ClInclude Include="spdlog\fmt\bundled\chrono.h" />
+    <ClInclude Include="spdlog\fmt\chrono.h" />
+    <ClInclude Include="spdlog\details\circular_q.h" />
+    <ClInclude Include="backend\streams\cleanoutput.h" />
+    <QtMoc Include="ui\widgets\soundboard\clickthroughslider.h">
+    </QtMoc>
+    <ClInclude Include="spdlog\fmt\bundled\color.h" />
+    <ClInclude Include="audiofx\lib\reverb\comb.h" />
+    <ClInclude Include="spdlog\common-inl.h" />
+    <ClInclude Include="spdlog\common.h" />
+    <ClInclude Include="spdlog\fmt\bundled\compile.h" />
+    <ClInclude Include="spdlog\fmt\compile.h" />
+    <ClInclude Include="spdlog\details\console_globals.h" />
+    <ClInclude Include="spdlog\fmt\bundled\core.h" />
+    <QtMoc Include="ui\components\cropper.h">
+    </QtMoc>
+    <QtMoc Include="ui\widgets\customdial.h">
+    </QtMoc>
+    <ClInclude Include="spdlog\sinks\daily_file_sink.h" />
+    <ClInclude Include="audiofx\lib\reverb\denormals.h" />
+    <ClInclude Include="spdlog\sinks\dist_sink.h" />
+    <ClInclude Include="spdlog\sinks\dup_filter_sink.h" />
+    <ClInclude Include="spdlog\cfg\env.h" />
+    <ClInclude Include="spdlog\details\file_helper-inl.h" />
+    <ClInclude Include="spdlog\details\file_helper.h" />
+    <ClInclude Include="spdlog\fmt\fmt.h" />
+    <ClInclude Include="spdlog\details\fmt_helper.h" />
+    <ClInclude Include="spdlog\fmt\bundled\format-inl.h" />
+    <ClInclude Include="spdlog\fmt\bundled\format.h" />
+    <ClInclude Include="spdlog\formatter.h" />
+    <ClInclude Include="audiofx\lib\pitchshift\frequency.h" />
+    <ClInclude Include="util\friendlyDeviceName.h" />
+    <ClInclude Include="spdlog\fwd.h" />
+    <QtMoc Include="ui\widgets\fx\fxdial.h">
+    </QtMoc>
+    <QtMoc Include="ui\widgets\fx\fxkeypicker.h">
+    </QtMoc>
+    <ClInclude Include="interface\fxmanager.h" />
+    <QtMoc Include="ui\menus\fxmenu.h">
+    </QtMoc>
+    <QtMoc Include="ui\widgets\fx\fxparam.h">
+    </QtMoc>
+    <QtMoc Include="ui\widgets\fx\fxswitch.h">
+    </QtMoc>
+    <QtMoc Include="ui\components\fxtab.h">
+    </QtMoc>
+    <ClInclude Include="spdlog\cfg\helpers-inl.h" />
+    <ClInclude Include="spdlog\cfg\helpers.h" />
+    <QtMoc Include="ui\widgets\hotkeylistitemwidget.h">
+    </QtMoc>
+    <QtMoc Include="ui\widgets\hotkeylistwidget.h">
+    </QtMoc>
+    <ClInclude Include="spdlog\sinks\hourly_file_sink.h" />
+    <QtMoc Include="ui\hud.h">
+    </QtMoc>
+    <ClInclude Include="audiofx\iaudiofx.h" />
+    <ClInclude Include="nlohmann\json.hpp" />
+    <ClInclude Include="backend\keyboardlistener.h" />
+    <QtMoc Include="ui\util\keypresseater.h">
+    </QtMoc>
+    <ClInclude Include="spdlog\fmt\bundled\locale.h" />
+    <ClInclude Include="spdlog\details\log_msg-inl.h" />
+    <ClInclude Include="spdlog\details\log_msg.h" />
+    <ClInclude Include="spdlog\details\log_msg_buffer-inl.h" />
+    <ClInclude Include="spdlog\details\log_msg_buffer.h" />
+    <ClInclude Include="util\loggableobject.h" />
+    <ClInclude Include="spdlog\logger-inl.h" />
+    <ClInclude Include="spdlog\logger.h" />
+    <ClInclude Include="interface\maininterface.h" />
+    <QtMoc Include="ui\mainwindow.h">
+    </QtMoc>
+    <ClInclude Include="spdlog\sinks\mongo_sink.h" />
+    <ClInclude Include="backend\streams\monitor.h" />
+    <QtMoc Include="ui\widgets\monitorslider.h">
+    </QtMoc>
+    <ClInclude Include="spdlog\details\mpmc_blocking_q.h" />
+    <ClInclude Include="spdlog\sinks\msvc_sink.h" />
+    <ClInclude Include="backend\streams\noisegenerator.h" />
+    <ClInclude Include="spdlog\details\null_mutex.h" />
+    <ClInclude Include="spdlog\sinks\null_sink.h" />
+    <QtMoc Include="ui\onboarding.h">
+    </QtMoc>
+    <ClInclude Include="spdlog\details\os-inl.h" />
+    <ClInclude Include="spdlog\details\os.h" />
+    <ClInclude Include="spdlog\fmt\bundled\os.h" />
+    <ClInclude Include="spdlog\fmt\ostr.h" />
+    <ClInclude Include="spdlog\fmt\bundled\ostream.h" />
+    <ClInclude Include="spdlog\sinks\ostream_sink.h" />
+    <ClInclude Include="backend\streams\passthrough.h" />
+    <ClInclude Include="spdlog\pattern_formatter-inl.h" />
+    <ClInclude Include="spdlog\pattern_formatter.h" />
+    <ClInclude Include="spdlog\details\periodic_worker-inl.h" />
+    <ClInclude Include="spdlog\details\periodic_worker.h" />
+    <ClInclude Include="audiofx\lib\pitchshift\pitchshifter.h" />
+    <ClInclude Include="backend\streams\player.h" />
+    <ClInclude Include="spdlog\fmt\bundled\printf.h" />
+    <ClInclude Include="backend\processwatcher.h" />
+    <ClInclude Include="spdlog\sinks\qt_sinks.h" />
+    <ClInclude Include="ui\util\qttransitions.h" />
+    <ClInclude Include="spdlog\fmt\bundled\ranges.h" />
+    <ClInclude Include="spdlog\fmt\ranges.h" />
+    <ClInclude Include="spdlog\details\registry-inl.h" />
+    <ClInclude Include="spdlog\details\registry.h" />
+    <ClInclude Include="audiofx\repitcher.h" />
+    <ClInclude Include="audiofx\reverberator.h" />
+    <ClInclude Include="audiofx\lib\reverb\revmodel.h" />
+    <ClInclude Include="audiofx\lib\reverb\revtuning.h" />
+    <ClInclude Include="util\ringbuffer.h" />
+    <ClInclude Include="spdlog\sinks\ringbuffer_sink.h" />
+    <ClInclude Include="spdlog\sinks\rotating_file_sink-inl.h" />
+    <ClInclude Include="spdlog\sinks\rotating_file_sink.h" />
+    <QtMoc Include="ui\menus\settingsmenu.h">
+    </QtMoc>
+    <QtMoc Include="singleapplication\singleapplication.h">
+    </QtMoc>
+    <QtMoc Include="singleapplication\singleapplication_p.h">
+    </QtMoc>
+    <ClInclude Include="spdlog\sinks\sink-inl.h" />
+    <ClInclude Include="spdlog\sinks\sink.h" />
+    <ClInclude Include="interface\soundboardmanager.h" />
+    <QtMoc Include="ui\menus\soundboardmenu.h">
+    </QtMoc>
+    <ClInclude Include="spdlog\spdlog-inl.h" />
+    <ClInclude Include="spdlog\spdlog.h" />
+    <ClInclude Include="spdlog\sinks\stdout_color_sinks-inl.h" />
+    <ClInclude Include="spdlog\sinks\stdout_color_sinks.h" />
+    <ClInclude Include="spdlog\sinks\stdout_sinks-inl.h" />
+    <ClInclude Include="spdlog\sinks\stdout_sinks.h" />
+    <ClInclude Include="spdlog\stopwatch.h" />
+    <ClInclude Include="ui\widgets\style.h" />
+    <QtMoc Include="ui\widgets\switch.h">
+    </QtMoc>
+    <ClInclude Include="spdlog\details\synchronous_factory.h" />
+    <ClInclude Include="spdlog\sinks\syslog_sink.h" />
+    <ClInclude Include="spdlog\sinks\systemd_sink.h" />
+    <ClInclude Include="spdlog\details\tcp_client-windows.h" />
+    <ClInclude Include="spdlog\details\tcp_client.h" />
+    <ClInclude Include="spdlog\sinks\tcp_sink.h" />
+    <ClInclude Include="spdlog\details\thread_pool-inl.h" />
+    <ClInclude Include="spdlog\details\thread_pool.h" />
+    <QtMoc Include="ui\titlebar.h">
+    </QtMoc>
+    <ClInclude Include="spdlog\tweakme.h" />
+    <ClInclude Include="spdlog\details\udp_client-windows.h" />
+    <ClInclude Include="spdlog\details\udp_client.h" />
+    <ClInclude Include="spdlog\sinks\udp_sink.h" />
+    <ClInclude Include="spdlog\version.h" />
+    <ClInclude Include="backend\vkcodenames.h" />
+    <QtMoc Include="ui\widgets\soundboard\waveformviewer.h">
+    </QtMoc>
+    <ClInclude Include="spdlog\sinks\win_eventlog_sink.h" />
+    <ClInclude Include="spdlog\sinks\wincolor_sink-inl.h" />
+    <ClInclude Include="spdlog\sinks\wincolor_sink.h" />
+    <ClInclude Include="spdlog\details\windows_include.h" />
+    <ClInclude Include="spdlog\fmt\bundled\xchar.h" />
+    <ClInclude Include="spdlog\fmt\xchar.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="debug\moc_predefs.h.cbt">
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\mkspecs\features\data\dummy.cpp;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">cl -Bx"$(QTDIR)\bin\qmake.exe" -nologo -Zc:wchar_t -FS -Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -permissive- -Zc:__cplusplus -Zc:externConstexpr -Zi -MDd -std:c++20 -utf-8 -W3 -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 -wd4577 -wd4467 -E $(QTDIR)\mkspecs\features\data\dummy.cpp 2&gt;NUL &gt;debug\moc_predefs.h</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Generate moc_predefs.h</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">debug\moc_predefs.h;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="release\moc_predefs.h.cbt">
+      <FileType>Document</FileType>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\mkspecs\features\data\dummy.cpp;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">cl -Bx"$(QTDIR)\bin\qmake.exe" -nologo -Zc:wchar_t -FS -Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -permissive- -Zc:__cplusplus -Zc:externConstexpr -O2 -MD -std:c++20 -utf-8 -W3 -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 -wd4577 -wd4467 -E $(QTDIR)\mkspecs\features\data\dummy.cpp 2&gt;NUL &gt;release\moc_predefs.h</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Generate moc_predefs.h</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">release\moc_predefs.h;%(Outputs)</Outputs>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="ui\widgets\fx\fxdial.ui">
+    </QtUic>
+    <QtUic Include="ui\widgets\fx\fxkeypicker.ui">
+    </QtUic>
+    <QtUic Include="ui\menus\fxmenu.ui">
+    </QtUic>
+    <QtUic Include="ui\widgets\fx\fxswitch.ui">
+    </QtUic>
+    <QtUic Include="ui\components\fxtab.ui">
+    </QtUic>
+    <QtUic Include="ui\hud.ui">
+    </QtUic>
+    <QtUic Include="ui\mainwindow.ui">
+    </QtUic>
+    <QtUic Include="ui\widgets\monitorslider.ui">
+    </QtUic>
+    <QtUic Include="ui\onboarding.ui">
+    </QtUic>
+    <QtUic Include="ui\menus\settingsmenu.ui">
+    </QtUic>
+    <QtUic Include="ui\menus\soundboardmenu.ui">
+    </QtUic>
+    <QtUic Include="ui\titlebar.ui">
+    </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="rc\onboarding\1.bmp" />
+    <None Include="rc\onboarding\10.bmp" />
+    <None Include="rc\onboarding\11.bmp" />
+    <None Include="rc\onboarding\12.bmp" />
+    <None Include="rc\onboarding\13.bmp" />
+    <None Include="rc\onboarding\14.bmp" />
+    <None Include="rc\onboarding\15.bmp" />
+    <None Include="rc\onboarding\16.bmp" />
+    <None Include="rc\onboarding\17.bmp" />
+    <None Include="rc\onboarding\18.bmp" />
+    <None Include="rc\onboarding\19.bmp" />
+    <None Include="rc\onboarding\2.bmp" />
+    <None Include="rc\onboarding\20.bmp" />
+    <None Include="rc\onboarding\21.bmp" />
+    <None Include="rc\onboarding\22.bmp" />
+    <None Include="rc\onboarding\23.bmp" />
+    <None Include="rc\onboarding\3.bmp" />
+    <None Include="rc\onboarding\4.bmp" />
+    <None Include="rc\onboarding\5.bmp" />
+    <None Include="rc\onboarding\6.bmp" />
+    <None Include="rc\onboarding\7.bmp" />
+    <None Include="rc\onboarding\8.bmp" />
+    <None Include="rc\onboarding\9.bmp" />
+    <None Include="rc\fxMenu\FXOff.png" />
+    <None Include="rc\fxMenu\FXOn.png" />
+    <None Include="rc\hotkeyList\addDisabled.png" />
+    <None Include="rc\hotkeyList\addHover.png" />
+    <None Include="rc\hotkeyList\addIdle.png" />
+    <None Include="rc\onboarding\arrow.png" />
+    <None Include="rc\main\close.png" />
+    <None Include="rc\soundboardMenu\deleteDisabled.png" />
+    <None Include="rc\soundboardMenu\deleteHover.png" />
+    <None Include="rc\soundboardMenu\deleteIdle.png" />
+    <None Include="rc\common\down_arrow_off.png" />
+    <None Include="rc\common\down_arrow_on.png" />
+    <None Include="rc\main\fx.png" />
+    <None Include="rc\hotkeyList\masks\hotkeylist.bmp" />
+    <None Include="rc\settingsMenu\hud.png" />
+    <None Include="rc\icon\icon-16.png" />
+    <None Include="rc\icon\icon-256.png" />
+    <None Include="rc\icon\icon-32.png" />
+    <None Include="rc\icon\icon.png" />
+    <None Include="rc\soundboardMenu\loadDisabled.png" />
+    <None Include="rc\soundboardMenu\loadHover.png" />
+    <None Include="rc\soundboardMenu\loadIdle.png" />
+    <None Include="rc\fxMenu\micMonitorLabel.png" />
+    <None Include="rc\monitor\monitorOff.png" />
+    <None Include="rc\monitor\monitorOn.png" />
+    <None Include="rc\soundboardMenu\playDisabled.png" />
+    <None Include="rc\soundboardMenu\playHover.png" />
+    <None Include="rc\soundboardMenu\playIdle.png" />
+    <QtRcc Include="debug\qmake_qmake_qm_files.qrc">
+      <InitFuncName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">qmake_qmake_qm_files</InitFuncName>
+    </QtRcc>
+    <QtRcc Include="release\qmake_qmake_qm_files.qrc">
+      <InitFuncName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">qmake_qmake_qm_files</InitFuncName>
+    </QtRcc>
+    <None Include="rc\main\question.png" />
+    <QtRcc Include="rc.qrc">
+      <InitFuncName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">rc</InitFuncName>
+      <InitFuncName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">rc</InitFuncName>
+    </QtRcc>
+    <None Include="rc\hotkeyList\removeDisabled.png" />
+    <None Include="rc\hotkeyList\removeHover.png" />
+    <None Include="rc\hotkeyList\removeIdle.png" />
+    <None Include="rc\main\settings.png" />
+    <None Include="rc\monitor\slider.png" />
+    <None Include="rc\main\soundboard.png" />
+    <None Include="rc\soundboardMenu\soundboardMonitorLabel.png" />
+    <None Include="rc\soundboardMenu\stopDisabled.png" />
+    <None Include="rc\soundboardMenu\stopHover.png" />
+    <None Include="rc\soundboardMenu\stopIdle.png" />
+    <None Include="rc\fxMenu\toggleBasicOff.png" />
+    <None Include="rc\fxMenu\toggleBasicOn.png" />
+    <None Include="rc\fxMenu\toggleOff.png" />
+    <None Include="rc\fxMenu\toggleOn.png" />
+    <None Include="rc\common\up_arrow_off.png" />
+    <None Include="rc\common\up_arrow_on.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".\singleapplication\CHANGELOG.md" />
+    <None Include=".\singleapplication\README.md" />
+    <None Include="README.md" />
+    <None Include=".\singleapplication\Windows.md" />
+    <None Include="spdlog\fmt\bundled\fmt.license.rst" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include=".\ReVox_resource.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
+    <Import Project="$(QtMsBuild)\qt.targets" />
+  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

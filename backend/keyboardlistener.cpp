@@ -1,80 +1,28 @@
 #include "keyboardlistener.h"
 
-std::wstring FillDeviceInfo(const std::wstring& deviceInterfaceName) {
-  // you need to provide deviceInterfaceName
-  // example from my system:
-  // `\\?\HID#VID_203A&PID_FFFC&MI_01#7&2de99099&0&0000#{378de44c-56ef-11d1-bc8c-00a0c91405dd}`
+std::deque<DecisionRecord> KeyboardListener::decisionBuffer({});
+DecisionRecord KeyboardListener::decision(0, false);
+HWND KeyboardListener::hWnd = 0;
 
-  DEVPROPTYPE propertyType;
-  ULONG propertySize = 0;
-  CONFIGRET cr = ::CM_Get_Device_Interface_PropertyW(
-      deviceInterfaceName.c_str(), &DEVPKEY_Device_InstanceId, &propertyType,
-      nullptr, &propertySize, 0);
+KeyboardListener::KeyboardListener() : LoggableObject("KeyboardListener") {}
 
-  if (cr != CR_BUFFER_SMALL) return L"";
-
-  std::wstring deviceId;
-  deviceId.resize(propertySize);
-  cr = ::CM_Get_Device_Interface_PropertyW(
-      deviceInterfaceName.c_str(), &DEVPKEY_Device_InstanceId, &propertyType,
-      (PBYTE)deviceId.data(), &propertySize, 0);
-
-  if (cr != CR_SUCCESS) return L"";
-
-  // here is deviceId will contain device instance id
-  // example from my system: `HID\VID_203A&PID_FFFC&MI_01\7&2de99099&0&0000`
-
-  DEVINST devInst;
-  cr = ::CM_Locate_DevNodeW(&devInst, (DEVINSTID_W)deviceId.c_str(),
-                            CM_LOCATE_DEVNODE_NORMAL);
-
-  if (cr != CR_SUCCESS) return L"";
-
-  propertySize = 0;
-  cr = ::CM_Get_DevNode_PropertyW(devInst, &DEVPKEY_Device_FriendlyName,
-                                  &propertyType, nullptr, &propertySize, 0);
-
-  if (cr == CR_BUFFER_SMALL) {
-    std::wstring friendlyString;
-    friendlyString.resize(propertySize);
-    cr = ::CM_Get_DevNode_PropertyW(devInst, &DEVPKEY_Device_FriendlyName,
-                                    &propertyType, (PBYTE)friendlyString.data(),
-                                    &propertySize, 0);
-    return friendlyString;
-  }
-
-  propertySize = 0;
-  cr = ::CM_Get_DevNode_PropertyW(devInst, &DEVPKEY_NAME, &propertyType,
-                                  nullptr, &propertySize, 0);
-
-  if (cr == CR_BUFFER_SMALL) {
-    std::wstring friendlyString;
-    friendlyString.resize(propertySize);
-    cr = ::CM_Get_DevNode_PropertyW(devInst, &DEVPKEY_NAME, &propertyType,
-                                    (PBYTE)friendlyString.data(), &propertySize,
-                                    0);
-    return friendlyString;
-  }
-
-  return L"";
-}
-
-KeyboardListener::KeyboardListener() {}
+const LPCWSTR KeyboardListener::blockingDllName = L"InputBlockerDLL.dll";
+HINSTANCE KeyboardListener::blockingDllLib =
+    LoadLibraryW(KeyboardListener::blockingDllName);
 
 LRESULT CALLBACK KeyboardListener::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam,
                                            LPARAM lParam) {
   switch (uMsg) {
-    case WM_INPUT:
+    case WM_INPUT: {
+      bool block = false;
       // Get the RawInputData
       UINT dwSize;
       GetRawInputData((HRAWINPUT)lParam, RID_INPUT, NULL, &dwSize,
                       sizeof(RAWINPUTHEADER));
       LPBYTE lpb = new BYTE[dwSize];
       if (lpb == NULL) return 0;
-      if (GetRawInputData((HRAWINPUT)lParam, RID_INPUT, lpb, &dwSize,
-                          sizeof(RAWINPUTHEADER)) != dwSize)
-        OutputDebugString(
-            TEXT("GetRawInputData does not return correct size!\n"));
+      GetRawInputData((HRAWINPUT)lParam, RID_INPUT, lpb, &dwSize,
+                      sizeof(RAWINPUTHEADER));
 
       RAWINPUT* raw = (RAWINPUT*)lpb;
 
@@ -82,25 +30,71 @@ LRESULT CALLBACK KeyboardListener::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam,
       USHORT code = raw->data.keyboard.VKey;
       USHORT event = raw->data.keyboard.Flags;
 
-      TCHAR ridDeviceName[256];
+      WCHAR ridDeviceName[256];
       UINT cbDataSize = 256;
       GetRawInputDeviceInfo(raw->header.hDevice, RIDI_DEVICENAME, ridDeviceName,
                             &cbDataSize);
-      if (cbDataSize == 0 || cbDataSize == UINT(-1))
-        OutputDebugString(TEXT("Failed to get device name!\n"));
 
-      std::wstring wDeviceName = FillDeviceInfo(ridDeviceName);
-      std::string deviceName(wDeviceName.begin(), wDeviceName.end());
-      deviceName.erase(
-          std::remove_if(
-              deviceName.begin(), deviceName.end(),
-              [](char c) { return c == '\u0000' || !(c >= 0 && c < 128); }),
-          deviceName.end());
-
-      // audioManager->KeyEvent(code, deviceName, event); // Manage all keyboard
-      // events in AudioManager obj
-      mi->KeyEvent(code, deviceName, event);
+      std::wstring ws(ridDeviceName);
+      block = mi->KeyEvent(code, std::string(ws.begin(), ws.end()), event);
+      decisionBuffer.push_back(DecisionRecord(code, block));
+      decision = DecisionRecord(code, block);
       break;
+    }
+
+      // Credits to Vít Blecha, check out the blog post:
+      // https://www.codeproject.com/Articles/716591/Combining-Raw-Input-and-keyboard-Hook-to-selective
+    case WM_HOOK: {
+      USHORT virtualKeyCode = (USHORT)wParam;
+      USHORT keyPressed = lParam & 0x80000000 ? 0 : 1;
+      WCHAR text[128];
+
+      // Check the buffer if this Hook message is supposed to be blocked
+      // return 1 if it is
+      BOOL blockThisHook = FALSE;
+      BOOL recordFound = FALSE;
+      int index = 1;
+      if (!decisionBuffer.empty()) {
+        // Search the buffer for the matching record
+        std::deque<DecisionRecord>::iterator iterator = decisionBuffer.begin();
+        while (iterator != decisionBuffer.end()) {
+          if (iterator->virtualKeyCode == virtualKeyCode) {
+            blockThisHook = iterator->decision;
+            recordFound = TRUE;
+            // Remove this and all preceding messages from the buffer
+            for (int i = 0; i < index; ++i) {
+              decisionBuffer.pop_front();
+            }
+            // Stop looking
+            break;
+          }
+          ++iterator;
+          ++index;
+        }
+      }
+
+      // Apply the decision
+      if (blockThisHook) {
+        return 1;
+      }
+      return 0;
+
+      /*if (decision.decision && decision.virtualKeyCode == virtualKeyCode) {
+        decision.decision = false;
+        return 1;
+      }
+      return 0;*/
+    }
+    case WM_INSTALLHOOK: {
+      PIH InstallHook = (PIH)GetProcAddress(blockingDllLib, "InstallHook");
+      if (InstallHook != NULL) InstallHook(hWnd);
+      break;
+    }
+    case WM_UNINSTALLHOOK: {
+      PUH UninstallHook = (PUH)GetProcAddress(blockingDllLib, "UninstallHook");
+      if (UninstallHook != NULL) UninstallHook();
+      break;
+    }
   }
 
   return DefWindowProc(hWnd, uMsg, wParam, lParam);
@@ -117,6 +111,7 @@ int KeyboardListener::Start(HWND hWnd) {
   if (RegisterClassEx(&wcex))
     hWnd = CreateWindowEx(0, wcex.lpszClassName, L"KbdListener", 0, 0, 0, 0, 0,
                           HWND_MESSAGE, NULL, hInstance, NULL);
+  this->hWnd = hWnd;
 
   rid.usUsagePage = 0x01;
   rid.usUsage = 0x06;
@@ -126,5 +121,70 @@ int KeyboardListener::Start(HWND hWnd) {
     std::cout << "failed" << std::endl;
   }
   SetWindowLongPtr(hWnd, GWLP_WNDPROC, (LONG_PTR)&WndProc);
+
+  p.setCallbacks(std::bind(&KeyboardListener::RegisterHook, this),
+                 std::bind(&KeyboardListener::UnregisterHook, this));
+
+  mi->ToggleInputBlocking = std::bind(&KeyboardListener::ToggleInputBlocking,
+                                      this, std::placeholders::_1);
+
+  blockingDllLib = LoadLibraryW(blockingDllName);
+  if (blockingDllLib) {
+    log(INFO, "Input blocking available");
+    InstallHook = (PIH)GetProcAddress(blockingDllLib, "InstallHook");
+    UninstallHook = (PUH)GetProcAddress(blockingDllLib, "UninstallHook");
+    if (InstallHook == NULL) log(WARN, "InstallHook not found");
+    if (UninstallHook == NULL) log(WARN, "UninstallHook not found");
+  }
+
+  ToggleInputBlocking(mi->GetSetting("blockInputs").get<bool>());
+
   return 0;
+}
+
+DWORD WINAPI KeyboardListener::MessageThreadProc(LPVOID lpParameter) {
+  HANDLE hExitEvent = (HANDLE)lpParameter;
+  MSG msg;
+
+  while (GetMessage(&msg, NULL, 0, 0)) {
+    switch (msg.message) {
+      case WM_QUIT: {
+        SetEvent(hExitEvent);
+        return 0;
+      }
+    }
+  }
+}
+
+void KeyboardListener::EnableBlocking() {
+  RegisterHook();
+  p.start();
+}
+
+void KeyboardListener::DisableBlocking() {
+  UnregisterHook();
+  p.stop();
+}
+
+bool KeyboardListener::ToggleInputBlocking(bool enabled) {
+  if (!blockingDllLib) {
+    log(WARN, "Input blocking not available - requires InputBlockingDLL.dll");
+    return false;
+  }
+
+  if (enabled)
+    EnableBlocking();
+  else
+    DisableBlocking();
+  return true;
+}
+
+void KeyboardListener::RegisterHook() {
+  SendMessage(hWnd, WM_INSTALLHOOK, 0, 0);
+  log(INFO, "Hook registered");
+}
+
+void KeyboardListener::UnregisterHook() {
+  SendMessage(hWnd, WM_UNINSTALLHOOK, 0, 0);
+  log(INFO, "Hook unregistered");
 }

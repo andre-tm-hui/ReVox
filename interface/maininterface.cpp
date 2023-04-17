@@ -59,28 +59,33 @@ void MainInterface::SetCurrentOutputDevice(int id) {
   log(INFO, "Output device changed");
 }
 
-void MainInterface::KeyEvent(int keycode, std::string deviceName, int event) {
-  bool soundboardExists = soundboardManager->KeybindExists(keycode, deviceName),
-       fxExists = fxManager->KeybindExists(keycode, deviceName);
+bool MainInterface::KeyEvent(int keycode, std::string deviceName, int event) {
+  bool detectKeyboard = settings["detectKeyboard"].get<bool>(),
+       soundboardExists = soundboardManager->KeybindExists(keycode, deviceName,
+                                                           detectKeyboard),
+       fxExists = fxManager->KeybindExists(keycode, deviceName, detectKeyboard);
   if (soundboardManager->IsRebinding()) {
-    if (!soundboardExists && !fxExists)
+    if (!soundboardExists && !fxExists) {
       soundboardManager->KeyEvent(keycode, deviceName, event);
-    return;
+    }
+    return true;
   }
   if (fxManager->IsRebinding()) {
-    if (!soundboardExists && !fxExists)
+    if (!soundboardExists && !fxExists) {
       fxManager->KeyEvent(keycode, deviceName, event);
-    return;
+    }
+    return true;
   }
-  if (blocked) return;
+  if (blocked) return false;
   if (soundboardExists) {
     soundboardManager->KeyEvent(keycode, deviceName, event);
-    return;
+    return true;
   }
   if (fxExists) {
     fxManager->KeyEvent(keycode, deviceName, event);
-    return;
+    return true;
   }
+  return false;
 }
 
 void MainInterface::WaitForReady() {

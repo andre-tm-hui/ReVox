@@ -114,6 +114,14 @@ void Player::StopAll() {
   log(INFO, "All sounds stopped");
 }
 
+void Player::StopPlaying(int idx) {
+    while (!files[idx].empty()) {
+        std::cout << "popped" << std::endl;
+        sf_close(files[idx].front());
+        files[idx].pop();
+    }
+}
+
 /* Utility function to rename a file if the keybind is being rebinded */
 void Player::Rename(int idxFrom, int idxTo) {
   std::filesystem::rename(dir + "samples/" + std::to_string(idxFrom) + ".mp3",

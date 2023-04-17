@@ -44,20 +44,25 @@ SettingsMenu::SettingsMenu(std::shared_ptr<MainInterface> mi, HUD *hud,
           SLOT(deviceChanged()));
   connect(ui->reset, SIGNAL(pressed()), this->parent(), SLOT(resetAudio()));
 
-  autostartSwitch = new Switch(ui->autostartBox);
-  autostartSwitch->move(635, 12);
-  autostartSwitch->resize(61, 36);
-  autostartSwitch->setText("");
+  setupSwitch(&keyboardDetectorSwitch, ui->detectKeyboardBox);
+  keyboardDetectorSwitch->setChecked(
+      mi->GetSetting("detectKeyboard").get<bool>());
+  connect(keyboardDetectorSwitch, SIGNAL(stateChanged(int)), this,
+          SLOT(toggleKeyboardDetector(int)));
+
+  setupSwitch(&blockInputsSwitch, ui->blockInputsBox);
+  blockInputsSwitch->setChecked(mi->GetSetting("blockInputs").get<bool>());
+  connect(blockInputsSwitch, SIGNAL(stateChanged(int)), this,
+          SLOT(toggleInputBlocker(int)));
+
+  setupSwitch(&autostartSwitch, ui->autostartBox);
   autostartSwitch->setChecked(mi->GetSetting("startWithWindows").get<bool>());
   connect(autostartSwitch, SIGNAL(stateChanged(int)), this,
           SLOT(toggleAutostart(int)));
 
   connect(ui->update, SIGNAL(pressed()), this, SLOT(checkForUpdates()));
 
-  autocheckSwitch = new Switch(ui->updateBox);
-  autocheckSwitch->move(635, 47);
-  autocheckSwitch->resize(61, 36);
-  autocheckSwitch->setText("");
+  setupSwitch(&autocheckSwitch, ui->updateBox, 35);
   autocheckSwitch->setChecked(mi->GetSetting("autocheckUpdates").get<bool>());
   connect(autocheckSwitch, SIGNAL(stateChanged(int)), this,
           SLOT(toggleAutocheck(int)));
@@ -144,6 +149,26 @@ void SettingsMenu::hudPositionChanged(int item) {
   ui->hudPositionLabel->setText(hudPositionText);
 }
 
+void SettingsMenu::toggleKeyboardDetector(int state) {
+  bool enabled = state == 0 ? true : false;
+  mi->UpdateSettings<bool>("detectKeyboard", enabled);
+  log(INFO,
+      "Keyboard detection " + std::string(enabled ? "enabled" : "disabled"));
+}
+
+void SettingsMenu::toggleInputBlocker(int state) {
+  bool enabled = state == 0 ? false : true;
+  if (mi->ToggleInputBlocking(enabled)) {
+    mi->UpdateSettings<bool>("blockInputs", enabled);
+    log(INFO, "Input blocker " + std::string(enabled ? "enabled" : "disabled"));
+  } else {
+    blockInputsSwitch->setEnabled(false);
+    QMessageBox::warning(nullptr, "Missing add-on",
+                         "Requires InputBlockerDLL.dll. Please visit the wiki "
+                         "for more information.");
+  }
+}
+
 void SettingsMenu::toggleAutostart(int state) {
   std::string path =
       std::getenv("APPDATA") +
@@ -203,4 +228,11 @@ void SettingsMenu::setNewBufferSize(QString sizeStr) {
   mi->UpdateSettings("framesPerBuffer", sizeStr.toInt());
   mi->Reset();
   log(INFO, "Buffer size set to " + sizeStr.toStdString());
+}
+
+void SettingsMenu::setupSwitch(Switch **s, QWidget *parent, int offset) {
+  *s = new Switch(parent);
+  (*s)->move(635, 12 + offset);
+  (*s)->resize(61, 36);
+  (*s)->setText("");
 }
