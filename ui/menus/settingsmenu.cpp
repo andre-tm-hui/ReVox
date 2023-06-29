@@ -162,6 +162,7 @@ void SettingsMenu::toggleInputBlocker(int state) {
     mi->UpdateSettings<bool>("blockInputs", enabled);
     log(INFO, "Input blocker " + std::string(enabled ? "enabled" : "disabled"));
   } else {
+    blockInputsSwitch->setChecked(false);
     blockInputsSwitch->setEnabled(false);
     QMessageBox::warning(nullptr, "Missing add-on",
                          "Requires InputBlockerDLL.dll. Please visit the wiki "
