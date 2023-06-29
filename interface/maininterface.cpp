@@ -19,7 +19,7 @@ MainInterface::MainInterface()
     }
 
     dataPath = "settings.json";
-    if (!std::filesystem::exists(rootDir))
+    if (!std::filesystem::exists(rootDir + "samples"))
       std::filesystem::create_directories(rootDir + "samples");
     LoadSettings();
     log(INFO, "Settings loaded");
@@ -158,7 +158,31 @@ void MainInterface::GetDeviceSettings() {
   if (ids.input == -1) ids.input = Pa_GetDefaultInputDevice();
   if (ids.streamOut == -1) ids.streamOut = Pa_GetDefaultOutputDevice();
   if (ids.output == -1) ids.output = Pa_GetDefaultOutputDevice();
+
+  if (Pa_GetDeviceInfo(ids.vInput)->defaultSampleRate != 48000) {
+      MessageBox(NULL, L"Sample rate of VB-Audio Cable Input is not set to 48000Hz.", L"Error", MB_ICONERROR | MB_OK);
+      log(CRITICAL, "Sample rate of VB-Audio Cable Input is not set to 48000Hz. Exiting.");
+      exit(1);
+      return;
+  }
+
+  if (Pa_GetDeviceInfo(ids.input)->defaultSampleRate != 48000) {
+      MessageBox(NULL, L"Sample rate of default input device is not set to 48000Hz.", L"Error", MB_ICONERROR | MB_OK);
+      log(CRITICAL, "Sample rate of default input device is not set to 48000Hz. Exiting.");
+      exit(1);
+      return;
+  }
+
+  if (Pa_GetDeviceInfo(ids.vOutput)->defaultSampleRate != 48000) {
+      log(WARN, "Sample rate of VB-Audio Cable Input is not set to 48000Hz.");
+      MessageBox(NULL, L"Sample rate of VB-Audio Cable Output is not set to 48000Hz and may result in unexpected behaviour.", L"Warning", MB_ICONWARNING | MB_OK);
+  }
+
+
   log(INFO, "Device settings retrieved");
+  log(INFO, "Input Device: " + std::string(Pa_GetDeviceInfo(ids.input)->name));
+  log(INFO, "Stream Output Device: " + std::string(Pa_GetDeviceInfo(ids.streamOut)->name));
+  log(INFO, "Output Device: " + std::string(Pa_GetDeviceInfo(ids.output)->name));
 }
 
 int MainInterface::GetChannels(int id, bool isInput) {

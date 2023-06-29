@@ -106,7 +106,7 @@ void SettingsMenu::populateDevices() {
   ui->devices->blockSignals(true);
   ui->devices->clear();
   for (auto const &[name, device] : devices) {
-    if (name.find("VB-Audio") != std::string::npos) continue;
+    if (name.find("VB-Audio") != std::string::npos || Pa_GetDeviceInfo(device.id)->defaultSampleRate != 48000) continue;
     ui->devices->addItem(QString::fromStdString(name));
     if (device.id == currentDevice) {
       ui->devices->setCurrentIndex(ui->devices->count() - 1);

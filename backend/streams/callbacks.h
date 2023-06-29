@@ -35,7 +35,7 @@ typedef struct {
   std::vector<SNDFILE*>* queue;
   SF_INFO info;
   float maxFileLength;
-  std::queue<float>* bufQueue;
+  std::queue<float>* bufQueue;   
 } playData;
 
 typedef struct {
@@ -46,7 +46,7 @@ typedef struct {
   std::unordered_map<std::string, std::shared_ptr<IAudioFX>>* fxs;
 } passthroughData;
 
-typedef struct {
+typedef struct { 
   float monitorMic;
   float monitorSamples;
   std::queue<float>* inputQueue;
