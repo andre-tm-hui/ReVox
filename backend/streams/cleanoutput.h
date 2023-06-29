@@ -3,10 +3,10 @@
 
 #include "audiostream.h"
 
-class CleanOutput : public AudioStream
-{
-public:
-    CleanOutput(device inputDevice, device outputDevice, int sampleRate, int framesPerBuffer);
+class CleanOutput : public AudioStream {
+ public:
+  CleanOutput(device inputDevice, device outputDevice, int sampleRate,
+              int framesPerBuffer);
 };
 
-#endif // CLEANOUTPUT_H
+#endif  // CLEANOUTPUT_H

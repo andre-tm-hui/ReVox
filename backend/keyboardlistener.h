@@ -1,29 +1,58 @@
 #ifndef KEYBOARDLISTENER_H
 #define KEYBOARDLISTENER_H
 
-//#include "audiomanager.h"
-#include "../interface/maininterface.h"
 #include <Windows.h>
-#include <hidsdi.h>
-#include <cfgmgr32.h>
-#include <initguid.h>
-#include <devpkey.h>
 
-class KeyboardListener
-{
-public:
-    KeyboardListener();
+#include "../interface/maininterface.h"
+#include "processwatcher.h"
 
-    LRESULT static CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+UINT const WM_HOOK = WM_APP + 1;
+UINT const WM_INSTALLHOOK = WM_HOOK + 1;
+UINT const WM_UNINSTALLHOOK = WM_INSTALLHOOK + 1;
 
-    int Start(HWND hWnd = NULL);
+typedef bool(WINAPI* PIH)(HWND);
+typedef bool(WINAPI* PUH)();
 
-    RAWINPUTDEVICE rid;
+struct DecisionRecord {
+  USHORT virtualKeyCode;
+  BOOL decision;
 
-    //static AudioManager* audioManager;
-    static MainInterface* mi;
+  DecisionRecord(USHORT _virtualKeyCode, BOOL _decision)
+      : virtualKeyCode(_virtualKeyCode), decision(_decision) {}
 };
 
+class KeyboardListener : public LoggableObject {
+ public:
+  KeyboardListener();
 
+  LRESULT static CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam,
+                                  LPARAM lParam);
+  static DWORD WINAPI MessageThreadProc(LPVOID lpParameter);
 
-#endif // KEYBOARDLISTENER_H
+  int Start(HWND hWnd = NULL);
+  void EnableBlocking();
+  void DisableBlocking();
+  bool ToggleInputBlocking(bool enabled);
+
+  RAWINPUTDEVICE rid;
+  HHOOK hhookKbdListener;
+
+  static MainInterface* mi;
+  static HWND hWnd;
+  static std::deque<DecisionRecord> decisionBuffer;
+  static DecisionRecord decision;
+
+ private:
+  void RegisterHook();
+  void UnregisterHook();
+
+  PIH InstallHook;
+  PUH UninstallHook;
+
+  ProcessWatcher p;
+
+  static const LPCWSTR blockingDllName;
+  static HINSTANCE blockingDllLib;
+};
+
+#endif  // KEYBOARDLISTENER_H

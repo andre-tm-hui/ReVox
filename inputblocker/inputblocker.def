@@ -1,0 +1,4 @@
+LIBRARY		InputBlockerDLL
+EXPORTS
+	InstallHook		@1
+	UninstallHook	@2
