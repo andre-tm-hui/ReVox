@@ -19,7 +19,7 @@ MainInterface::MainInterface()
     }
 
     dataPath = "settings.json";
-    if (!std::filesystem::exists(rootDir))
+    if (!std::filesystem::exists(rootDir + "samples"))
       std::filesystem::create_directories(rootDir + "samples");
     LoadSettings();
     log(INFO, "Settings loaded");
@@ -159,6 +159,9 @@ void MainInterface::GetDeviceSettings() {
   if (ids.streamOut == -1) ids.streamOut = Pa_GetDefaultOutputDevice();
   if (ids.output == -1) ids.output = Pa_GetDefaultOutputDevice();
   log(INFO, "Device settings retrieved");
+  log(INFO, "Input Device: " + std::string(Pa_GetDeviceInfo(ids.input)->name));
+  log(INFO, "Stream Output Device: " + std::string(Pa_GetDeviceInfo(ids.streamOut)->name));
+  log(INFO, "Output Device: " + std::string(Pa_GetDeviceInfo(ids.output)->name));
 }
 
 int MainInterface::GetChannels(int id, bool isInput) {

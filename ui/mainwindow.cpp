@@ -17,6 +17,12 @@ MainWindow::MainWindow(QWidget* parent)
   for (auto const& device : devices->audioInputs()) {
     if (device.description().contains("VB-Audio Virtual Cable")) {
       vCablesFound = true;
+      /*if (device.preferredFormat().sampleRate() != 48000) {
+          QMessageBox::critical(nullptr, "Error", "The sample rate of VB-Cable Output is not set to 48000Hz");
+          //log(CRITICAL, "The sample rate of VB-Cable Output is not set to 48000Hz, stopping");
+          //QApplication::quit();
+          return;
+      }*/
       break;
     }
   }
