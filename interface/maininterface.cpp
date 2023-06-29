@@ -161,14 +161,14 @@ void MainInterface::GetDeviceSettings() {
 
   if (Pa_GetDeviceInfo(ids.vInput)->defaultSampleRate != 48000) {
       MessageBox(NULL, L"Sample rate of VB-Audio Cable Input is not set to 48000Hz.", L"Error", MB_ICONERROR | MB_OK);
-      log(CRITICAL, "Sample rate of VB-Audio Cable Input is not set to 48000Hz. Exitting.");
+      log(CRITICAL, "Sample rate of VB-Audio Cable Input is not set to 48000Hz. Exiting.");
       exit(1);
       return;
   }
 
   if (Pa_GetDeviceInfo(ids.input)->defaultSampleRate != 48000) {
       MessageBox(NULL, L"Sample rate of default input device is not set to 48000Hz.", L"Error", MB_ICONERROR | MB_OK);
-      log(CRITICAL, "Sample rate of default input device is not set to 48000Hz. Exitting.");
+      log(CRITICAL, "Sample rate of default input device is not set to 48000Hz. Exiting.");
       exit(1);
       return;
   }
