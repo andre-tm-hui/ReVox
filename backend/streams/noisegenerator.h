@@ -5,7 +5,7 @@
 
 class NoiseGenerator : public AudioStream {
  public:
-  NoiseGenerator(device outputDevice, int sampleRate);
+  NoiseGenerator(int outputDevice, int nChannels, int sampleRate);
 };
 
 #endif  // NOISEGENERATOR_H

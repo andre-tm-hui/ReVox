@@ -94,7 +94,7 @@ SettingsMenu::SettingsMenu(std::shared_ptr<MainInterface> mi, HUD *hud,
 
 SettingsMenu::~SettingsMenu() { delete ui; }
 
-void SettingsMenu::SetDevices(std::map<std::string, device> devices,
+void SettingsMenu::SetDevices(std::map<std::string, device> &devices,
                               int currentDevice) {
   this->devices = devices;
   this->currentDevice = currentDevice;
@@ -106,9 +106,10 @@ void SettingsMenu::populateDevices() {
   ui->devices->blockSignals(true);
   ui->devices->clear();
   for (auto const &[name, device] : devices) {
-    if (name.find("VB-Audio") != std::string::npos || Pa_GetDeviceInfo(device.id)->defaultSampleRate != 48000) continue;
+      int id = device.ids.find("Windows WASAPI") == device.ids.end() ? device.ids.at("MME") : device.ids.at("Windows WASAPI");
+    if (name.find("VB-Audio") != std::string::npos || Pa_GetDeviceInfo(id)->defaultSampleRate != 48000) continue;
     ui->devices->addItem(QString::fromStdString(name));
-    if (device.id == currentDevice) {
+    if (id == currentDevice) {
       ui->devices->setCurrentIndex(ui->devices->count() - 1);
     }
   }
@@ -118,7 +119,7 @@ void SettingsMenu::populateDevices() {
 void SettingsMenu::deviceChanged() {
   for (auto const &[name, device] : devices) {
     if (QString::fromStdString(name) == ui->devices->currentText()) {
-      currentDevice = device.id;
+        int id = device.ids.find("Windows WASAPI") == device.ids.end() ? device.ids.at("MME") : device.ids.at("Windows WASAPI");
       mi->SetCurrentOutputDevice(currentDevice);
       log(INFO, name + " set as device");
       break;
@@ -212,7 +213,7 @@ void SettingsMenu::toggleAutostart(int state) {
 void SettingsMenu::checkForUpdates() {
   CUpdaterDialog *updater = new CUpdaterDialog(
       (QWidget *)this->parent(),
-      "https://api.github.com/repos/andre-tm-hui/ReVox/releases/latest",
+      "https://api.github.com/repos/andre-tm-hui/ReVox/releases",
       VER_NO);
   updater->setStyleSheet("QTextEdit {border: 1px solid #009090;}");
   log(INFO, "Checking for updates");

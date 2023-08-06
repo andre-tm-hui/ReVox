@@ -48,27 +48,31 @@ class MainInterface : public BaseInterface, public LoggableObject {
   }
   std::shared_ptr<FXManager> GetFXManager() { return fxManager; }
 
-  std::map<std::string, int> GetDeviceList() { return deviceList; }
-  std::map<std::string, device> GetInputDevices() { return inputDevices; }
-  std::map<std::string, device> GetOutputDevices() { return outputDevices; }
-  std::map<std::string, device> GetLoopbackDevices() { return loopbackDevices; }
+  std::map<int, device*> GetDeviceList() { return deviceList; }
+  std::map<std::string, device>& GetInputDevices() { return inputDevices; }
+  std::map<std::string, device>& GetOutputDevices() { return outputDevices; }
+  std::map<std::string, device>& GetLoopbackDevices() { return loopbackDevices; }
 
   void SetBlocked(bool blocked) { this->blocked = blocked; }
   int GetLastKeycode() { return lastKeycode; }
   void SetLastKeycode(int keycode) { lastKeycode = keycode; }
   std::function<bool(bool)> ToggleInputBlocking;
 
+  bool IsLoopbackAvailable() { return loopbackAvailable; }
+
  private:
   void SetupStreams();
   void ResetStreams();
-  static void ShutdownStreams();
+  //static void ShutdownStreams();
   void GetDeviceSettings();
   int GetChannels(int id, bool isInput);
-  int GetCorrespondingLoopbackDevice(int i);
-  device GetDeviceByIndex(int i);
+  //int GetCorrespondingLoopbackDevice(int i);
+  //device GetDeviceByIndex(int i);
   void WaitForReady();
 
-  bool blocked = false;
+  bool blocked = false,
+      loopbackAvailable = false;
+  std::string apiName = "";
   int lastKeycode = -1;
   std::queue<float> *inputQueue, *playbackQueue;
 
@@ -82,7 +86,8 @@ class MainInterface : public BaseInterface, public LoggableObject {
   std::shared_ptr<NoiseGenerator> noiseGen;
 
   deviceIDs ids = {-1, -1, -1, -1};
-  std::map<std::string, int> deviceList;
+  //std::map<std::string, int> deviceList;
+  std::map<int, device*> deviceList;
   std::map<std::string, device> inputDevices;
   std::map<std::string, device> outputDevices;
   std::map<std::string, device> loopbackDevices;

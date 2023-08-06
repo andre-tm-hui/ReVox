@@ -25,7 +25,7 @@ class SettingsMenu : public QWidget, public LoggableObject {
                         QWidget *parent = nullptr);
   ~SettingsMenu();
 
-  void SetDevices(std::map<std::string, device> devices, int currentDevice);
+  void SetDevices(std::map<std::string, device> &devices, int currentDevice);
 
  private slots:
   void deviceChanged();

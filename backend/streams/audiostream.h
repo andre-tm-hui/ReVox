@@ -14,17 +14,18 @@
 typedef float SAMPLE;
 
 typedef struct {
-  int id;
+  std::map<std::string, int> ids;
+  //int id;
   int nChannels;
 } device;
 
 class AudioStream : public LoggableObject {
  public:
-  AudioStream(device inputDevice, device outputDevice, int sampleRate,
+  AudioStream(int inputDevice, int nInputChannels, int outputDevice, int nOutputChannels, int sampleRate,
               int framesPerBuffer, std::string dir, std::string objType);
   ~AudioStream();
 
-  int inputDevice, outputDevice, sampleRate, sampleSize, framesPerBuffer;
+  int inputDevice, nInputChannels, outputDevice, nOutputChannels, sampleRate, sampleSize, framesPerBuffer;
   void done();
 
   PaStreamParameters inputParameters, outputParameters;
@@ -32,12 +33,9 @@ class AudioStream : public LoggableObject {
   bool streamSetup = false;
   PaError err = paNoError;
 
-  void setupDevice(PaStreamParameters* parameters, device device,
-                   bool isInput = true);
+  void setupDevice(PaStreamParameters* parameters, int device, int nChannels, bool isInput = true);
 
   std::string dir;
-
-  // callbackData data = {};
 
   bool initialSetup = false, input = false, output = false;
 };

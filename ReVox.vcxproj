@@ -53,24 +53,24 @@
     <Import Project="$(QtMsBuild)\qt_defaults.props" />
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>debug\</OutDir>
-    <IntDir>debug\</IntDir>
+    <OutDir>builds\debug\</OutDir>
+    <IntDir>builds\debug\</IntDir>
     <TargetName>ReVox</TargetName>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>release\</OutDir>
-    <IntDir>release\</IntDir>
+    <OutDir>builds\release\</OutDir>
+    <IntDir>builds\release\</IntDir>
     <TargetName>ReVox</TargetName>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <QtInstall>6.4.1_msvc2019_64</QtInstall>
+    <QtInstall>6.5.0_msvc2019_64</QtInstall>
     <QtModules>core;gui;network;widgets;multimedia</QtModules>
   </PropertyGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <QtInstall>6.4.1_msvc2019_64</QtInstall>
+    <QtInstall>6.5.0_msvc2019_64</QtInstall>
     <QtModules>core;gui;network;widgets;multimedia</QtModules>
   </PropertyGroup>
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.props')">
@@ -163,7 +163,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>Advapi32.lib;"E:\C++ Libraries\fftw\libfftw3f-3.lib";"E:\C++ Libraries\libsamplerate-0.2.2-win64\lib\samplerate.lib";ole32.lib;user32.lib;cfgmgr32.lib;E:\GitHub\bin\debug\x64\autoupdater.lib;hid.lib;"E:\C++ Libraries\libsndfile-1.1.0-win64\bin\sndfile.lib";E:\GitHub\portaudio\msvc\x64\Release\portaudio_x64.lib;$(QTDIR)\lib\Qt6EntryPointd.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Advapi32.lib;"E:\C++ Libraries\fftw\libfftw3f-3.lib";"E:\C++ Libraries\libsamplerate-0.2.2-win64\lib\samplerate.lib";ole32.lib;user32.lib;cfgmgr32.lib;E:\GitHub\bin\debug\x64\autoupdater.lib;hid.lib;"E:\C++ Libraries\libsndfile-1.1.0-win64\bin\sndfile.lib";E:\GitHub\portaudio\msvc\x64\Debug\portaudio_x64.lib;$(QTDIR)\lib\Qt6EntryPointd.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>E:\C++ Libraries\fftw;E:\C++ Libraries\libsamplerate-0.2.2-win64\lib;E:\GitHub\bin\debug\x64;E:\C++ Libraries\libsndfile-1.1.0-win64\bin;E:\GitHub\portaudio\msvc\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>/DEBUG "/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
       <DataExecutionPrevention>true</DataExecutionPrevention>

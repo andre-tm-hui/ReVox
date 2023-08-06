@@ -3,10 +3,10 @@
 /* The player object, dedicated to loading a file and playing it to a specified
  * output device. */
 
-Player::Player(device inputDevice, device outputDevice, int sampleRate,
+Player::Player(int inputDevice, int nInputChannels, int outputDevice, int nOutputChannels, int sampleRate,
                int framesPerBuffer, std::string dir,
                std::queue<float>* bufQueue)
-    : AudioStream(inputDevice, outputDevice, sampleRate, framesPerBuffer, dir,
+    : AudioStream(inputDevice, nInputChannels, outputDevice, nOutputChannels, sampleRate, framesPerBuffer, dir,
                   "Player") {
   initialSetup = false;
 
@@ -19,6 +19,7 @@ Player::Player(device inputDevice, device outputDevice, int sampleRate,
   data.rData->info.format = SF_FORMAT_MPEG | SF_FORMAT_MPEG_LAYER_III;
   data.rData->inUse = false;
   data.pBuf = &pBuf;
+  data.hasInput = input ? true : false;
 
   files = {};
   data.timers = {};
