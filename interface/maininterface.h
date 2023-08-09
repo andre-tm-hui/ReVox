@@ -63,11 +63,8 @@ class MainInterface : public BaseInterface, public LoggableObject {
  private:
   void SetupStreams();
   void ResetStreams();
-  //static void ShutdownStreams();
   void GetDeviceSettings();
   int GetChannels(int id, bool isInput);
-  //int GetCorrespondingLoopbackDevice(int i);
-  //device GetDeviceByIndex(int i);
   void WaitForReady();
 
   bool blocked = false,
@@ -86,12 +83,12 @@ class MainInterface : public BaseInterface, public LoggableObject {
   std::shared_ptr<NoiseGenerator> noiseGen;
 
   deviceIDs ids = {-1, -1, -1, -1};
-  //std::map<std::string, int> deviceList;
   std::map<int, device*> deviceList;
   std::map<std::string, device> inputDevices;
   std::map<std::string, device> outputDevices;
   std::map<std::string, device> loopbackDevices;
 
+  //TODO: add "Use Default Device" to settings, add input/microphone
   json defaultSettings = R"(
         {
             "outputDevice": "No Device Detected",

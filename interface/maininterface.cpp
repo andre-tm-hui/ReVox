@@ -101,20 +101,6 @@ void MainInterface::WaitForReady() {
 
 void MainInterface::GetDeviceSettings() {
   log(INFO, "Getting device settings");
-  auto n = Pa_GetHostApiCount();
-  auto def = Pa_GetDefaultHostApi();
-  for (int i = 0; i < Pa_GetHostApiCount(); i++) {
-      std::string s = Pa_GetHostApiInfo(i)->name;
-      int y = 0;
-  }
-  log(INFO, "hello " + std::to_string(Pa_GetHostApiCount()));
-  for (int i = 0; i < Pa_GetDeviceCount(); i++) {
-      std::string deviceName = Pa_GetDeviceInfo(i)->name;
-      int inputs = Pa_GetDeviceInfo(i)->maxInputChannels;
-      int outputs = Pa_GetDeviceInfo(i)->maxOutputChannels;
-      int y = 0;
-      log(INFO, deviceName);
-  }
 
   ids = {-1, -1, -1, -1};
   deviceList = {};
@@ -133,9 +119,10 @@ void MainInterface::GetDeviceSettings() {
           outputDevices[outputDeviceName].ids["Loopback"] = i;
           deviceList[i] = &outputDevices[outputDeviceName];
       }
+      // TODO: convert below into separate function(&map, truncatedName, deviceName, i, deviceInfo)
       else if (deviceInfo->maxInputChannels > 0) {
           // is an input device
-          if (deviceName.length() > 32 && inputDevices.find(truncatedName) != inputDevices.end()) {
+          if (deviceName.length() >= 32 && inputDevices.find(truncatedName) != inputDevices.end()) {
               inputDevices[deviceName] = inputDevices[truncatedName];
               deviceList[inputDevices[truncatedName].ids["MME"]] = &inputDevices[deviceName];
               inputDevices.erase(truncatedName);
@@ -152,7 +139,7 @@ void MainInterface::GetDeviceSettings() {
       }
       else if (deviceInfo->maxOutputChannels > 0) {
           // is an output device
-          if (deviceName.length() > 32 && outputDevices.find(truncatedName) != outputDevices.end()) {
+          if (deviceName.length() >= 32 && outputDevices.find(truncatedName) != outputDevices.end()) {
               outputDevices[deviceName] = outputDevices[truncatedName];
               deviceList[outputDevices[truncatedName].ids["MME"]] = &outputDevices[deviceName];
               outputDevices[deviceName].ids[Pa_GetHostApiInfo(deviceInfo->hostApi)->name] = i;
@@ -168,53 +155,7 @@ void MainInterface::GetDeviceSettings() {
       }
   }
 
-
-
-  /*for (int i = 0; i < Pa_GetDeviceCount(); i++) {
-    // separate normal devices from loopback devices
-    std::string deviceName = Pa_GetDeviceInfo(i)->name;
-    log(INFO, deviceName);
-    if (deviceName.find("[Loopback]") != std::string::npos) {
-        //loopbackDevices[deviceName] = { {{"Windows WASAPI", i}}, 2 };
-      std::string outputDeviceName =
-          deviceName.substr(0, deviceName.size() - 11);
-      outputDevices[outputDeviceName] = {
-          deviceList[outputDeviceName],
-          GetChannels(deviceList[outputDeviceName], false)};
-      if (outputDeviceName.find(settings["outputDevice"].get<std::string>()) !=
-          std::string::npos) {
-        ids.output = outputDevices[outputDeviceName].id;
-        settings["outputDevice"] = outputDeviceName;
-      }
-    } else {
-      // add the device to a list of devices if it's not a loopback
-      deviceList[deviceName] = i;
-
-      // set the default virtual input device - assumes the user is using
-      // VB-Audio's Virtual Cable https://vb-audio.com/Cable/
-      if (deviceName.find("CABLE Input") != std::string::npos) {
-        ids.vInput = deviceList[deviceName];
-      } else if (deviceName.find("CABLE Output") != std::string::npos) {
-        ids.vOutput = deviceList[deviceName];
-      } else if (deviceName.find(
-                     Pa_GetDeviceInfo(Pa_GetDefaultInputDevice())->name) !=
-                 std::string::npos) {
-        ids.input = deviceList[deviceName];
-      } else if (deviceName.find(
-                     Pa_GetDeviceInfo(Pa_GetDefaultOutputDevice())->name) !=
-                 std::string::npos) {
-        ids.streamOut = deviceList[deviceName];
-      }
-    }
-  }*/
-
-  /*for (auto const& [name, id] : deviceList) {
-    if (outputDevices.find(name) == outputDevices.end() &&
-        loopbackDevices.find(name) == loopbackDevices.find(name)) {
-      inputDevices[name] = {id, GetChannels(id, true)};
-    }
-  }*/
-
+  // TODO: move ids setter into separate function
   if (ids.output == -1) ids.output = Pa_GetDefaultOutputDevice();
   loopbackAvailable = deviceList[ids.output]->ids.find("Loopback") == deviceList[ids.output]->ids.end() ? false : true;
   apiName = loopbackAvailable ? "Windows WASAPI" : "MME";
@@ -229,6 +170,7 @@ void MainInterface::GetDeviceSettings() {
   ids.vInput = outputDevices["CABLE Input (VB-Audio Virtual Cable)"].ids[apiName];
   ids.vOutput = inputDevices["CABLE Output (VB-Audio Virtual Cable)"].ids[apiName];
 
+  // TODO: move sample rate checks into separate function
   if (Pa_GetDeviceInfo(ids.vInput)->defaultSampleRate != 48000) {
       MessageBox(NULL, L"Sample rate of VB-Audio Cable Input is not set to 48000Hz.", L"Error", MB_ICONERROR | MB_OK);
       log(CRITICAL, "Sample rate of VB-Audio Cable Input is not set to 48000Hz. Exiting.");
@@ -269,15 +211,6 @@ int MainInterface::GetChannels(int id, bool isInput) {
                                      isInput ? NULL : &params, 48000);
   return err != 0 ? 1 : 2;
 }
-
-/*int MainInterface::GetCorrespondingLoopbackDevice(int i) {
-  std::string dName = Pa_GetDeviceInfo(i)->name;
-  if (dName.find("[Loopback]") != std::string::npos) return i;
-  for (auto const& [name, id] : loopbackDevices) {
-    if (name.find(dName) != std::string::npos) return id.id;
-  }
-  return -1;
-}*/
 
 /* Reset functions for portaudio objects, called when corresponding devices are
  * changed in the GUI */
@@ -346,28 +279,3 @@ void MainInterface::SetupStreams() {
   soundboardManager->SetStreams(passthrough, monitor, player);
   fxManager->SetStreams(passthrough, monitor);
 }
-
-/* Utility function to convert int deviceIDs to corresponding device-typed
- * objects */
-/*device MainInterface::GetDeviceByIndex(int i) {
-  if (deviceList.find(i) != deviceList.end())
-    return *deviceList[i];
-  return { {}, -1 };
-  /*for (auto const& [dName, id] : deviceList) {
-    if (id != i) continue;
-
-    if (inputDevices.find(dName) != inputDevices.end()) {
-      return inputDevices[dName];
-    } else if (outputDevices.find(dName) != outputDevices.end()) {
-      return outputDevices[dName];
-    }
-  }
-
-  for (auto const& [dName, deviceSettings] : loopbackDevices) {
-    if (deviceSettings.id == i) {
-      return loopbackDevices[dName];
-    }
-  }
-
-  return {-1, -1};*/
-//}
