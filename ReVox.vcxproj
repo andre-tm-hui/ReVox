@@ -69,7 +69,12 @@
     <Import Project="$(QtMsBuild)\Qt.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  
+  <PropertyGroup Label="QtDeploy" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <QtDeploy>false</QtDeploy>
+  </PropertyGroup>
+  <PropertyGroup Label="QtDeploy" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <QtDeploy>false</QtDeploy>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>E:\GitHub\ReVoxDevelopment\singleapplication;E:\GitHub\cpp-template-utils\compiler;E:\GitHub\ReVoxDevelopment;E:\GitHub\github-releases-autoupdater\src\updaterUI;E:\GitHub\github-releases-autoupdater\src;E:\GitHub\portaudio\include;E:\C++ Libraries\libsndfile-1.1.0-win64\include;E:\C++ Libraries\libsamplerate-0.2.2-win64\include;E:\C++ Libraries\fftw;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -87,10 +92,13 @@
     <QtMoc>
       <Include>./$(Configuration)/moc_predefs.h</Include>
     </QtMoc>
+    <PostBuildEvent>
+      <Command>$(QTDIR)\bin\windeployqt.exe $(OutDir.TrimEnd('\')) --$(Configuration.toLower()) --no-translations</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>E:\GitHub\cpp-template-utils\compiler;E:\GitHub\ReVoxDevelopment\;E:\GitHub\github-releases-autoupdater\src\updaterUI;E:\GitHub\github-releases-autoupdater\src;E:\GitHub\portaudio\include;E:\C++ Libraries\libsndfile-1.1.0-win64\include;E:\C++ Libraries\libsamplerate-0.2.2-win64\include;E:\C++ Libraries\fftw;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\GitHub\ReVoxDevelopment\singleapplication;E:\GitHub\cpp-template-utils\compiler;E:\GitHub\ReVoxDevelopment\;E:\GitHub\github-releases-autoupdater\src\updaterUI;E:\GitHub\github-releases-autoupdater\src;E:\GitHub\portaudio\include;E:\C++ Libraries\libsndfile-1.1.0-win64\include;E:\C++ Libraries\libsamplerate-0.2.2-win64\include;E:\C++ Libraries\fftw;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>QAPPLICATION_CLASS=QApplication;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
@@ -99,6 +107,9 @@
       <AdditionalDependencies>ole32.lib;user32.lib;cfgmgr32.lib;hid.lib;shell32.lib;Advapi32.lib;E:\C++ Libraries\fftw\libfftw3f-3.lib;E:\C++ Libraries\libsamplerate-0.2.2-win64\lib\samplerate.lib;$(QTDIR)\lib\Qt6EntryPointd.lib;E:\GitHub\bin\release\x64\autoupdater.lib;E:\C++ Libraries\libsndfile-1.1.0-win64\bin\sndfile.lib;E:\GitHub\portaudio\msvc\x64\Release\portaudio_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)\ReVox.exe</OutputFile>
     </Link>
+    <PostBuildEvent>
+      <Command>$(QTDIR)\bin\windeployqt.exe $(OutDir.TrimEnd('\')) --$(Configuration.toLower()) --no-translations</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
     <ClCompile>
@@ -127,11 +138,9 @@
   <ItemGroup>
     <None Include=".gitignore" />
     <None Include=".gitmodules" />
-    <None Include=".qmake.stash" />
     <None Include="LICENSE.md" />
     <None Include="README.md" />
     <None Include="ReVox.pro" />
-    <None Include="ui\widgets\fx\fxdial.ui.autosave" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="icon.ico" />
