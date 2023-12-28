@@ -1,10 +1,10 @@
 #include "monitor.h"
 
-Monitor::Monitor(device inputDevice, device outputDevice, int sampleRate,
+Monitor::Monitor(int inputDevice, int nInputChannels, int outputDevice, int nOutputChannels, int sampleRate,
                  int framesPerBuffer, std::string dir,
                  std::queue<float> *inputQueue,
                  std::queue<float> *playbackQueue)
-    : AudioStream(inputDevice, outputDevice, sampleRate, framesPerBuffer, dir,
+    : AudioStream(inputDevice, nInputChannels, outputDevice, nOutputChannels, sampleRate, framesPerBuffer, dir,
                   "Monitor") {
   initialSetup = false;
   data.inputQueue = inputQueue;

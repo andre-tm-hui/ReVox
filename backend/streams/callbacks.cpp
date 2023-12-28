@@ -12,17 +12,20 @@ int playCallback(const void* inputBuffer, void* outputBuffer,
     m_playback.lock();
     // create and assign some variables
     playData* p_data = (playData*) data;
-    float* in = (float*)inputBuffer;
     float* out = (float*)outputBuffer;
     float* read = new float[framesPerBuffer * 2];
     sf_count_t num_read;
 
     // record if flag is set
-    if (p_data->rData->inUse) {
-        if (p_data->rData->file != nullptr)
-            sf_write_float(p_data->rData->file, in, framesPerBuffer * p_data->rData->info.channels);
-    } else {
-        p_data->pBuf->write(in, framesPerBuffer * p_data->rData->info.channels);
+    if (p_data->hasInput) {
+        float* in = (float*)inputBuffer;
+        if (p_data->rData->inUse) {
+            if (p_data->rData->file != nullptr)
+                sf_write_float(p_data->rData->file, in, framesPerBuffer * p_data->rData->info.channels);
+        }
+        else {
+            p_data->pBuf->write(in, framesPerBuffer * p_data->rData->info.channels);
+        }
     }
 
     // clear the output buffer first

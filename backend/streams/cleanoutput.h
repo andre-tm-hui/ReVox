@@ -5,7 +5,7 @@
 
 class CleanOutput : public AudioStream {
  public:
-  CleanOutput(device inputDevice, device outputDevice, int sampleRate,
+  CleanOutput(int inputDevice, int nInputChannels, int outputDevice, int nOutputChannels, int sampleRate,
               int framesPerBuffer);
 };
 

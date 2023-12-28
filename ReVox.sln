@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.33027.164
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ReVox", "ReVox.vcxproj", "{2BD12BC2-3306-3A55-9D89-753F9F56FC12}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ReVox", "ReVox.vcxproj", "{E314BDD5-5AA7-4FFA-81D5-E98758998CB8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2BD12BC2-3306-3A55-9D89-753F9F56FC12}.Debug|x64.ActiveCfg = Debug|x64
-		{2BD12BC2-3306-3A55-9D89-753F9F56FC12}.Debug|x64.Build.0 = Debug|x64
-		{2BD12BC2-3306-3A55-9D89-753F9F56FC12}.Release|x64.ActiveCfg = Release|x64
-		{2BD12BC2-3306-3A55-9D89-753F9F56FC12}.Release|x64.Build.0 = Release|x64
+		{E314BDD5-5AA7-4FFA-81D5-E98758998CB8}.Debug|x64.ActiveCfg = Debug|x64
+		{E314BDD5-5AA7-4FFA-81D5-E98758998CB8}.Debug|x64.Build.0 = Debug|x64
+		{E314BDD5-5AA7-4FFA-81D5-E98758998CB8}.Release|x64.ActiveCfg = Release|x64
+		{E314BDD5-5AA7-4FFA-81D5-E98758998CB8}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {BF8E6112-80A8-470C-99B1-6C517517D291}
+		SolutionGuid = {96BAC7A4-7792-41B7-8C41-9D9F96D7DDDF}
 	EndGlobalSection
 EndGlobal

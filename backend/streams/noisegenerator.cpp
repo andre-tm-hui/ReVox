@@ -1,7 +1,7 @@
 #include "noisegenerator.h"
 
-NoiseGenerator::NoiseGenerator(device outputDevice, int sampleRate)
-    : AudioStream({-1, -1}, outputDevice, sampleRate, 2, "", "NoiseGenerator") {
+NoiseGenerator::NoiseGenerator(int outputDevice, int nChannels, int sampleRate)
+    : AudioStream(-1, -1, outputDevice, nChannels, sampleRate, 2, "", "NoiseGenerator") {
   initialSetup = false;
   // open and start the stream to record from
   this->err = Pa_OpenStream(

@@ -1,8 +1,8 @@
 #include "cleanoutput.h"
 
-CleanOutput::CleanOutput(device inputDevice, device outputDevice,
+CleanOutput::CleanOutput(int inputDevice, int nInputChannels, int outputDevice, int nOutputChannels,
                          int sampleRate, int framesPerBuffer)
-    : AudioStream(inputDevice, outputDevice, sampleRate, framesPerBuffer, "",
+    : AudioStream(inputDevice, nInputChannels, outputDevice, nOutputChannels, sampleRate, framesPerBuffer, "",
                   "CleanOutput") {
   initialSetup = false;
   // open and start the stream to record from

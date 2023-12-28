@@ -3,14 +3,14 @@
 
 #include <queue>
 
-#include "../nlohmann/json.hpp"
+#include "nlohmann/json.hpp"
 #include "audiostream.h"
 
 using namespace nlohmann;
 
 class Player : public AudioStream {
  public:
-  Player(device inputDevice, device outputDevice, int sampleRate,
+  Player(int inputDevice, int nInputChannels, int outputDevice, int nOutputChannels, int sampleRate,
          int framesPerBuffer, std::string dir, std::queue<float> *bufQueue);
 
   void Play(int idx, json settings);

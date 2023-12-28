@@ -101,9 +101,6 @@ void MainInterface::WaitForReady() {
 
 void MainInterface::GetDeviceSettings() {
   log(INFO, "Getting device settings");
-  if (std::string("Windows WASAPI")
-          .compare(Pa_GetHostApiInfo(Pa_GetDefaultHostApi())->name) != 0)
-    return;
 
   ids = {-1, -1, -1, -1};
   deviceList = {};
@@ -112,53 +109,68 @@ void MainInterface::GetDeviceSettings() {
   loopbackDevices = {};
 
   for (int i = 0; i < Pa_GetDeviceCount(); i++) {
-    // separate normal devices from loopback devices
-    std::string deviceName = Pa_GetDeviceInfo(i)->name;
-    if (deviceName.find("[Loopback]") != std::string::npos) {
-      loopbackDevices[deviceName] = {i, 2};
-      std::string outputDeviceName =
-          deviceName.substr(0, deviceName.size() - 11);
-      outputDevices[outputDeviceName] = {
-          deviceList[outputDeviceName],
-          GetChannels(deviceList[outputDeviceName], false)};
-      if (outputDeviceName.find(settings["outputDevice"].get<std::string>()) !=
-          std::string::npos) {
-        ids.output = outputDevices[outputDeviceName].id;
-        settings["outputDevice"] = outputDeviceName;
+      auto deviceInfo = Pa_GetDeviceInfo(i);
+      std::string deviceName = deviceInfo->name;
+      std::string truncatedName = deviceName.substr(0, 31);
+      if (deviceName.find("Loopback") != std::string::npos) {
+          // is a output loopback device
+          std::string outputDeviceName =
+              deviceName.substr(0, deviceName.size() - 11);
+          outputDevices[outputDeviceName].ids["Loopback"] = i;
+          deviceList[i] = &outputDevices[outputDeviceName];
       }
-    } else {
-      // add the device to a list of devices if it's not a loopback
-      deviceList[deviceName] = i;
-
-      // set the default virtual input device - assumes the user is using
-      // VB-Audio's Virtual Cable https://vb-audio.com/Cable/
-      if (deviceName.find("CABLE Input") != std::string::npos) {
-        ids.vInput = deviceList[deviceName];
-      } else if (deviceName.find("CABLE Output") != std::string::npos) {
-        ids.vOutput = deviceList[deviceName];
-      } else if (deviceName.find(
-                     Pa_GetDeviceInfo(Pa_GetDefaultInputDevice())->name) !=
-                 std::string::npos) {
-        ids.input = deviceList[deviceName];
-      } else if (deviceName.find(
-                     Pa_GetDeviceInfo(Pa_GetDefaultOutputDevice())->name) !=
-                 std::string::npos) {
-        ids.streamOut = deviceList[deviceName];
+      // TODO: convert below into separate function(&map, truncatedName, deviceName, i, deviceInfo)
+      else if (deviceInfo->maxInputChannels > 0) {
+          // is an input device
+          if (deviceName.length() >= 32 && inputDevices.find(truncatedName) != inputDevices.end()) {
+              inputDevices[deviceName] = inputDevices[truncatedName];
+              deviceList[inputDevices[truncatedName].ids["MME"]] = &inputDevices[deviceName];
+              inputDevices.erase(truncatedName);
+              inputDevices[deviceName].ids[Pa_GetHostApiInfo(deviceInfo->hostApi)->name] = i;
+              
+          }
+          else {
+              inputDevices[deviceName] = {
+                  {{Pa_GetHostApiInfo(deviceInfo->hostApi)->name, i}},
+                  deviceInfo->maxInputChannels
+              };
+          }
+          deviceList[i] = &inputDevices[deviceName];
       }
-    }
+      else if (deviceInfo->maxOutputChannels > 0) {
+          // is an output device
+          if (deviceName.length() >= 32 && outputDevices.find(truncatedName) != outputDevices.end()) {
+              outputDevices[deviceName] = outputDevices[truncatedName];
+              deviceList[outputDevices[truncatedName].ids["MME"]] = &outputDevices[deviceName];
+              outputDevices[deviceName].ids[Pa_GetHostApiInfo(deviceInfo->hostApi)->name] = i;
+              outputDevices.erase(truncatedName);
+          }
+          else {
+              outputDevices[deviceName] = {
+                  {{Pa_GetHostApiInfo(deviceInfo->hostApi)->name, i}},
+                  deviceInfo->maxOutputChannels
+              };
+          }
+          deviceList[i] = &outputDevices[deviceName];
+      }
   }
 
-  for (auto const& [name, id] : deviceList) {
-    if (outputDevices.find(name) == outputDevices.end() &&
-        loopbackDevices.find(name) == loopbackDevices.find(name)) {
-      inputDevices[name] = {id, GetChannels(id, true)};
-    }
-  }
-
-  if (ids.input == -1) ids.input = Pa_GetDefaultInputDevice();
-  if (ids.streamOut == -1) ids.streamOut = Pa_GetDefaultOutputDevice();
+  // TODO: move ids setter into separate function
   if (ids.output == -1) ids.output = Pa_GetDefaultOutputDevice();
+  loopbackAvailable = deviceList[ids.output]->ids.find("Loopback") == deviceList[ids.output]->ids.end() ? false : true;
+  apiName = loopbackAvailable ? "Windows WASAPI" : "MME";
+  ids.output = deviceList[ids.output]->ids[apiName];
 
+  if (ids.input == -1) ids.input = deviceList[Pa_GetDefaultInputDevice()]->ids[apiName];
+  if (ids.streamOut == -1) ids.streamOut = deviceList[Pa_GetDefaultOutputDevice()]->ids[apiName];
+  if (ids.output == -1) ids.output = deviceList[Pa_GetDefaultOutputDevice()]->ids[apiName];
+
+  // set the default virtual input device - assumes the user is using
+  // VB-Audio's Virtual Cable https://vb-audio.com/Cable/
+  ids.vInput = outputDevices["CABLE Input (VB-Audio Virtual Cable)"].ids[apiName];
+  ids.vOutput = inputDevices["CABLE Output (VB-Audio Virtual Cable)"].ids[apiName];
+
+  // TODO: move sample rate checks into separate function
   if (Pa_GetDeviceInfo(ids.vInput)->defaultSampleRate != 48000) {
       MessageBox(NULL, L"Sample rate of VB-Audio Cable Input is not set to 48000Hz.", L"Error", MB_ICONERROR | MB_OK);
       log(CRITICAL, "Sample rate of VB-Audio Cable Input is not set to 48000Hz. Exiting.");
@@ -200,15 +212,6 @@ int MainInterface::GetChannels(int id, bool isInput) {
   return err != 0 ? 1 : 2;
 }
 
-int MainInterface::GetCorrespondingLoopbackDevice(int i) {
-  std::string dName = Pa_GetDeviceInfo(i)->name;
-  if (dName.find("[Loopback]") != std::string::npos) return i;
-  for (auto const& [name, id] : loopbackDevices) {
-    if (name.find(dName) != std::string::npos) return id.id;
-  }
-  return -1;
-}
-
 /* Reset functions for portaudio objects, called when corresponding devices are
  * changed in the GUI */
 void MainInterface::Reset(bool devicesChanged) {
@@ -245,51 +248,34 @@ void MainInterface::ResetStreams() {
 void MainInterface::SetupStreams() {
   inputQueue = new std::queue<float>();
   playbackQueue = new std::queue<float>();
-  int loopbackdevice = GetCorrespondingLoopbackDevice(ids.streamOut);
+  //int loopbackdevice = GetCorrespondingLoopbackDevice(ids.streamOut);
+  int loopbackDevice = loopbackAvailable ? deviceList[ids.output]->ids["Loopback"] : -1;
+  int loopbackChannels = loopbackDevice >= 0 ? deviceList[loopbackDevice]->nChannels : -1;
 
-  noiseGen.reset(new NoiseGenerator(GetDeviceByIndex(ids.streamOut),
+  noiseGen.reset(new NoiseGenerator(ids.streamOut, deviceList[ids.streamOut]->nChannels,
                                     settings["sampleRate"].get<int>()));
   monitor.reset(new Monitor(
-      GetDeviceByIndex(ids.input), GetDeviceByIndex(ids.output),
+      ids.input, deviceList[ids.input]->nChannels,
+      ids.output, deviceList[ids.output]->nChannels,
       settings["sampleRate"].get<int>(), settings["framesPerBuffer"].get<int>(),
       rootDir, inputQueue, playbackQueue));
   player.reset(new Player(
-      GetDeviceByIndex(loopbackdevice), GetDeviceByIndex(ids.vInput),
+      loopbackDevice, loopbackChannels,
+      ids.vInput, deviceList[ids.vInput]->nChannels,
       settings["sampleRate"].get<int>(), settings["framesPerBuffer"].get<int>(),
       rootDir, playbackQueue));
   passthrough.reset(new Passthrough(
-      GetDeviceByIndex(ids.input), GetDeviceByIndex(ids.vInput),
+      ids.input, deviceList[ids.input]->nChannels,
+      ids.vInput, deviceList[ids.vInput]->nChannels,
       settings["sampleRate"].get<int>(), settings["framesPerBuffer"].get<int>(),
       rootDir, inputQueue));
   if (ids.streamOut != ids.output)
-    cleanOutput.reset(new CleanOutput(GetDeviceByIndex(loopbackdevice),
-                                      GetDeviceByIndex(ids.output),
+    cleanOutput.reset(new CleanOutput(loopbackDevice, loopbackChannels,
+                                      ids.output, deviceList[ids.output]->nChannels,
                                       settings["sampleRate"].get<int>(), 1));
   else
     cleanOutput.reset();
 
   soundboardManager->SetStreams(passthrough, monitor, player);
   fxManager->SetStreams(passthrough, monitor);
-}
-
-/* Utility function to convert int deviceIDs to corresponding device-typed
- * objects */
-device MainInterface::GetDeviceByIndex(int i) {
-  for (auto const& [dName, id] : deviceList) {
-    if (id != i) continue;
-
-    if (inputDevices.find(dName) != inputDevices.end()) {
-      return inputDevices[dName];
-    } else if (outputDevices.find(dName) != outputDevices.end()) {
-      return outputDevices[dName];
-    }
-  }
-
-  for (auto const& [dName, deviceSettings] : loopbackDevices) {
-    if (deviceSettings.id == i) {
-      return loopbackDevices[dName];
-    }
-  }
-
-  return {-1, -1};
 }

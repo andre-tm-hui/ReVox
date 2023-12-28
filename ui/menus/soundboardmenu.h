@@ -5,7 +5,7 @@
 #include <QWidget>
 
 #include "../components/cropper.h"
-#include "../interface/soundboardmanager.h"
+#include "interface/soundboardmanager.h"
 #include "../widgets/bindablebutton.h"
 #include "../widgets/hotkeylistwidget.h"
 

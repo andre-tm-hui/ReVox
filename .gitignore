@@ -80,5 +80,3 @@ inputblocker/x64
 inputblocker/.vs
 inputblocker/InputBlockerDLL.vcxproj.filters
 inputblocker/InputBlockerDLL.vcxproj.user
-debug/
-release/
