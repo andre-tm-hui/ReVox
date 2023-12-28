@@ -15,8 +15,8 @@ int main(int argc, char *argv[]) {
   // (https://github.com/itay-grudev/SingleApplication)
   SingleApplication a(argc, argv);
 
-  spdlog::flush_on(spdlog::level::warn);
-  spdlog::flush_every(std::chrono::seconds(5));
+  spdlog::flush_on(spdlog::level::info);
+  //spdlog::flush_every(std::chrono::seconds(5));
 
   QTranslator translator;
   const QStringList uiLanguages = QLocale::system().uiLanguages();
