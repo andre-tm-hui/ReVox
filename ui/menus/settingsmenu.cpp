@@ -99,7 +99,7 @@ void SettingsMenu::SetDevices(std::map<std::string, device> &devices,
   this->devices = devices;
   this->currentDevice = currentDevice;
   populateDevices();
-  log(INFO, "Device list populated");
+  log(INFO, "Devices set");
 }
 
 void SettingsMenu::populateDevices() {
@@ -114,6 +114,7 @@ void SettingsMenu::populateDevices() {
     }
   }
   ui->devices->blockSignals(false);
+  log(INFO, "Device list populated");
 }
 
 void SettingsMenu::deviceChanged() {
