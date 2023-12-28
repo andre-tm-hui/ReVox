@@ -3,7 +3,7 @@
 
 #include <QWidget>
 
-#include "../util/loggableobject.h"
+#include "util/loggableobject.h"
 
 namespace Ui {
 class MonitorSlider;

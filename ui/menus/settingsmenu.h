@@ -10,7 +10,7 @@
 #include <QWidget>
 
 #include "../hud.h"
-#include "../interface/maininterface.h"
+#include "interface/maininterface.h"
 #include "../widgets/switch.h"
 
 namespace Ui {

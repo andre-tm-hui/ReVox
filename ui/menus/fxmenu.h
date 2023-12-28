@@ -5,7 +5,7 @@
 #include <QWidget>
 
 #include "../components/fxtab.h"
-#include "../interface/fxmanager.h"
+#include "interface/fxmanager.h"
 #include "../widgets/fx/fxdial.h"
 #include "../widgets/fx/fxkeypicker.h"
 #include "../widgets/fx/fxswitch.h"
