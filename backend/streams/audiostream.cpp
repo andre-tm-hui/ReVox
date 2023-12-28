@@ -3,23 +3,24 @@
 /* The default/base portaudio stream object. All other portaudio stream objects
  * (recorder, player, passthrough) inherit this class */
 
-AudioStream::AudioStream(device inputDevice, device outputDevice,
+AudioStream::AudioStream(int inputDevice, int nInputChannels, int outputDevice, int nOutputChannels,
                          int sampleRate, int framesPerBuffer, std::string dir,
-                         std::string objType)
-    : LoggableObject(objType) {
-  // set some properties of the object
-  this->sampleRate = sampleRate;
-  this->framesPerBuffer = framesPerBuffer;
-  this->dir = dir;
-  this->inputDevice = inputDevice.id;
-  this->outputDevice = outputDevice.id;
-
+                         std::string objType) : 
+    LoggableObject(objType), 
+    inputDevice(inputDevice), 
+    nInputChannels(nInputChannels),
+    outputDevice(outputDevice),
+    nOutputChannels(nOutputChannels),
+    dir(dir), 
+    sampleRate(sampleRate), 
+    framesPerBuffer(framesPerBuffer)
+{
   // setup the stream parameters of each device
-  if (inputDevice.id >= 0) {
-    setupDevice(&inputParameters, inputDevice, true);
+  if (inputDevice >= 0) {
+    setupDevice(&inputParameters, inputDevice, nInputChannels, true);
   }
-  if (outputDevice.id >= 0) {
-    setupDevice(&outputParameters, outputDevice, false);
+  if (outputDevice >= 0) {
+    setupDevice(&outputParameters, outputDevice, nOutputChannels, false);
   }
 
   initialSetup = true;
@@ -32,15 +33,14 @@ AudioStream::~AudioStream() {
   done();
 }
 
-void AudioStream::setupDevice(PaStreamParameters* parameters, device device,
-                              bool isInput) {
+void AudioStream::setupDevice(PaStreamParameters* parameters, int device, int nChannels, bool isInput) {
   log(INFO, "AudioStream setupDevice() called");
-  parameters->device = device.id;
-  parameters->channelCount = device.nChannels > 2 ? 2 : device.nChannels;
+  parameters->device = device;
+  parameters->channelCount = nChannels > 2 ? 2 : nChannels;
   parameters->sampleFormat = PA_SAMPLE_TYPE;
   parameters->suggestedLatency =
-      isInput ? Pa_GetDeviceInfo(device.id)->defaultLowInputLatency
-              : Pa_GetDeviceInfo(device.id)->defaultLowOutputLatency;
+      isInput ? Pa_GetDeviceInfo(device)->defaultLowInputLatency
+              : Pa_GetDeviceInfo(device)->defaultLowOutputLatency;
   parameters->hostApiSpecificStreamInfo = NULL;
   if (isInput) {
     input = true;

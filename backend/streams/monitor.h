@@ -5,7 +5,7 @@
 
 class Monitor : public AudioStream {
  public:
-  Monitor(device inputDevice, device outputDevice, int sampleRate,
+  Monitor(int inputDevice, int nInputChannels, int outputDevice, int nOutputChannels, int sampleRate,
           int framesPerBuffer, std::string dir, std::queue<float> *inputQueue,
           std::queue<float> *playbackQueue);
 

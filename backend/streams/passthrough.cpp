@@ -3,10 +3,10 @@
 /* The passthrough stream object, writes audio from the input device directly to
  * the output device. */
 
-Passthrough::Passthrough(device inputDevice, device outputDevice,
+Passthrough::Passthrough(int inputDevice, int nInputChannels, int outputDevice, int nOutputChannels,
                          int sampleRate, int framesPerBuffer, std::string dir,
                          std::queue<float> *bufQueue)
-    : AudioStream(inputDevice, outputDevice, sampleRate, framesPerBuffer, dir,
+    : AudioStream(inputDevice, nInputChannels, outputDevice, nOutputChannels, sampleRate, framesPerBuffer, dir,
                   "Passthrough") {
   initialSetup = false;
 

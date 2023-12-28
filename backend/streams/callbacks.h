@@ -35,7 +35,8 @@ typedef struct {
   std::vector<SNDFILE*>* queue;
   SF_INFO info;
   float maxFileLength;
-  std::queue<float>* bufQueue;   
+  std::queue<float>* bufQueue;
+  bool hasInput;
 } playData;
 
 typedef struct {
