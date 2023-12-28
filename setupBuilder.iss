@@ -22,9 +22,9 @@ DefaultDirName={autopf64}\{#MyAppName}
 DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
-OutputDir=.\installers
+OutputDir=.\builds\installers
 OutputBaseFilename=ReVox_v{#MyAppVersion}_setup
-SetupIconFile=..\icon.ico
+SetupIconFile=.\icon.ico
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
@@ -36,9 +36,8 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: ".\release\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\release\*"; excludes: "moc, qmake, rcc, uic, translations, ReVox.vcxproj.FileListAbsolute, *.obj,*.cpp,*.h, *.cbt, *.recipe, *.res, *.log, *.tlog, *.lastbuildstate"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-; Source: ".\additional_imports\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: ".\builds\release\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: ".\builds\release\*"; excludes: "moc, qmake, rcc, uic, translations, ReVox.vcxproj.FileListAbsolute, *.obj,*.cpp,*.h, *.cbt, *.recipe, *.res, *.log, *.tlog, *.lastbuildstate"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "E:\GitHub\ReVoxBuilds\VBCABLE_Driver_Pack43\*"; DestDir: "{tmp}"; Flags: recursesubdirs createallsubdirs deleteafterinstall;
 Source: "E:\GitHub\ReVoxBuilds\VBCABLE_Driver_Pack43\VBCABLE_Setup_x64.exe"; DestDir: "{tmp}"; AfterInstall: "InstallVBCable"; Flags: deleteafterinstall;
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
