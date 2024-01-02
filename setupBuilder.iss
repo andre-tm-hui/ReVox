@@ -36,10 +36,10 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: ".\builds\release\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\builds\release\*"; excludes: "moc, qmake, rcc, uic, translations, ReVox.vcxproj.FileListAbsolute, *.obj,*.cpp,*.h, *.cbt, *.recipe, *.res, *.log, *.tlog, *.lastbuildstate"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "E:\GitHub\ReVoxBuilds\VBCABLE_Driver_Pack43\*"; DestDir: "{tmp}"; Flags: recursesubdirs createallsubdirs deleteafterinstall;
-Source: "E:\GitHub\ReVoxBuilds\VBCABLE_Driver_Pack43\VBCABLE_Setup_x64.exe"; DestDir: "{tmp}"; AfterInstall: "InstallVBCable"; Flags: deleteafterinstall;
+Source: ".\builds\Release\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: ".\builds\Release\*"; excludes: "moc, qmake, rcc, uic, translations, ReVox.vcxproj.FileListAbsolute, *.obj,*.cpp,*.h, *.cbt, *.recipe, *.res, *.log, *.tlog, *.lastbuildstate"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: ".\dependencies\vb-cable\*"; DestDir: "{tmp}"; Flags: recursesubdirs createallsubdirs deleteafterinstall;
+Source: ".\dependencies\vb-cable\VBCABLE_Setup_x64.exe"; DestDir: "{tmp}"; AfterInstall: "InstallVBCable"; Flags: deleteafterinstall;
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
