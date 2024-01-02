@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QLabel>
 #include <QPropertyAnimation>
-#include <nlohmann/json.hpp>
+#include "json.hpp"
 #include "../widgets/soundboard/clickthroughslider.h"
 #include "../widgets/soundboard/waveformviewer.h"
 

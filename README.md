@@ -42,18 +42,14 @@ This can possibly be fixed with money, but this is a non-profit passion project 
 
 ## Build Instructions
 ### Prerequisites
-  - [Qt Creator](https://qt.io)
-  - [PortAudio](https://github.com/PortAudio/portaudio/)
-  - [Libsndfile](https://github.com/libsndfile/libsndfile/)
-  - [Libsamplerate](https://github.com/libsndfile/libsamplerate)
-  - [FFTW](https://www.fftw.org/)
-  - [nlohmann's json library](https://github.com/nlohmann/json)
-  - [GitHub Releases Autoupdater](https://github.com/VioletGiraffe/github-releases-autoupdater)
+  - [Visual Studio 2022](https://visualstudio.microsoft.com/vs/)
+  - [CMake](https://cmake.org/download/)
+  - [Git](https://gitforwindows.org/)
+
 ### Instructions:
 1. Clone the repo
-2. In ReVox.pro, relink the above libraries to your local libraries/binaries
-  a. Copy the nlohmann headers folder into the root of the project folder, or relink them in the ReVox.pro file
-3. Build using MinGW
+2. Run "install_dependencies.bat"
+3. Build ReVox.sln either via the GUI or msbuild
 
 ## Credits
 Uses the following:

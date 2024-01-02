@@ -1,4 +1,4 @@
-#include "audiofx/repitcher.h"
+#include "repitcher.h"
 
 Repitcher::Repitcher(std::shared_ptr<PitchShifter> ps)
     : IAudioFX("Repitcher"), ps(ps) {

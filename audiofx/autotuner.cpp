@@ -1,4 +1,4 @@
-#include "audiofx/autotuner.h"
+#include "autotuner.h"
 
 Autotuner::Autotuner(std::shared_ptr<PitchShifter> ps)
     : IAudioFX("Autotuner"), ps(ps) {
