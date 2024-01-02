@@ -1,7 +1,7 @@
 #ifndef BASEINTERFACE_H
 #define BASEINTERFACE_H
 
-#include "../nlohmann/json.hpp"
+#include <json.hpp>
 #include <filesystem>
 #include <fstream>
 #include <string>

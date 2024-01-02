@@ -17,16 +17,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <OutDir>builds\debug\</OutDir>
-    <IntDir>builds\debug\</IntDir>
-    <TargetName>ReVoxDebug</TargetName>
+    <OutDir>$(SolutionDir)builds\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)builds\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutDir>$(SolutionDir)builds\release\</OutDir>
-    <IntDir>$(SolutionDir)builds\release\</IntDir>
+    <OutDir>$(SolutionDir)builds\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)builds\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{E314BDD5-5AA7-4FFA-81D5-E98758998CB8}</ProjectGuid>
+    <ProjectGuid>{FFEFA80F-83AF-4D12-B165-5F255DAA9D4F}</ProjectGuid>
     <Keyword>QtVS_v304</Keyword>
     <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">10.0.22621.0</WindowsTargetPlatformVersion>
     <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">10.0.22621.0</WindowsTargetPlatformVersion>
@@ -69,46 +68,42 @@
     <Import Project="$(QtMsBuild)\Qt.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Label="QtDeploy" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <QtDeploy>false</QtDeploy>
-  </PropertyGroup>
-  <PropertyGroup Label="QtDeploy" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <QtDeploy>false</QtDeploy>
-  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>E:\GitHub\ReVoxDevelopment\singleapplication;E:\GitHub\cpp-template-utils\compiler;E:\GitHub\ReVoxDevelopment;E:\GitHub\github-releases-autoupdater\src\updaterUI;E:\GitHub\github-releases-autoupdater\src;E:\GitHub\portaudio\include;E:\C++ Libraries\libsndfile-1.1.0-win64\include;E:\C++ Libraries\libsamplerate-0.2.2-win64\include;E:\C++ Libraries\fftw;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)dependencies\spdlog\include;$(SolutionDir)dependencies\fftw\api;$(SolutionDir)dependencies\portaudio\include;$(SolutionDir)dependencies\nlohmann;$(SolutionDir)dependencies\libsamplerate\include;$(SolutionDir)dependencies\libsndfile\include;$(SolutionDir)dependencies\SingleApplication;$(SolutionDir)dependencies\github-releases-autoupdater\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>QAPPLICATION_CLASS=QApplication;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>E:\GitHub\portaudio\msvc\x64\Debug;E:\GitHub\bin\debug\x64;E:\C++ Libraries\libsndfile-1.1.0-win64\lib;E:\C++ Libraries\libsamplerate-0.2.2-win64\lib;E:\C++ Libraries\fftw;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ole32.lib;user32.lib;cfgmgr32.lib;hid.lib;shell32.lib;Advapi32.lib;E:\C++ Libraries\fftw\libfftw3f-3.lib;E:\C++ Libraries\libsamplerate-0.2.2-win64\lib\samplerate.lib;$(QTDIR)\lib\Qt6EntryPointd.lib;E:\GitHub\bin\debug\x64\autoupdater.lib;E:\C++ Libraries\libsndfile-1.1.0-win64\bin\sndfile.lib;E:\GitHub\portaudio\msvc\x64\Debug\portaudio_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)\ReVoxDebug.exe</OutputFile>
+      <AdditionalLibraryDirectories>$(ProjectDir)dependencies\portaudio\build\Debug;$(ProjectDir)dependencies\bin\debug\x64;$(ProjectDir)dependencies\libsndfile\lib;$(ProjectDir)dependencies\libsamplerate\lib;$(ProjectDir)dependencies\spdlog\build\Debug;$(ProjectDir)dependencies\fftw\build\Debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ole32.lib;user32.lib;cfgmgr32.lib;hid.lib;shell32.lib;Advapi32.lib;$(ProjectDir)dependencies\fftw\build\Debug\fftw3f.lib;$(ProjectDir)dependencies\libsamplerate\lib\samplerate.lib;$(ProjectDir)dependencies\bin\debug\x64\autoupdater.lib;$(ProjectDir)dependencies\libsndfile\lib\sndfile.lib;$(ProjectDir)dependencies\portaudio\build\Debug\portaudio.lib;$(ProjectDir)dependencies\spdlog\build\Debug\spdlogd.lib;%(AdditionalDependencies);$(Qt_LIBS_)</AdditionalDependencies>
     </Link>
-    <QtMoc>
-      <CompilerFlavor>msvc</CompilerFlavor>
-    </QtMoc>
-    <QtMoc>
-      <Include>./$(Configuration)/moc_predefs.h</Include>
-    </QtMoc>
     <PostBuildEvent>
-      <Command>$(QTDIR)\bin\windeployqt.exe $(OutDir.TrimEnd('\')) --$(Configuration.toLower()) --no-translations</Command>
+      <Command>$(QTDIR)\bin\windeployqt.exe $(OutDir.TrimEnd('\')) --$(Configuration.toLower()) --no-translations
+copy "$(SolutionDir)dependencies\portaudio\build\Debug\portaudio.dll" "$(SolutionDir)builds\$(Configuration)"
+copy "$(SolutionDir)dependencies\fftw\build\Debug\fftw3f.dll" "$(SolutionDir)builds\$(Configuration)"
+copy "$(SolutionDir)dependencies\spdlog\build\Debug\spdlogd.dll" "$(SolutionDir)builds\$(Configuration)"
+copy "$(SolutionDir)dependencies\libsndfile\bin\sndfile.dll" "$(SolutionDir)builds\$(Configuration)"
+copy "$(SolutionDir)dependencies\libsamplerate\bin\samplerate.dll" "$(SolutionDir)builds\$(Configuration)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>E:\GitHub\ReVoxDevelopment\singleapplication;E:\GitHub\cpp-template-utils\compiler;E:\GitHub\ReVoxDevelopment\;E:\GitHub\github-releases-autoupdater\src\updaterUI;E:\GitHub\github-releases-autoupdater\src;E:\GitHub\portaudio\include;E:\C++ Libraries\libsndfile-1.1.0-win64\include;E:\C++ Libraries\libsamplerate-0.2.2-win64\include;E:\C++ Libraries\fftw;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)dependencies\spdlog\include;$(SolutionDir)dependencies\fftw\api;$(SolutionDir)dependencies\portaudio\include;$(SolutionDir)dependencies\nlohmann;$(SolutionDir)dependencies\libsamplerate\include;$(SolutionDir)dependencies\libsndfile\include;$(SolutionDir)dependencies\SingleApplication;$(SolutionDir)dependencies\github-releases-autoupdater\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>QAPPLICATION_CLASS=QApplication;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>E:\GitHub\portaudio\msvc\x64\Release;E:\GitHub\bin\release\x64;E:\C++ Libraries\libsndfile-1.1.0-win64\lib;E:\C++ Libraries\libsamplerate-0.2.2-win64\lib;E:\C++ Libraries\fftw;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ole32.lib;user32.lib;cfgmgr32.lib;hid.lib;shell32.lib;Advapi32.lib;E:\C++ Libraries\fftw\libfftw3f-3.lib;E:\C++ Libraries\libsamplerate-0.2.2-win64\lib\samplerate.lib;$(QTDIR)\lib\Qt6EntryPointd.lib;E:\GitHub\bin\release\x64\autoupdater.lib;E:\C++ Libraries\libsndfile-1.1.0-win64\bin\sndfile.lib;E:\GitHub\portaudio\msvc\x64\Release\portaudio_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)\ReVox.exe</OutputFile>
+      <AdditionalLibraryDirectories>$(ProjectDir)dependencies\spdlog\build\Release;$(ProjectDir)dependencies\portaudio\build\Release;$(ProjectDir)dependencies\bin\release\x64;$(ProjectDir)dependencies\libsndfile\lib;$(ProjectDir)dependencies\libsamplerate\lib;$(ProjectDir)dependencies\fftw\build\Release;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ole32.lib;user32.lib;cfgmgr32.lib;hid.lib;shell32.lib;Advapi32.lib;$(ProjectDir)dependencies\fftw\build\Release\fftw3f.lib;$(ProjectDir)dependencies\libsamplerate\lib\samplerate.lib;$(QTDIR)\lib\Qt6EntryPointd.lib;$(ProjectDir)dependencies\bin\release\x64\autoupdater.lib;$(ProjectDir)dependencies\libsndfile\lib\sndfile.lib;$(ProjectDir)dependencies\portaudio\build\Release\portaudio.lib;$(ProjectDir)dependencies\spdlog\build\Release\spdlog.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(QTDIR)\bin\windeployqt.exe $(OutDir.TrimEnd('\')) --$(Configuration.toLower()) --no-translations</Command>
+      <Command>$(QTDIR)\bin\windeployqt.exe $(OutDir.TrimEnd('\')) --$(Configuration.toLower()) --no-translations
+copy "$(SolutionDir)dependencies\portaudio\build\Release\portaudio.dll" "$(SolutionDir)builds\$(Configuration)"
+copy "$(SolutionDir)dependencies\fftw\build\Release\fftw3f.dll" "$(SolutionDir)builds\$(Configuration)"
+copy "$(SolutionDir)dependencies\spdlog\build\Release\spdlog.dll" "$(SolutionDir)builds\$(Configuration)"
+copy "$(SolutionDir)dependencies\libsndfile\bin\sndfile.dll" "$(SolutionDir)builds\$(Configuration)"
+copy "$(SolutionDir)dependencies\libsamplerate\bin\samplerate.dll" "$(SolutionDir)builds\$(Configuration)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
@@ -136,16 +131,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include=".gitignore" />
-    <None Include=".gitmodules" />
-    <None Include="LICENSE.md" />
-    <None Include="README.md" />
-    <None Include="ReVox.pro" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="icon.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="audiofx\autotuner.cpp" />
     <ClCompile Include="audiofx\lib\pitchshift\frequency.cpp" />
     <ClCompile Include="audiofx\lib\pitchshift\pitchshifter.cpp" />
@@ -163,17 +148,14 @@
     <ClCompile Include="backend\streams\noisegenerator.cpp" />
     <ClCompile Include="backend\streams\passthrough.cpp" />
     <ClCompile Include="backend\streams\player.cpp" />
+    <ClCompile Include="dependencies\SingleApplication\singleapplication.cpp" />
+    <ClCompile Include="dependencies\SingleApplication\singleapplication_p.cpp" />
     <ClCompile Include="interface\baseinterface.cpp" />
     <ClCompile Include="interface\basemanager.cpp" />
     <ClCompile Include="interface\fxmanager.cpp" />
     <ClCompile Include="interface\maininterface.cpp" />
     <ClCompile Include="interface\soundboardmanager.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="singleapplication\examples\calculator\button.cpp" />
-    <ClCompile Include="singleapplication\examples\calculator\calculator.cpp" />
-    <ClCompile Include="singleapplication\examples\sending_arguments\messagereceiver.cpp" />
-    <ClCompile Include="singleapplication\singleapplication.cpp" />
-    <ClCompile Include="singleapplication\singleapplication_p.cpp" />
     <ClCompile Include="ui\components\cropper.cpp" />
     <ClCompile Include="ui\components\fxtab.cpp" />
     <ClCompile Include="ui\hud.cpp" />
@@ -203,12 +185,6 @@
     <ClCompile Include="util\ringbuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <QtRcc Include="rc.qrc" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="ReVox_resource.rc" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="audiofx\autotuner.h" />
     <ClInclude Include="audiofx\iaudiofx.h" />
     <ClInclude Include="audiofx\lib\pitchshift\frequency.h" />
@@ -230,41 +206,38 @@
     <ClInclude Include="backend\streams\passthrough.h" />
     <ClInclude Include="backend\streams\player.h" />
     <ClInclude Include="backend\vkcodenames.h" />
+    <QtMoc Include="dependencies\SingleApplication\singleapplication.h" />
+    <QtMoc Include="dependencies\SingleApplication\singleapplication_p.h" />
     <ClInclude Include="interface\baseinterface.h" />
     <ClInclude Include="interface\basemanager.h" />
     <ClInclude Include="interface\fxmanager.h" />
     <ClInclude Include="interface\maininterface.h" />
     <ClInclude Include="interface\soundboardmanager.h" />
-    <QtMoc Include="singleapplication\examples\calculator\button.h" />
-    <QtMoc Include="singleapplication\examples\calculator\calculator.h" />
-    <QtMoc Include="singleapplication\examples\sending_arguments\messagereceiver.h" />
-    <QtMoc Include="singleapplication\singleapplication.h" />
-    <QtMoc Include="singleapplication\singleapplication_p.h" />
+    <QtMoc Include="ui\components\cropper.h" />
+    <QtMoc Include="ui\components\fxtab.h" />
+    <QtMoc Include="ui\hud.h" />
+    <QtMoc Include="ui\mainwindow.h" />
+    <QtMoc Include="ui\menus\fxmenu.h" />
+    <QtMoc Include="ui\menus\settingsmenu.h" />
+    <QtMoc Include="ui\menus\soundboardmenu.h" />
+    <QtMoc Include="ui\onboarding.h" />
+    <QtMoc Include="ui\titlebar.h" />
+    <QtMoc Include="ui\util\keypresseater.h" />
     <ClInclude Include="ui\util\qttransitions.h" />
-    <QtMoc Include="ui\widgets\fx\fxswitch.h" />
-    <QtMoc Include="ui\widgets\fx\fxparam.h" />
-    <QtMoc Include="ui\widgets\fx\fxkeypicker.h" />
+    <QtMoc Include="ui\widgets\bindablebutton.h" />
+    <QtMoc Include="ui\widgets\customdial.h" />
     <QtMoc Include="ui\widgets\fx\fxdial.h" />
-    <QtMoc Include="ui\widgets\soundboard\waveformviewer.h" />
+    <QtMoc Include="ui\widgets\fx\fxkeypicker.h" />
+    <QtMoc Include="ui\widgets\fx\fxparam.h" />
+    <QtMoc Include="ui\widgets\fx\fxswitch.h" />
+    <QtMoc Include="ui\widgets\hotkeylistitemwidget.h" />
+    <QtMoc Include="ui\widgets\hotkeylistwidget.h" />
+    <QtMoc Include="ui\widgets\monitorslider.h" />
+    <QtMoc Include="ui\widgets\rangeslider.h" />
     <QtMoc Include="ui\widgets\soundboard\clickthroughslider.h" />
+    <QtMoc Include="ui\widgets\soundboard\waveformviewer.h" />
     <ClInclude Include="ui\widgets\style.h" />
     <QtMoc Include="ui\widgets\switch.h" />
-    <QtMoc Include="ui\widgets\rangeslider.h" />
-    <QtMoc Include="ui\widgets\monitorslider.h" />
-    <QtMoc Include="ui\widgets\hotkeylistwidget.h" />
-    <QtMoc Include="ui\widgets\hotkeylistitemwidget.h" />
-    <QtMoc Include="ui\widgets\customdial.h" />
-    <QtMoc Include="ui\widgets\bindablebutton.h" />
-    <QtMoc Include="ui\util\keypresseater.h" />
-    <QtMoc Include="ui\menus\soundboardmenu.h" />
-    <QtMoc Include="ui\menus\settingsmenu.h" />
-    <QtMoc Include="ui\menus\fxmenu.h" />
-    <QtMoc Include="ui\components\fxtab.h" />
-    <QtMoc Include="ui\components\cropper.h" />
-    <QtMoc Include="ui\titlebar.h" />
-    <QtMoc Include="ui\onboarding.h" />
-    <QtMoc Include="ui\mainwindow.h" />
-    <QtMoc Include="ui\hud.h" />
     <ClInclude Include="util\friendlyDeviceName.h" />
     <ClInclude Include="util\loggableobject.h" />
     <ClInclude Include="util\ringbuffer.h" />
@@ -282,6 +255,12 @@
     <QtUic Include="ui\widgets\fx\fxkeypicker.ui" />
     <QtUic Include="ui\widgets\fx\fxswitch.ui" />
     <QtUic Include="ui\widgets\monitorslider.ui" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="rc.qrc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="dependencies\SingleApplication\SingleApplication" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

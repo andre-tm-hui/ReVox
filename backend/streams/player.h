@@ -3,7 +3,7 @@
 
 #include <queue>
 
-#include "nlohmann/json.hpp"
+#include "json.hpp"
 #include "audiostream.h"
 
 using namespace nlohmann;

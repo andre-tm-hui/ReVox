@@ -1,4 +1,4 @@
-#include "audiofx/reverberator.h"
+#include "reverberator.h"
 
 Reverberator::Reverberator(int bufSize)
     : IAudioFX("Reverberator"), bufSize(bufSize) {

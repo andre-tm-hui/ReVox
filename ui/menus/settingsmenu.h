@@ -2,7 +2,7 @@
 #define SETTINGSMENU_H
 
 #include <Windows.h>
-#include <cupdaterdialog.h>
+#include "updaterUI/cupdaterdialog.h"
 #include <shlobj.h>
 
 #include <QCheckBox>
@@ -10,7 +10,7 @@
 #include <QWidget>
 
 #include "../hud.h"
-#include "interface/maininterface.h"
+#include "../../interface/maininterface.h"
 #include "../widgets/switch.h"
 
 namespace Ui {
