@@ -22,6 +22,14 @@ if not exist jom (
 
 set JOM=%cd%\jom\jom.exe
 
+rem Download VB Audio Cable Drivers
+if not exist vb-cable (
+  curl -LO https://download.vb-audio.com/Download_CABLE/VBCABLE_Driver_Pack43.zip
+  mkdir vb-cable
+  tar -xf VBCABLE_Driver_Pack43.zip -C ./vb-cable
+  del VBCABLE_Driver_Pack43.zip
+)
+
 rem Clone and build PortAudio from source
 if not exist portaudio (
   git clone https://github.com/PortAudio/portaudio.git
